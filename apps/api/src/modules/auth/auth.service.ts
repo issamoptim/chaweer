@@ -14,8 +14,9 @@ import {
   AccountSuspendedError,
   InvalidRefreshTokenError,
   TokenExpiredError,
+  UnauthorizedError,
 } from '../../shared/errors/auth-errors';
-import type { AuthUser, LoginResult, RefreshResult } from './auth.types';
+import type { AuthUser, LoginResult, RefreshResult, MeUser } from './auth.types';
 import type { RegisterInput, LoginInput } from './auth.schema';
 
 export function toAuthUser(user: {
@@ -188,4 +189,24 @@ export async function logout(rawToken: string): Promise<void> {
     where: { id: storedToken.id },
     data: { revokedAt: new Date() },
   });
+}
+
+export async function getCurrentUser(userId: string): Promise<MeUser> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      role: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      avatarUrl: true,
+    },
+  });
+
+  if (!user) {
+    throw new UnauthorizedError('Authentification requise.');
+  }
+
+  return user;
 }

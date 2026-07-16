@@ -80,3 +80,19 @@ export async function logoutController(
     next(err);
   }
 }
+
+export async function meController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const user = await authService.getCurrentUser(req.user!.userId);
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+}

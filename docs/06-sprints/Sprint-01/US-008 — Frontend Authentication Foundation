@@ -1,0 +1,568 @@
+# US-008 — Frontend Authentication Foundation
+
+## Epic
+
+**EP-001 — Identity & Authentication**
+
+---
+
+# User Story
+
+**En tant que** visiteur de Chaweer,
+
+**je souhaite** pouvoir créer un compte, me connecter et accéder à mon espace personnel via une interface moderne et intuitive, en utilisant soit mon adresse e-mail, soit mon compte Google,
+
+**afin de** bénéficier d'une expérience d'authentification simple, fluide et sécurisée me permettant d'accéder rapidement aux services de la plateforme.
+
+---
+
+# Objectif
+
+Cette User Story met en place l'ensemble du socle Frontend de l'authentification de Chaweer.
+
+Elle fournit les interfaces utilisateur, la gestion des sessions, la communication avec les services d'authentification du Backend (US-006 et US-007), ainsi que la protection des pages nécessitant une authentification.
+
+Toute la logique métier et de sécurité reste exclusivement gérée par le Backend.
+
+Le Frontend orchestre uniquement les parcours utilisateurs, la navigation et l'expérience utilisateur.
+
+Cette User Story constitue la fondation de toutes les fonctionnalités nécessitant un utilisateur authentifié dans Chaweer.
+
+---
+
+# Dépendances
+
+Cette User Story dépend des User Stories suivantes :
+
+- US-006 — Local Authentication
+- US-007 — Google Authentication
+
+---
+
+# Périmètre
+
+Cette User Story couvre :
+
+- Les pages de connexion et d'inscription.
+- L'authentification par e-mail.
+- L'authentification Google (Google Identity Services).
+- La gestion des sessions utilisateur.
+- La restauration automatique de session.
+- La déconnexion.
+- La protection des routes privées.
+- La gestion de l'état d'authentification.
+- Les redirections après authentification.
+- La sélection du contexte lorsque plusieurs rôles sont disponibles.
+
+---
+
+# Hors périmètre
+
+Cette User Story ne couvre pas :
+
+- Vérification de l'adresse e-mail.
+- Mot de passe oublié.
+- Réinitialisation du mot de passe.
+- Gestion du profil utilisateur.
+- Onboarding des professionnels.
+- Vérification documentaire des professionnels.
+- Gestion des assistants.
+- Administration.
+- Gestion des préférences utilisateur.
+
+---
+
+# Parcours utilisateur
+
+## Parcours 1 — Connexion
+
+L'utilisateur accède à la page :
+
+```
+/connexion
+```
+
+La page propose immédiatement deux méthodes d'authentification :
+
+- Continuer avec Google
+- Continuer avec votre adresse e-mail
+
+Si l'utilisateur choisit l'authentification par e-mail, le formulaire de connexion est affiché.
+
+Le formulaire contient :
+
+- Adresse e-mail
+- Mot de passe
+- Bouton « Se connecter »
+- Lien « Mot de passe oublié »
+- Lien « Créer un compte »
+
+---
+
+## Parcours 2 — Inscription
+
+L'utilisateur accède à la page :
+
+```
+/inscription
+```
+
+La page propose immédiatement deux méthodes de création de compte :
+
+- Continuer avec Google
+- Continuer avec votre adresse e-mail
+
+Aucun formulaire n'est affiché initialement.
+
+---
+
+## Parcours 3 — Inscription avec Google
+
+Lorsque l'utilisateur choisit :
+
+```
+Continuer avec Google
+```
+
+Le Frontend déclenche Google Identity Services.
+
+Après authentification auprès de Google :
+
+- le Frontend récupère l'Authorization Code ;
+- le Frontend transmet uniquement les éléments techniques nécessaires au Backend ;
+- le Backend réalise toute la validation de l'identité ;
+- le Backend crée le compte si nécessaire ;
+- le Backend crée la session utilisateur ;
+- le Backend retourne le JWT ainsi que les informations utilisateur.
+
+Aucune information personnelle n'est demandée à l'utilisateur.
+
+---
+
+## Parcours 4 — Inscription avec une adresse e-mail
+
+Lorsque l'utilisateur choisit :
+
+```
+Continuer avec votre adresse e-mail
+```
+
+Le formulaire d'inscription apparaît.
+
+Le formulaire contient :
+
+- Prénom
+- Nom
+- Adresse e-mail
+- Mot de passe
+- Confirmation du mot de passe
+
+Après validation :
+
+- le Frontend appelle l'API d'inscription ;
+- le Backend applique les règles définies dans US-006.
+
+---
+
+## Parcours 5 — Connexion avec Google
+
+Lorsque l'utilisateur choisit Google :
+
+- Google Identity Services est lancé ;
+- le Backend valide l'identité ;
+- la session est créée ;
+- l'utilisateur est automatiquement connecté.
+
+---
+
+## Parcours 6 — Connexion avec une adresse e-mail
+
+Lorsque l'utilisateur choisit l'authentification locale :
+
+- le Frontend transmet les identifiants au Backend ;
+- le Backend authentifie l'utilisateur ;
+- le JWT est retourné ;
+- la session est ouverte.
+
+---
+
+## Parcours 7 — Déconnexion
+
+Lorsque l'utilisateur clique sur « Déconnexion » :
+
+- le Frontend appelle l'API `/auth/logout` ;
+- le Backend invalide le Refresh Token ;
+- le Frontend supprime l'état d'authentification ;
+- l'utilisateur est redirigé vers la page d'accueil publique.
+
+---
+
+## Parcours 8 — Restauration automatique de session
+
+Au chargement de l'application :
+
+- le Frontend vérifie si une session peut être restaurée ;
+- si un Refresh Token valide est présent, une nouvelle session est créée automatiquement ;
+- l'utilisateur retrouve immédiatement son espace sans devoir se reconnecter.
+
+En cas d'échec :
+
+- l'utilisateur est considéré comme anonyme.
+# Règles métier
+
+## RM-001 — Deux méthodes d'authentification
+
+Chaweer supporte deux méthodes d'authentification :
+
+- Authentification locale (adresse e-mail + mot de passe).
+- Authentification Google (Google Identity Services).
+
+Le Frontend présente systématiquement les deux possibilités à l'utilisateur.
+
+La logique de validation est exclusivement réalisée par le Backend.
+
+---
+
+## RM-002 — Choix de la méthode avant toute saisie
+
+Sur la page d'inscription, aucun formulaire n'est affiché lors de l'arrivée sur la page.
+
+L'utilisateur choisit d'abord :
+
+- Continuer avec Google
+- Continuer avec votre adresse e-mail
+
+Le formulaire d'inscription n'est affiché que si l'utilisateur choisit l'authentification par e-mail.
+
+---
+
+## RM-003 — Aucune saisie lors d'une inscription Google
+
+Lorsqu'un utilisateur choisit Google :
+
+- aucun prénom n'est demandé ;
+- aucun nom n'est demandé ;
+- aucun e-mail n'est demandé ;
+- aucun mot de passe n'est demandé.
+
+Toutes les informations proviennent exclusivement de Google après validation par le Backend.
+
+---
+
+## RM-004 — Le Frontend ne prend aucune décision métier
+
+Le Frontend :
+
+- ne décide jamais si un utilisateur est autorisé ;
+- ne décide jamais si un compte existe ;
+- ne décide jamais du fournisseur d'authentification autorisé ;
+- ne décide jamais des rôles disponibles.
+
+Toutes ces décisions appartiennent exclusivement au Backend.
+
+---
+
+## RM-005 — Gestion de la session
+
+Le Frontend ne stocke jamais le Refresh Token.
+
+Le Refresh Token est exclusivement conservé dans un cookie HttpOnly sécurisé.
+
+Le Frontend manipule uniquement :
+
+- l'état de connexion ;
+- les informations utilisateur retournées par l'API ;
+- le JWT d'accès conformément à l'architecture définie.
+
+---
+
+## RM-006 — Restauration automatique de session
+
+Au démarrage de l'application :
+
+- une restauration automatique de session est tentée ;
+- si la session est valide, l'utilisateur est reconnecté automatiquement ;
+- sinon l'application continue en mode visiteur.
+
+Aucune intervention de l'utilisateur n'est nécessaire.
+
+---
+
+## RM-007 — Redirection après authentification
+
+Après une authentification réussie :
+
+Si un seul rôle est disponible :
+
+- aucune étape supplémentaire n'est affichée ;
+- l'utilisateur est redirigé automatiquement vers son espace.
+
+Exemples :
+
+Client
+
+→ Accueil Chaweer
+
+Professionnel
+
+→ Tableau de bord Professionnel
+
+Assistant
+
+→ Tableau de bord Assistant
+
+---
+
+## RM-008 — Plusieurs rôles
+
+Si plusieurs rôles sont disponibles pour un même utilisateur :
+
+Le Frontend affiche un écran permettant de choisir le contexte d'utilisation.
+
+Exemple :
+
+- Continuer comme Client
+- Continuer comme Professionnel
+- Continuer comme Assistant
+
+Le rôle choisi devient le contexte actif de la session.
+
+---
+
+## RM-009 — Protection des routes
+
+Les routes privées ne sont accessibles qu'aux utilisateurs authentifiés.
+
+Toute tentative d'accès sans session valide entraîne une redirection vers :
+
+```
+/connexion
+```
+
+---
+
+## RM-010 — Déconnexion
+
+La déconnexion :
+
+- invalide la session côté Backend ;
+- supprime l'état d'authentification côté Frontend ;
+- redirige l'utilisateur vers l'accueil public.
+
+---
+
+## RM-011 — Expérience utilisateur
+
+L'expérience utilisateur doit être :
+
+- simple ;
+- rapide ;
+- fluide ;
+- cohérente quel que soit le fournisseur d'authentification.
+
+L'utilisateur ne doit jamais percevoir de différence fonctionnelle entre une authentification locale et une authentification Google.
+
+---
+
+## RM-012 — Évolutivité
+
+L'architecture Frontend doit permettre l'ajout futur de nouveaux fournisseurs d'identité (Apple, LinkedIn, etc.) sans refonte des composants d'authentification existants.
+
+# Critères d'acceptation
+
+## Authentification locale
+
+### AC-001 — Connexion par e-mail
+
+Étant donné qu'un utilisateur possède un compte local valide,
+
+Lorsqu'il saisit son adresse e-mail et son mot de passe,
+
+Alors il est authentifié avec succès,
+
+Et il est redirigé automatiquement vers son espace.
+
+---
+
+### AC-002 — Identifiants invalides
+
+Étant donné qu'un utilisateur saisit un mot de passe incorrect,
+
+Alors un message d'erreur est affiché,
+
+Et aucune information ne permet de déterminer si l'adresse e-mail existe.
+
+---
+
+### AC-003 — Création d'un compte local
+
+Étant donné qu'un visiteur complète correctement le formulaire d'inscription,
+
+Lorsque le formulaire est validé,
+
+Alors le compte est créé,
+
+Et le parcours défini par US-006 est respecté.
+
+---
+
+## Authentification Google
+
+### AC-004 — Première connexion Google
+
+Étant donné qu'un utilisateur ne possède aucun compte,
+
+Lorsqu'il choisit "Continuer avec Google",
+
+Alors son compte est créé automatiquement,
+
+Et il est immédiatement connecté.
+
+---
+
+### AC-005 — Connexion Google
+
+Étant donné qu'un utilisateur possède déjà un compte Google,
+
+Lorsqu'il choisit "Continuer avec Google",
+
+Alors il est connecté sans autre saisie.
+
+---
+
+### AC-006 — ProviderMismatch
+
+Étant donné qu'un compte local existe déjà avec la même adresse e-mail,
+
+Lorsqu'un utilisateur tente une connexion Google,
+
+Alors le Backend retourne l'erreur appropriée,
+
+Et le Frontend affiche un message compréhensible.
+
+---
+
+## Gestion des sessions
+
+### AC-007 — Maintien de session
+
+Étant donné qu'un utilisateur possède un Refresh Token valide,
+
+Lorsqu'il recharge la page,
+
+Alors sa session est restaurée automatiquement.
+
+---
+
+### AC-008 — Déconnexion
+
+Lorsqu'un utilisateur clique sur "Déconnexion",
+
+Alors :
+
+- le Backend invalide la session,
+- le Frontend supprime l'état d'authentification,
+- l'utilisateur est redirigé vers l'accueil public.
+
+---
+
+## Gestion des rôles
+
+### AC-009 — Un seul rôle
+
+Étant donné qu'un utilisateur ne possède qu'un seul rôle,
+
+Alors aucune sélection n'est affichée,
+
+Et il est redirigé automatiquement vers son espace.
+
+Exemples :
+
+- Client → Accueil Chaweer
+- Professionnel → Tableau de bord Professionnel
+- Assistant → Tableau de bord Assistant
+
+---
+
+### AC-010 — Plusieurs rôles
+
+Étant donné qu'un utilisateur possède plusieurs rôles,
+
+Alors un écran de sélection est affiché,
+
+Et le contexte choisi devient le contexte actif.
+
+---
+
+## Sécurité
+
+### AC-011
+
+Le Frontend ne stocke jamais le Refresh Token.
+
+---
+
+### AC-012
+
+Le Frontend ne prend jamais de décision métier.
+
+---
+
+### AC-013
+
+Toutes les décisions d'autorisation sont réalisées par le Backend.
+
+---
+
+## Navigation
+
+### AC-014
+
+Toute route protégée nécessite une session valide.
+
+Sinon l'utilisateur est redirigé vers :
+
+```
+/connexion
+```
+
+---
+
+### AC-015
+
+Les pages publiques restent accessibles sans authentification.
+
+---
+
+## Qualité
+
+### AC-016
+
+L'ensemble des parcours doit fonctionner sur :
+
+- Chrome
+- Firefox
+- Safari
+- Edge
+
+---
+
+### AC-017
+
+L'interface est responsive :
+
+- Desktop
+- Tablette
+- Mobile
+
+---
+
+### AC-018
+
+Aucune régression ne doit être introduite sur US-006 et US-007.
+
+Tous les tests Backend existants doivent continuer à réussir.
+
+---
+
+# Fin de la User Story

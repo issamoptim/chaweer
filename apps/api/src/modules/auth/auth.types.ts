@@ -17,3 +17,12 @@ export interface LoginResult {
 export interface RefreshResult {
   accessToken: string;
 }
+
+export interface MeUser {
+  id: string;
+  role: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+}

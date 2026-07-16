@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../core/middleware/validate';
+import { authenticate } from '../../core/middleware/authenticate';
 import { authIpLimiter, authEmailLimiter } from '../../core/middleware/rate-limiter';
 import { registerSchema, loginSchema } from './auth.schema';
 import {
@@ -7,6 +8,7 @@ import {
   loginController,
   refreshController,
   logoutController,
+  meController,
 } from './auth.controller';
 import { googleAuthSchema } from './google/google-auth.schema';
 import { googleAuthController } from './google/google-auth.controller';
@@ -46,5 +48,7 @@ router.post(
   validate(googleAuthSchema),
   googleAuthController('PROFESSIONAL'),
 );
+
+router.get('/me', authenticate, meController);
 
 export { router as authRoutes };
