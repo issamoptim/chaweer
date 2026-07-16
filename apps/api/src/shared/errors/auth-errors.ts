@@ -1,0 +1,99 @@
+import { AppError } from '../../core/errors';
+import { ErrorCodes, type ErrorCode } from './error-codes';
+
+export class ValidationError extends AppError {
+  public readonly errorCode: ErrorCode;
+  public readonly details?: Array<{ field: string; message: string }>;
+
+  constructor(
+    message: string,
+    details?: Array<{ field: string; message: string }>,
+  ) {
+    super(message, 422);
+    this.errorCode = ErrorCodes.VALIDATION_ERROR;
+    this.details = details;
+    Object.setPrototypeOf(this, ValidationError.prototype);
+  }
+}
+
+export class InvalidCredentialsError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Email ou mot de passe incorrect.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.INVALID_CREDENTIALS;
+    Object.setPrototypeOf(this, InvalidCredentialsError.prototype);
+  }
+}
+
+export class EmailAlreadyExistsError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Cette adresse e-mail est déjà utilisée.') {
+    super(message, 409);
+    this.errorCode = ErrorCodes.EMAIL_ALREADY_EXISTS;
+    Object.setPrototypeOf(this, EmailAlreadyExistsError.prototype);
+  }
+}
+
+export class EmailNotVerifiedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = "Votre adresse e-mail n'a pas encore été vérifiée.") {
+    super(message, 403);
+    this.errorCode = ErrorCodes.EMAIL_NOT_VERIFIED;
+    Object.setPrototypeOf(this, EmailNotVerifiedError.prototype);
+  }
+}
+
+export class AccountSuspendedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(
+    message = 'Votre compte est suspendu. Veuillez contacter le support.',
+  ) {
+    super(message, 403);
+    this.errorCode = ErrorCodes.ACCOUNT_SUSPENDED;
+    Object.setPrototypeOf(this, AccountSuspendedError.prototype);
+  }
+}
+
+export class InvalidRefreshTokenError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Refresh token invalide ou expiré.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.INVALID_REFRESH_TOKEN;
+    Object.setPrototypeOf(this, InvalidRefreshTokenError.prototype);
+  }
+}
+
+export class TokenExpiredError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Le token a expiré.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.TOKEN_EXPIRED;
+    Object.setPrototypeOf(this, TokenExpiredError.prototype);
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Accès non autorisé.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.UNAUTHORIZED;
+    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+
+export class ForbiddenError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Accès interdit.') {
+    super(message, 403);
+    this.errorCode = ErrorCodes.FORBIDDEN;
+    Object.setPrototypeOf(this, ForbiddenError.prototype);
+  }
+}
