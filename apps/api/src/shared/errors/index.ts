@@ -9,4 +9,10 @@ export {
   TokenExpiredError,
   UnauthorizedError,
   ForbiddenError,
+  GoogleAuthFailedError,
+  InvalidGoogleTokenError,
+  ProviderMismatchError,
+  GoogleAccountAlreadyLinkedError,
+  GoogleAccountNotVerifiedError,
+  InvalidGoogleIdentityError,
 } from './auth-errors';

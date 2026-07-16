@@ -9,3 +9,12 @@ if (!process.env.DATABASE_URL) {
 if (!process.env.DATABASE_TEST_URL) {
   process.env.DATABASE_TEST_URL = 'postgresql://postgres:postgres@localhost:5432/chaweer_test';
 }
+if (!process.env.GOOGLE_CLIENT_ID) {
+  process.env.GOOGLE_CLIENT_ID = 'test-google-client-id';
+}
+if (!process.env.GOOGLE_CLIENT_SECRET) {
+  process.env.GOOGLE_CLIENT_SECRET = 'test-google-client-secret';
+}
+if (!process.env.GOOGLE_REDIRECT_URI) {
+  process.env.GOOGLE_REDIRECT_URI = 'postmessage';
+}

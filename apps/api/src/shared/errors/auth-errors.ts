@@ -97,3 +97,65 @@ export class ForbiddenError extends AppError {
     Object.setPrototypeOf(this, ForbiddenError.prototype);
   }
 }
+
+export class GoogleAuthFailedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Échec de l\'authentification Google.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.GOOGLE_AUTH_FAILED;
+    Object.setPrototypeOf(this, GoogleAuthFailedError.prototype);
+  }
+}
+
+export class InvalidGoogleTokenError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Token Google invalide.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.INVALID_GOOGLE_TOKEN;
+    Object.setPrototypeOf(this, InvalidGoogleTokenError.prototype);
+  }
+}
+
+export class ProviderMismatchError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(
+    message = 'Cette adresse e-mail est déjà utilisée avec une autre méthode de connexion.',
+  ) {
+    super(message, 409);
+    this.errorCode = ErrorCodes.PROVIDER_MISMATCH;
+    Object.setPrototypeOf(this, ProviderMismatchError.prototype);
+  }
+}
+
+export class GoogleAccountAlreadyLinkedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Ce compte Google est déjà associé à un autre utilisateur.') {
+    super(message, 409);
+    this.errorCode = ErrorCodes.GOOGLE_ACCOUNT_ALREADY_LINKED;
+    Object.setPrototypeOf(this, GoogleAccountAlreadyLinkedError.prototype);
+  }
+}
+
+export class GoogleAccountNotVerifiedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Votre compte Google n\'est pas vérifié.') {
+    super(message, 403);
+    this.errorCode = ErrorCodes.GOOGLE_ACCOUNT_NOT_VERIFIED;
+    Object.setPrototypeOf(this, GoogleAccountNotVerifiedError.prototype);
+  }
+}
+
+export class InvalidGoogleIdentityError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Identité Google invalide.') {
+    super(message, 401);
+    this.errorCode = ErrorCodes.INVALID_GOOGLE_IDENTITY;
+    Object.setPrototypeOf(this, InvalidGoogleIdentityError.prototype);
+  }
+}

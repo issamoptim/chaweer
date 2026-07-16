@@ -3,6 +3,7 @@ import { hashPassword } from '../../modules/auth/services/password.service';
 
 export async function cleanDatabase(): Promise<void> {
   await prisma.refreshToken.deleteMany();
+  await prisma.externalIdentity.deleteMany();
   await prisma.user.deleteMany();
 }
 
@@ -32,4 +33,38 @@ export async function createTestUser(overrides?: {
   });
 
   return { id: user.id, email, password };
+}
+
+export async function createTestGoogleUser(overrides?: {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+  role?: string;
+  status?: string;
+  googleSub?: string;
+}): Promise<{ id: string; email: string; googleSub: string }> {
+  const email = overrides?.email ?? `google-${Date.now()}-${Math.random().toString(36).slice(2)}@gmail.com`;
+  const googleSub = overrides?.googleSub ?? `google-sub-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  const user = await prisma.user.create({
+    data: {
+      email,
+      passwordHash: null,
+      firstName: overrides?.firstName ?? 'Google',
+      lastName: overrides?.lastName ?? 'User',
+      avatarUrl: overrides?.avatarUrl ?? null,
+      role: (overrides?.role as 'CLIENT' | 'PROFESSIONAL' | 'ADMIN') ?? 'CLIENT',
+      authProvider: 'GOOGLE',
+      status: (overrides?.status as 'ACTIVE' | 'SUSPENDED' | 'DELETED') ?? 'ACTIVE',
+      externalIdentities: {
+        create: {
+          provider: 'GOOGLE',
+          providerUserId: googleSub,
+        },
+      },
+    },
+  });
+
+  return { id: user.id, email, googleSub };
 }

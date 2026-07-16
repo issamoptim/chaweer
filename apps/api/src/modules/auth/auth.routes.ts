@@ -8,6 +8,8 @@ import {
   refreshController,
   logoutController,
 } from './auth.controller';
+import { googleAuthSchema } from './google/google-auth.schema';
+import { googleAuthController } from './google/google-auth.controller';
 
 const router = Router();
 
@@ -30,5 +32,19 @@ router.post(
 router.post('/refresh', authIpLimiter, refreshController);
 
 router.post('/logout', authIpLimiter, logoutController);
+
+router.post(
+  '/google/client',
+  authIpLimiter,
+  validate(googleAuthSchema),
+  googleAuthController('CLIENT'),
+);
+
+router.post(
+  '/google/professional',
+  authIpLimiter,
+  validate(googleAuthSchema),
+  googleAuthController('PROFESSIONAL'),
+);
 
 export { router as authRoutes };

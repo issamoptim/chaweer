@@ -24,6 +24,11 @@ const envSchema = z.object({
   // Auth — Rate Limiting
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().default(10),
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
+  GOOGLE_REDIRECT_URI: z.string().default('postmessage'),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -5,6 +5,7 @@ import {
   generateRefreshToken,
   hashRefreshToken,
   getRefreshTokenExpiry,
+  createSession,
 } from './services/refresh-token.service';
 import {
   EmailAlreadyExistsError,
@@ -17,7 +18,7 @@ import {
 import type { AuthUser, LoginResult, RefreshResult } from './auth.types';
 import type { RegisterInput, LoginInput } from './auth.schema';
 
-function toAuthUser(user: {
+export function toAuthUser(user: {
   id: string;
   email: string;
   firstName: string;
@@ -37,22 +38,6 @@ function toAuthUser(user: {
     authProvider: user.authProvider,
     status: user.status,
   };
-}
-
-async function createSession(userId: string): Promise<string> {
-  const rawToken = generateRefreshToken();
-  const tokenHash = hashRefreshToken(rawToken);
-  const expiresAt = getRefreshTokenExpiry();
-
-  await prisma.refreshToken.create({
-    data: {
-      userId,
-      tokenHash,
-      expiresAt,
-    },
-  });
-
-  return rawToken;
 }
 
 export async function register(input: RegisterInput): Promise<void> {

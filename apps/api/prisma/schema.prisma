@@ -25,6 +25,10 @@ enum UserStatus {
   DELETED
 }
 
+enum IdentityProvider {
+  GOOGLE
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -38,7 +42,8 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  refreshTokens RefreshToken[]
+  refreshTokens      RefreshToken[]
+  externalIdentities ExternalIdentity[]
 
   @@index([role])
   @@index([status])
@@ -57,4 +62,19 @@ model RefreshToken {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model ExternalIdentity {
+  id             String           @id @default(cuid())
+  userId         String
+  provider       IdentityProvider
+  providerUserId String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+  @@index([provider, providerUserId])
 }
