@@ -1,0 +1,66 @@
+services:
+  chaweer-postgres:
+    image: postgres:17-alpine
+    container_name: chaweer-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-chaweer}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - chaweer-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-chaweer}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  chaweer-api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: chaweer-api
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@chaweer-postgres:5432/${POSTGRES_DB:-chaweer}
+    volumes:
+      - ./apps/api:/app
+      - api_node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - chaweer-network
+    depends_on:
+      chaweer-postgres:
+        condition: service_healthy
+
+  chaweer-web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: chaweer-web
+    environment:
+      VITE_API_URL: http://localhost:3000
+    volumes:
+      - ./apps/web:/app
+      - web_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - chaweer-network
+    depends_on:
+      - chaweer-api
+
+networks:
+  chaweer-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  api_node_modules:
+  web_node_modules:
