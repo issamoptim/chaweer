@@ -5,8 +5,15 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+function getDatabaseUrl(): string {
+  if (process.env.NODE_ENV === 'test' && process.env.DATABASE_TEST_URL) {
+    return process.env.DATABASE_TEST_URL;
+  }
+  return process.env.DATABASE_URL!;
+}
+
 function createPrismaClient(): PrismaClient {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg({ connectionString: getDatabaseUrl() });
   return new PrismaClient({ adapter });
 }
 

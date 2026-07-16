@@ -8,8 +8,11 @@ describe('GET /health', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      status: 'ok',
-      service: 'chaweer-api',
+      success: true,
+      data: {
+        status: 'ok',
+        service: 'chaweer-api',
+      },
     });
   });
 });

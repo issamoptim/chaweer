@@ -1,17 +1,25 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './core/middleware/error-handler';
 import { notFoundHandler } from './core/middleware/not-found';
+import { authRoutes } from './modules/auth/auth.routes';
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/health', (_req, res) => {
   res.status(200).json({
-    status: 'ok',
-    service: 'chaweer-api',
+    success: true,
+    data: {
+      status: 'ok',
+      service: 'chaweer-api',
+    },
   });
 });
+
+app.use('/auth', authRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
