@@ -6,21 +6,20 @@ import {
   AuthLayout,
   AuthCard,
   AuthHeader,
-  GoogleButton,
-  Divider,
+  TextField,
   EmailField,
   PasswordField,
+  PasswordStrength,
+  Checkbox,
   PrimaryButton,
   TextLink,
-  ProfessionalEntry,
   ErrorMessage,
-  loginSchema,
-  useLogin,
-  initiateGoogleLogin,
-  type LoginFormData,
+  registerSchema,
+  useRegister,
+  type RegisterFormData,
 } from "@/features/auth";
 
-export function Connexion() {
+export function EmailRegistration() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? "/";
@@ -29,48 +28,57 @@ export function Connexion() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { fullName: "", email: "", password: "", terms: false },
   });
-  const loginMutation = useLogin({
+
+  const password = watch("password");
+  const registerMutation = useRegister({
     onSuccess: () => navigate(from, { replace: true }),
     onError: (message) => setServerError(message),
   });
 
   const onSubmit = handleSubmit((data) => {
     setServerError(null);
-    loginMutation.mutate(data);
+    registerMutation.mutate(data);
   });
 
   return (
     <AuthLayout>
       <AuthCard>
         <div className="flex flex-col gap-5">
-          <AuthHeader
-            title="Connectez-vous à Chaweer"
-            description="Entrez vos identifiants pour accéder à votre espace"
-          />
-          <GoogleButton onClick={() => void initiateGoogleLogin(from)} />
-          <Divider />
+          <AuthHeader title="Créer votre compte" />
           {serverError && <ErrorMessage message={serverError} />}
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
+            <TextField
+              label="Nom complet"
+              name="fullName"
+              register={register("fullName")}
+              error={errors.fullName?.message}
+              placeholder="Jean Dupont"
+              autocomplete="name"
+            />
             <EmailField register={register("email")} error={errors.email?.message} />
             <PasswordField register={register("password")} error={errors.password?.message} />
-            <PrimaryButton loading={loginMutation.isPending}>
-              Se connecter
+            <div className="-mt-1">
+              <PasswordStrength value={password} />
+            </div>
+            <Checkbox
+              label="J'accepte les Conditions et la Politique de confidentialité"
+              name="terms"
+              register={register("terms")}
+              error={errors.terms?.message}
+            />
+            <PrimaryButton loading={registerMutation.isPending}>
+              Créer mon compte
             </PrimaryButton>
           </form>
-          <div className="flex flex-col items-center gap-2">
-            <TextLink to="/connexion">Mot de passe oublié</TextLink>
-            <TextLink to="/inscription">Créer un compte</TextLink>
+          <div className="flex justify-center">
+            <TextLink to="/inscription">Retour</TextLink>
           </div>
-          <ProfessionalEntry
-            text="Vous êtes avocat ?"
-            linkText="Accéder à l'espace avocat"
-            to="/"
-          />
         </div>
       </AuthCard>
     </AuthLayout>

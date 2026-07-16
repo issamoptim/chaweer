@@ -1,7 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { SplashScreen } from "../components/SplashScreen";
-import { AuthErrorScreen } from "../components/AuthErrorScreen";
 
 export function AuthGuard() {
   const { status } = useAuth();
@@ -13,10 +12,6 @@ export function AuthGuard() {
 
   if (status === "anonymous") {
     return <Navigate to="/connexion" state={{ from: location }} replace />;
-  }
-
-  if (status === "error") {
-    return <AuthErrorScreen />;
   }
 
   return <Outlet />;

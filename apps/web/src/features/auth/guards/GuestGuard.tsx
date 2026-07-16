@@ -13,9 +13,5 @@ export function GuestGuard() {
     return <Navigate to="/" replace />;
   }
 
-  if (status === "error") {
-    return <SplashScreen />;
-  }
-
   return <Outlet />;
 }

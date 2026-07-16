@@ -4,6 +4,8 @@ import { Home } from "@/app/pages/Home";
 import { NotFound } from "@/app/pages/NotFound";
 import { Connexion } from "@/app/pages/Connexion";
 import { Inscription } from "@/app/pages/Inscription";
+import { EmailRegistration } from "@/app/pages/EmailRegistration";
+import { GoogleCallback } from "@/app/pages/GoogleCallback";
 import { MonCompte } from "@/app/pages/MonCompte";
 import { AuthGuard, GuestGuard } from "@/features/auth";
 
@@ -14,6 +16,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/auth/google/callback",
+        element: <GoogleCallback />,
       },
       {
         element: <AuthGuard />,
@@ -34,6 +40,10 @@ export const router = createBrowserRouter([
           {
             path: "/inscription",
             element: <Inscription />,
+          },
+          {
+            path: "/inscription/email",
+            element: <EmailRegistration />,
           },
         ],
       },

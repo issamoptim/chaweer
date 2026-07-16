@@ -48,7 +48,7 @@ export interface GoogleAuthInput {
   codeVerifier: string;
 }
 
-export type AuthStatus = "loading" | "authenticated" | "anonymous" | "error";
+export type AuthStatus = "loading" | "authenticated" | "anonymous";
 
 export type AuthErrorCode =
   | "VALIDATION_ERROR"

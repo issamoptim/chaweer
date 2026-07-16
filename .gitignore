@@ -113,3 +113,10 @@ test-results/
 *.pid
 *.seed
 *.pid.lock
+
+# -------------------------
+# npm script artifacts
+# -------------------------
+apps/web/eslint
+apps/web/tsc
+apps/web/vitest

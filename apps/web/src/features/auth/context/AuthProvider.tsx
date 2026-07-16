@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { AuthContext, type AuthContextValue } from "./auth-context";
 import { authService } from "../services/auth-service";
-import type { ApiError, AuthStatus, MeUser } from "../types/auth-types";
+import type { AuthStatus, MeUser } from "../types/auth-types";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -10,10 +10,12 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<MeUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
+  const [apiUnavailable, setApiUnavailable] = useState(false);
   const tokenRef = useRef<string | null>(null);
 
   const restoreSession = useCallback(async () => {
     setStatus("loading");
+    setApiUnavailable(false);
 
     try {
       const { accessToken } = await authService.refresh();
@@ -22,22 +24,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const me = await authService.getMe(accessToken);
       setUser(me);
       setStatus("authenticated");
-    } catch (error) {
-      const apiError = error as ApiError;
-
-      if (
-        apiError.code === "INVALID_REFRESH_TOKEN" ||
-        apiError.code === "TOKEN_EXPIRED" ||
-        apiError.code === "UNAUTHORIZED"
-      ) {
-        tokenRef.current = null;
-        setUser(null);
-        setStatus("anonymous");
-      } else {
-        tokenRef.current = null;
-        setUser(null);
-        setStatus("error");
-      }
+    } catch {
+      tokenRef.current = null;
+      setUser(null);
+      setStatus("anonymous");
+      setApiUnavailable(true);
     }
   }, []);
 
@@ -83,6 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     user,
     accessToken: tokenRef.current,
     status,
+    apiUnavailable,
     isAuthenticated: status === "authenticated",
     isLoading: status === "loading",
     login,
