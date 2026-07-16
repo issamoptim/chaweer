@@ -89,6 +89,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     refresh,
     refetchUser,
+    restoreSession,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

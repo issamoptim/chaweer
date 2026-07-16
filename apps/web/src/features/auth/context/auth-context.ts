@@ -11,6 +11,7 @@ export interface AuthContextValue {
   logout: () => void;
   refresh: () => Promise<void>;
   refetchUser: () => Promise<void>;
+  restoreSession: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
