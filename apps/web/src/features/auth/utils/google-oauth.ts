@@ -20,6 +20,7 @@ export async function initiateGoogleLogin(from: string = "/"): Promise<void> {
     code_challenge: codeChallenge,
     code_challenge_method: "S256",
     state,
+    prompt: "select_account",
   });
 
   window.location.assign(`${GOOGLE_AUTH_URL}?${params.toString()}`);

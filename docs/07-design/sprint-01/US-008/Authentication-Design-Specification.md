@@ -8,13 +8,13 @@
 
 | Property | Value |
 |----------|-------|
-| Version | 2.0 |
+| Version | 2.1 |
 | Status | ✅ APPROVED |
 | Sprint | Sprint 01 |
 | Epic | EP-001 — Identity & Authentication |
 | Related User Story | US-008 — Frontend Authentication & User Access |
 | Product Owner | Approved |
-| Last Updated | 2026-07-16 |
+| Last Updated | 2026-07-17 |
 
 ---
 
@@ -1584,3 +1584,192 @@ Default authentication journey for citizens and businesses.
 Design Freeze
 
 Approved UI specification that becomes the implementation reference.
+
+---
+
+# Implementation Reference — Phase 4
+
+This section documents the implemented authentication architecture as of Phase 4 completion.
+
+It complements the UX specification above with technical details for developers.
+
+---
+
+## Authentication Architecture
+
+### Backend (apps/api)
+
+- **Framework:** Express + TypeScript
+- **Database:** PostgreSQL via Prisma ORM
+- **Auth:** JWT access tokens (15 min) + refresh tokens (30 days, HttpOnly cookie)
+- **Google OAuth:** Authorization Code + PKCE flow
+- **CORS:** `origin: http://localhost:5173`, `credentials: true`
+
+### Frontend (apps/web)
+
+- **Framework:** React + Vite + TypeScript
+- **State:** React Context (AuthContext) + React Query
+- **Routing:** React Router v6 with AuthGuard / GuestGuard
+- **Validation:** Zod + React Hook Form
+- **PKCE:** Web Crypto API for code_verifier / code_challenge generation
+- **OAuth state:** sessionStorage (cleared on all exit paths)
+
+### Key Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/auth/register` | POST | Email registration |
+| `/auth/login` | POST | Email login |
+| `/auth/refresh` | POST | Session restoration |
+| `/auth/logout` | POST | Logout (revokes refresh token) |
+| `/auth/me` | GET | Current user info |
+| `/auth/google/client` | POST | Google OAuth token exchange (CLIENT role) |
+| `/auth/google/professional` | POST | Google OAuth token exchange (PROFESSIONAL role) |
+
+---
+
+## Google OAuth Flow (Authorization Code + PKCE)
+
+```
+User on /connexion (from=/mon-compte)
+  ↓ clicks GoogleButton (disabled after first click)
+initiateGoogleLogin(from)
+  ↓ generate code_verifier + code_challenge (Web Crypto, SHA-256)
+  ↓ generate state (CSRF protection)
+  ↓ store { codeVerifier, state, from } in sessionStorage
+  ↓ redirect to Google consent URL
+  ↓   client_id, redirect_uri, response_type=code,
+  ↓   scope=openid email profile, code_challenge, code_challenge_method=S256,
+  ↓   state, prompt=select_account
+Google → user selects account + consents
+  ↓ redirect to /auth/google/callback?code=...&state=...
+GoogleCallback.tsx
+  ↓ read code, state from URL params
+  ↓ read codeVerifier, state, from from sessionStorage
+  ↓ validate state matches (CSRF) — clear sessionStorage on mismatch
+  ↓ POST /auth/google/client { code, codeVerifier }
+  ↓   backend: exchange code with Google, verify ID token (jose + JWKS),
+  ↓   find/create user via ExternalIdentity, set refresh token cookie
+  ↓ returns { accessToken, user }
+  ↓ AuthContext.login(accessToken, me)
+  ↓ navigate(from, { replace: true })
+User lands on /mon-compte (authenticated)
+```
+
+### Error Paths
+
+| Scenario | Behavior |
+|----------|----------|
+| User cancels Google consent | `error=access_denied` → "Vous avez refusé la connexion avec Google." + "Retour à la connexion" button |
+| State mismatch (CSRF) | "Session invalide. Veuillez réessayer." + button |
+| Missing code | "L'authentification Google a échoué." + button |
+| Provider mismatch | "Cette adresse e-mail utilise une autre méthode de connexion." + button |
+| Backend error | Mapped error message + button |
+| Network error | "Impossible de contacter le serveur." + button |
+
+All error paths clear sessionStorage and display a "Retour à la connexion" button.
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `src/features/auth/utils/pkce.ts` | PKCE generation (code_verifier, code_challenge, state) |
+| `src/features/auth/utils/oauth-storage.ts` | sessionStorage helpers |
+| `src/features/auth/utils/google-oauth.ts` | `initiateGoogleLogin(from)` — builds Google consent URL |
+| `src/features/auth/hooks/useGoogleLogin.ts` | React Query mutation wrapping `googleAuthClient()` |
+| `src/app/pages/GoogleCallback.tsx` | Callback page — validates state, handles errors, calls API |
+| `src/features/auth/components/GoogleButton.tsx` | Button with multiple-click prevention |
+
+---
+
+## Email Authentication Flow
+
+```
+User on /connexion
+  ↓ enters email + password
+  ↓ Zod validation (loginSchema)
+POST /auth/login { email, password }
+  ↓ backend: verify credentials, set refresh token cookie
+  ↓ returns { accessToken }
+GET /auth/me (with Bearer token)
+  ↓ returns user data
+AuthContext.login(accessToken, me)
+  ↓ navigate(from, { replace: true })
+User lands on destination (authenticated)
+```
+
+### Registration Flow
+
+```
+User on /inscription → Email Registration
+  ↓ enters firstName, lastName, email, password, terms checkbox
+  ↓ Zod validation (registerSchema) + password strength
+POST /auth/register { email, password, firstName, lastName, role }
+  ↓ backend: create user (status=PENDING_EMAIL_VERIFICATION)
+  ↓ returns { message: "Votre compte a été créé. Veuillez vérifier votre adresse e-mail." }
+User must verify email before login (EMAIL_NOT_VERIFIED error if unverified)
+```
+
+---
+
+## Session Restoration
+
+```
+Application Start
+  ↓
+AuthProvider.mount()
+  ↓ POST /auth/refresh (sends refresh_token cookie)
+  ↓   backend: validate cookie, rotate refresh token, return new accessToken
+  ↓ GET /auth/me (with Bearer token)
+  ↓   returns user data
+  ↓ AuthContext: { status: "authenticated", user, accessToken }
+  ↓ Application Ready
+```
+
+If refresh fails (no cookie, expired, revoked):
+- `AuthContext: { status: "anonymous" }`
+- User can access public routes
+- Protected routes redirect to `/connexion` with `location.state.from`
+
+---
+
+## Redirect After Login
+
+- `AuthGuard` captures the intended destination in `location.state.from`
+- `GuestGuard` prevents authenticated users from accessing `/connexion` and `/inscription`
+- After successful login (email or Google), `navigate(from, { replace: true })` sends the user back to their original destination
+- Default redirect: `/`
+
+---
+
+## Known Limitations
+
+### Email Verification Not Implemented
+
+- New registrations are created with `status=PENDING_EMAIL_VERIFICATION`
+- No verification email is sent in the current implementation
+- Users cannot log in until their status is manually set to `ACTIVE` in the database
+- **Future User Story:** Email verification flow with token-based activation
+
+### Password Reset Not Implemented
+
+- The "Mot de passe oublié" link is displayed but does not route to a functional page
+- No forgot-password or reset-password endpoints exist
+- **Future User Story:** Password reset flow (forgot password → email → reset → confirm)
+
+### Rate Limiting
+
+- Development `.env` uses `RATE_LIMIT_MAX_REQUESTS=100` (relaxed for testing)
+- Production should use a lower value (e.g., 10 per 15 minutes)
+- Rate limit errors (`RATE_LIMIT_EXCEEDED`) are not mapped in `auth-error-messages.ts`
+
+### CORS
+
+- Hardcoded to `http://localhost:5173` (development only)
+- Production deployment requires updating the CORS origin
+
+### Google OAuth
+
+- `prompt=select_account` forces the Google account chooser on every login
+- Google Cloud Console must have `http://localhost:5173/auth/google/callback` in authorized redirect URIs
+- `GOOGLE_REDIRECT_URI` in backend `.env` must match the frontend redirect URI exactly
