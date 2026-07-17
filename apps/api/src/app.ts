@@ -4,12 +4,23 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './core/middleware/error-handler';
 import { notFoundHandler } from './core/middleware/not-found';
 import { authRoutes } from './modules/auth/auth.routes';
+import { env } from './config/env';
 
 const app = express();
 
+const allowedOrigins = env.CORS_ORIGINS.split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   }),
 );

@@ -20,6 +20,10 @@ const envSchema = z.object({
   COOKIE_SECURE: z.coerce.boolean().default(false),
   COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
   COOKIE_PATH: z.string().default('/auth'),
+  COOKIE_DOMAIN: z.string().optional(),
+
+  // CORS
+  CORS_ORIGINS: z.string().default('http://localhost:5173'),
 
   // Auth — Rate Limiting
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900000),

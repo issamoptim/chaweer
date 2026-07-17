@@ -68,7 +68,8 @@ export type AuthErrorCode =
   | "PROVIDER_MISMATCH"
   | "GOOGLE_ACCOUNT_ALREADY_LINKED"
   | "GOOGLE_ACCOUNT_NOT_VERIFIED"
-  | "INVALID_GOOGLE_IDENTITY";
+  | "INVALID_GOOGLE_IDENTITY"
+  | "RATE_LIMIT_EXCEEDED";
 
 export interface ApiErrorDetail {
   field: string;
