@@ -15,6 +15,13 @@ export async function createTestUser(overrides?: {
   role?: string;
   authProvider?: string;
   status?: string;
+  phone?: string;
+  country?: string;
+  city?: string;
+  nationality?: string;
+  preferredLanguage?: string;
+  notificationEmail?: boolean;
+  notificationPush?: boolean;
 }): Promise<{ id: string; email: string; password: string }> {
   const email = overrides?.email ?? `test-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
   const password = overrides?.password ?? 'TestPass123!';
@@ -29,6 +36,13 @@ export async function createTestUser(overrides?: {
       role: (overrides?.role as 'CLIENT' | 'PROFESSIONAL' | 'ADMIN') ?? 'CLIENT',
       authProvider: (overrides?.authProvider as 'LOCAL' | 'GOOGLE') ?? 'LOCAL',
       status: (overrides?.status as 'PENDING_EMAIL_VERIFICATION' | 'ACTIVE' | 'SUSPENDED' | 'DELETED') ?? 'ACTIVE',
+      phone: overrides?.phone,
+      country: overrides?.country,
+      city: overrides?.city,
+      nationality: overrides?.nationality,
+      preferredLanguage: overrides?.preferredLanguage,
+      notificationEmail: overrides?.notificationEmail,
+      notificationPush: overrides?.notificationPush,
     },
   });
 

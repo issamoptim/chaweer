@@ -39,6 +39,13 @@ model User {
   role         Role         @default(CLIENT)
   authProvider AuthProvider
   status       UserStatus   @default(PENDING_EMAIL_VERIFICATION)
+  phone        String?
+  country      String?
+  city         String?
+  nationality  String?
+  preferredLanguage String?
+  notificationEmail  Boolean @default(true)
+  notificationPush   Boolean @default(true)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 

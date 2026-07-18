@@ -7,7 +7,7 @@ interface RequestOptions {
 }
 
 async function request<T>(
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PATCH",
   path: string,
   body?: unknown,
   options?: RequestOptions,
@@ -67,5 +67,9 @@ export const apiClient = {
 
   post<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
     return request<T>("POST", path, body, options);
+  },
+
+  patch<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
+    return request<T>("PATCH", path, body, options);
   },
 };

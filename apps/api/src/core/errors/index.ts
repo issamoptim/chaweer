@@ -23,5 +23,6 @@ export class AppError extends Error {
 export class NotFoundError extends AppError {
   constructor(message = 'Resource not found') {
     super(message, 404, true, 'NOT_FOUND');
+    Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 }

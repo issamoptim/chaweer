@@ -6,7 +6,7 @@ import { Connexion } from "@/app/pages/Connexion";
 import { Inscription } from "@/app/pages/Inscription";
 import { EmailRegistration } from "@/app/pages/EmailRegistration";
 import { GoogleCallback } from "@/app/pages/GoogleCallback";
-import { MonCompte } from "@/app/pages/MonCompte";
+import { ProfilePage, EditProfilePage } from "@/features/identity";
 import { AuthGuard, GuestGuard } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -26,7 +26,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/mon-compte",
-            element: <MonCompte />,
+            element: <ProfilePage />,
+          },
+          {
+            path: "/mon-compte/modifier",
+            element: <EditProfilePage />,
           },
         ],
       },
