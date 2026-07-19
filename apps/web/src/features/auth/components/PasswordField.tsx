@@ -6,23 +6,33 @@ interface PasswordFieldProps {
   register: UseFormRegisterReturn;
   error?: string;
   disabled?: boolean;
+  id?: string;
+  label?: string;
+  autoComplete?: string;
 }
 
-export function PasswordField({ register, error, disabled }: PasswordFieldProps) {
+export function PasswordField({
+  register,
+  error,
+  disabled,
+  id = "password",
+  label = "Mot de passe",
+  autoComplete = "current-password",
+}: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
-  const errorId = "password-error";
+  const errorId = `${id}-error`;
   const hasError = Boolean(error);
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="password" className="text-sm font-medium text-foreground">
-        Mot de passe
+      <label htmlFor={id} className="text-sm font-medium text-foreground">
+        {label}
       </label>
       <div className="relative">
         <input
-          id="password"
+          id={id}
           type={visible ? "text" : "password"}
-          autoComplete="current-password"
+          autoComplete={autoComplete}
           disabled={disabled}
           aria-invalid={hasError}
           aria-describedby={hasError ? errorId : undefined}

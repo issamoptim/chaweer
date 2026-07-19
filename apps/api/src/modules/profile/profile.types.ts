@@ -18,3 +18,12 @@ export interface PreferencesInput {
   notificationEmail?: boolean;
   notificationPush?: boolean;
 }
+
+export interface UpdateProfileInput {
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  country?: string | null;
+  city?: string | null;
+  nationality?: string | null;
+}

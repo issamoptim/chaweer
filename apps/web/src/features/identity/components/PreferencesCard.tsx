@@ -42,12 +42,12 @@ export function PreferencesCard({ profile }: PreferencesCardProps) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
-      <h3 className="mb-4 text-base font-semibold text-foreground">Préférences</h3>
+    <div className="rounded-[16px] border border-[#E9E7E3] bg-card p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
+      <h3 className="mb-4 text-[17px] font-bold text-foreground">Préférences</h3>
 
       <div className="space-y-6">
         <div>
-          <p className="mb-3 text-sm font-medium text-muted-foreground">Langue de l'interface</p>
+          <p className="mb-3 text-[13px] font-medium text-[#9A968E]">Langue de l'interface</p>
           <div className="flex flex-wrap gap-2">
             {languageOptions.map((option) => (
               <button
@@ -56,10 +56,10 @@ export function PreferencesCard({ profile }: PreferencesCardProps) {
                 disabled={mutation.isPending}
                 onClick={() => handleLanguageChange(option.value)}
                 className={cn(
-                  "rounded-lg border px-4 py-2 text-sm font-medium transition-colors",
+                  "h-[42px] rounded-[10px] border px-4 text-[14px] font-medium transition-colors",
                   profile.preferredLanguage === option.value
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background text-foreground hover:bg-accent",
+                    ? "border-[#0F766E] bg-[#0F766E] text-white"
+                    : "border-[#E7E5E1] bg-white text-[#4B4A46] hover:bg-[#F7F7F5]",
                   mutation.isPending && "cursor-not-allowed opacity-50",
                 )}
               >
@@ -70,7 +70,7 @@ export function PreferencesCard({ profile }: PreferencesCardProps) {
         </div>
 
         <div className="space-y-3">
-          <p className="text-sm font-medium text-muted-foreground">Notifications</p>
+          <p className="text-[13px] font-medium text-[#9A968E]">Notifications</p>
 
           <NotificationToggle
             label="Notifications par e-mail"
@@ -109,11 +109,11 @@ interface NotificationToggleProps {
 
 function NotificationToggle({ label, checked, disabled, onChange, badge }: NotificationToggleProps) {
   return (
-    <div className="flex items-center justify-between py-1">
+    <div className="flex items-center justify-between border-b border-[#F0EEEA] py-[15px] last:border-b-0">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-foreground">{label}</span>
+        <span className={`text-[15px] font-medium ${disabled ? "text-[#9A968E]" : "text-foreground"}`}>{label}</span>
         {badge && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+          <span className="rounded-full bg-[#EEECE8] px-2 py-0.5 text-[12px] font-medium text-[#8A8681]">
             {badge}
           </span>
         )}
@@ -126,15 +126,16 @@ function NotificationToggle({ label, checked, disabled, onChange, badge }: Notif
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className={cn(
-          "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
-          checked ? "bg-primary" : "bg-muted",
-          disabled && "cursor-not-allowed opacity-50",
+          "relative inline-flex h-[28px] w-[46px] shrink-0 rounded-full border-2 border-transparent transition-colors",
+          checked ? "bg-[#0F766E]" : "bg-[#D8D5D0]",
+          disabled && !checked && "bg-[#EDEBE7]",
+          disabled && "cursor-not-allowed",
         )}
       >
         <span
           className={cn(
-            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition-transform",
-            checked ? "translate-x-5" : "translate-x-0",
+            "pointer-events-none inline-block h-[22px] w-[22px] transform rounded-full bg-white shadow ring-0 transition-transform",
+            checked ? "translate-x-[21px]" : "translate-x-[3px]",
           )}
         />
       </button>

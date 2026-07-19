@@ -33,4 +33,14 @@ export const authService = {
   googleAuthClient(input: GoogleAuthInput): Promise<LoginResult> {
     return apiClient.post<LoginResult>("/auth/google/client", input);
   },
+  changePassword(
+    input: { currentPassword: string; newPassword: string; confirmPassword: string },
+    token: string,
+  ): Promise<{ message: string }> {
+    return apiClient.patch<{ message: string }>("/auth/password", input, { token });
+  },
+
+  deleteAccount(token: string): Promise<void> {
+    return apiClient.delete<void>("/auth/account", { token });
+  },
 };

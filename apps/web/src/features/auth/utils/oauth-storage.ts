@@ -2,6 +2,7 @@ export interface OAuthState {
   codeVerifier: string;
   state: string;
   from: string;
+  reactivate?: boolean;
 }
 
 const STORAGE_KEY = "google_pkce";

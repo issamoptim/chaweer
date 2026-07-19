@@ -15,8 +15,12 @@ import {
   InvalidRefreshTokenError,
   TokenExpiredError,
   UnauthorizedError,
+  ForbiddenError,
+  ValidationError,
 } from '../../shared/errors/auth-errors';
-import type { AuthUser, LoginResult, RefreshResult, MeUser } from './auth.types';
+import { NotFoundError } from '../../core/errors';
+import { AuthProvider, UserStatus } from '../../generated/prisma/client';
+import type { AuthUser, LoginResult, RefreshResult, MeUser, ChangePasswordInput } from './auth.types';
 import type { RegisterInput, LoginInput } from './auth.schema';
 
 export function toAuthUser(user: {
@@ -59,9 +63,9 @@ export async function register(input: RegisterInput): Promise<void> {
       passwordHash,
       firstName: input.firstName,
       lastName: input.lastName,
-      authProvider: 'LOCAL',
+      authProvider: AuthProvider.LOCAL,
       role: 'CLIENT',
-      status: 'PENDING_EMAIL_VERIFICATION',
+      status: UserStatus.PENDING_EMAIL_VERIFICATION,
     },
   });
 }
@@ -80,7 +84,7 @@ export async function login(
   }
 
   // Step 3: Check authProvider == LOCAL (same error to avoid enumeration)
-  if (user.authProvider !== 'LOCAL') {
+  if (user.authProvider !== AuthProvider.LOCAL) {
     throw new InvalidCredentialsError();
   }
 
@@ -94,13 +98,18 @@ export async function login(
     throw new InvalidCredentialsError();
   }
 
-  // Step 5: Check status — PENDING_EMAIL_VERIFICATION
-  if (user.status === 'PENDING_EMAIL_VERIFICATION') {
+  // Step 5: Check status — DELETED
+  if (user.status === UserStatus.DELETED) {
+    throw new InvalidCredentialsError();
+  }
+
+  // Step 6: Check status — PENDING_EMAIL_VERIFICATION
+  if (user.status === UserStatus.PENDING_EMAIL_VERIFICATION) {
     throw new EmailNotVerifiedError();
   }
 
-  // Step 6: Check status — SUSPENDED
-  if (user.status === 'SUSPENDED') {
+  // Step 7: Check status — SUSPENDED
+  if (user.status === UserStatus.SUSPENDED) {
     throw new AccountSuspendedError();
   }
 
@@ -201,6 +210,7 @@ export async function getCurrentUser(userId: string): Promise<MeUser> {
       firstName: true,
       lastName: true,
       avatarUrl: true,
+      authProvider: true,
     },
   });
 
@@ -209,4 +219,75 @@ export async function getCurrentUser(userId: string): Promise<MeUser> {
   }
 
   return user;
+}
+
+export async function changePassword(
+  userId: string,
+  input: ChangePasswordInput,
+): Promise<void> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new UnauthorizedError('Authentification requise.');
+  }
+
+  if (user.authProvider !== AuthProvider.LOCAL) {
+    throw new ForbiddenError(
+      'Le changement de mot de passe n\'est pas disponible pour ce type de compte.',
+    );
+  }
+
+  if (!user.passwordHash) {
+    throw new ForbiddenError(
+      'Le changement de mot de passe n\'est pas disponible pour ce type de compte.',
+    );
+  }
+
+  const isCurrentPasswordValid = await verifyPassword(
+    user.passwordHash,
+    input.currentPassword,
+  );
+
+  if (!isCurrentPasswordValid) {
+    throw new InvalidCredentialsError('Le mot de passe actuel est incorrect.');
+  }
+
+  const isSamePassword = await verifyPassword(user.passwordHash, input.newPassword);
+  if (isSamePassword) {
+    throw new ValidationError(
+      'Le nouveau mot de passe doit être différent du mot de passe actuel.',
+      [{ field: 'newPassword', message: 'Le nouveau mot de passe doit être différent du mot de passe actuel.' }],
+    );
+  }
+
+  const newHash = await hashPassword(input.newPassword);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash: newHash },
+  });
+}
+
+export async function deleteAccount(userId: string): Promise<void> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true },
+  });
+
+  if (!user) {
+    throw new NotFoundError('Utilisateur non trouvé.');
+  }
+
+  await prisma.$transaction([
+    prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    }),
+    prisma.user.update({
+      where: { id: userId },
+      data: { status: UserStatus.DELETED },
+    }),
+  ]);
 }

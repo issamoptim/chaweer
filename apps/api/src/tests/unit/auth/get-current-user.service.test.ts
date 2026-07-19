@@ -24,6 +24,7 @@ describe('getCurrentUser', () => {
       firstName: 'John',
       lastName: 'Doe',
       avatarUrl: null,
+      authProvider: 'LOCAL',
     } as never);
 
     const result = await getCurrentUser('user-1');
@@ -35,6 +36,7 @@ describe('getCurrentUser', () => {
       firstName: 'John',
       lastName: 'Doe',
       avatarUrl: null,
+      authProvider: 'LOCAL',
     });
 
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
@@ -46,6 +48,7 @@ describe('getCurrentUser', () => {
         firstName: true,
         lastName: true,
         avatarUrl: true,
+        authProvider: true,
       },
     });
   });
@@ -89,7 +92,7 @@ describe('getCurrentUser', () => {
     expect(call.select.passwordHash).toBeUndefined();
   });
 
-  it('should not select authProvider', async () => {
+  it('should select authProvider', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue({
       id: 'user-1',
       role: 'CLIENT',
@@ -97,6 +100,7 @@ describe('getCurrentUser', () => {
       firstName: 'John',
       lastName: 'Doe',
       avatarUrl: null,
+      authProvider: 'LOCAL',
     } as never);
 
     await getCurrentUser('user-1');
@@ -104,7 +108,7 @@ describe('getCurrentUser', () => {
     const call = vi.mocked(prisma.user.findUnique).mock.calls[0][0] as {
       select: Record<string, boolean>;
     };
-    expect(call.select.authProvider).toBeUndefined();
+    expect(call.select.authProvider).toBe(true);
   });
 
   it('should not select status', async () => {

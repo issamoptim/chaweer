@@ -8,10 +8,11 @@ import {
   ErrorMessage,
   PrimaryButton,
   useGoogleLogin,
+  initiateGoogleLogin,
 } from "@/features/auth";
 import { getOAuthState, clearOAuthState } from "@/features/auth/utils/oauth-storage";
 
-type CallbackStatus = "processing" | "error";
+type CallbackStatus = "processing" | "error" | "deleted";
 
 const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   access_denied: "Vous avez refusé la connexion avec Google.",
@@ -34,10 +35,15 @@ export function GoogleCallback() {
       clearOAuthState();
       navigate(from, { replace: true });
     },
-    onError: (message) => {
+    onError: (message, error) => {
       clearOAuthState();
-      setErrorMessage(message);
-      setStatus("error");
+      if (error?.code === "ACCOUNT_DELETED") {
+        setErrorMessage(message);
+        setStatus("deleted");
+      } else {
+        setErrorMessage(message);
+        setStatus("error");
+      }
     },
   });
 
@@ -73,11 +79,15 @@ export function GoogleCallback() {
       return;
     }
 
-    googleLogin.mutate({ code, codeVerifier: stored.codeVerifier });
+    googleLogin.mutate({ code, codeVerifier: stored.codeVerifier, reactivate: stored.reactivate ?? false });
   }, [searchParams, googleLogin]);
 
   const handleBackToLogin = () => {
     navigate("/connexion", { replace: true, state: { googleError: errorMessage } });
+  };
+
+  const handleRecreate = () => {
+    void initiateGoogleLogin("/", true);
   };
 
   return (
@@ -90,6 +100,23 @@ export function GoogleCallback() {
               <p className="text-sm text-muted-foreground">
                 Connexion à Google en cours...
               </p>
+            </>
+          ) : status === "deleted" ? (
+            <>
+              <AuthHeader
+                title="Compte supprimé"
+                description={errorMessage}
+              />
+              <PrimaryButton type="button" onClick={handleRecreate} className="w-full">
+                Recréer mon compte
+              </PrimaryButton>
+              <button
+                type="button"
+                onClick={handleBackToLogin}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Retour à la connexion
+              </button>
             </>
           ) : (
             <>

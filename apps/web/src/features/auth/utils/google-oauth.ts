@@ -5,12 +5,12 @@ const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const SCOPES = "openid email profile";
 const REDIRECT_URI = `${window.location.origin}/auth/google/callback`;
 
-export async function initiateGoogleLogin(from: string = "/"): Promise<void> {
+export async function initiateGoogleLogin(from: string = "/", reactivate = false): Promise<void> {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = await generateCodeChallenge(codeVerifier);
   const state = generateState();
 
-  saveOAuthState({ codeVerifier, state, from });
+  saveOAuthState({ codeVerifier, state, from, reactivate });
 
   const params = new URLSearchParams({
     client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,

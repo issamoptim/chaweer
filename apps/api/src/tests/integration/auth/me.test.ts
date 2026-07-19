@@ -38,6 +38,7 @@ describe('GET /auth/me (integration)', () => {
       firstName: 'John',
       lastName: 'Doe',
       avatarUrl: null,
+      authProvider: 'LOCAL',
     });
   });
 
@@ -113,7 +114,40 @@ describe('GET /auth/me (integration)', () => {
     expect(response.body.data.passwordHash).toBeUndefined();
   });
 
-  it('should not expose authProvider or status in the response', async () => {
+  it('should return authProvider in the response', async () => {
+    const created = await createTestUser({
+      email: 'provider@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.authProvider).toBe('LOCAL');
+  });
+
+  it('should return authProvider GOOGLE for Google users', async () => {
+    const created = await createTestGoogleUser({
+      email: 'google-provider@gmail.com',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.authProvider).toBe('GOOGLE');
+  });
+
+  it('should not expose status in the response', async () => {
     const created = await createTestUser({
       email: 'nofields@example.com',
       password: 'SecurePass123!',
@@ -126,7 +160,6 @@ describe('GET /auth/me (integration)', () => {
       .get('/auth/me')
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.body.data.authProvider).toBeUndefined();
     expect(response.body.data.status).toBeUndefined();
     expect(response.body.data.createdAt).toBeUndefined();
     expect(response.body.data.updatedAt).toBeUndefined();

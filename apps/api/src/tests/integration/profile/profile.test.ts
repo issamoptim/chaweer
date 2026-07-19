@@ -317,3 +317,341 @@ describe('PATCH /profile/preferences (integration)', () => {
     expect(response.body.data.notificationPush).toBe(true);
   });
 });
+
+describe('PATCH /profile (integration)', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  it('should update all 6 editable fields including phone and return 200', async () => {
+    const created = await createTestUser({
+      email: 'edit@example.com',
+      password: 'SecurePass123!',
+      firstName: 'Old',
+      lastName: 'Name',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        phone: '+212600000000',
+        country: 'Maroc',
+        city: 'Casablanca',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.firstName).toBe('Ahmed');
+    expect(response.body.data.lastName).toBe('Benali');
+    expect(response.body.data.phone).toBe('+212600000000');
+    expect(response.body.data.country).toBe('Maroc');
+    expect(response.body.data.city).toBe('Casablanca');
+    expect(response.body.data.nationality).toBe('Marocaine');
+  });
+
+  it('should trim whitespace from firstName and lastName (RM-07)', async () => {
+    const created = await createTestUser({
+      email: 'trim@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: '  Ahmed  ',
+        lastName: '  Benali  ',
+        country: 'Maroc',
+        city: 'Casablanca',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.firstName).toBe('Ahmed');
+    expect(response.body.data.lastName).toBe('Benali');
+  });
+
+  it('should allow empty/null for all optional fields (RM: facultatif)', async () => {
+    const created = await createTestUser({
+      email: 'optional@example.com',
+      password: 'SecurePass123!',
+      firstName: 'Old',
+      lastName: 'Name',
+      phone: '+212600000000',
+      country: 'Maroc',
+      city: 'Casablanca',
+      nationality: 'Marocaine',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: null,
+        lastName: null,
+        phone: null,
+        country: null,
+        city: null,
+        nationality: null,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.firstName).toBe('');
+    expect(response.body.data.lastName).toBe('');
+    expect(response.body.data.phone).toBeNull();
+    expect(response.body.data.country).toBeNull();
+    expect(response.body.data.city).toBeNull();
+    expect(response.body.data.nationality).toBeNull();
+  });
+
+  it('should allow partial update with only firstName', async () => {
+    const created = await createTestUser({
+      email: 'partial@example.com',
+      password: 'SecurePass123!',
+      firstName: 'Old',
+      lastName: 'Name',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'New',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.firstName).toBe('New');
+    expect(response.body.data.lastName).toBe('Name');
+  });
+
+  it('should return 422 for invalid country', async () => {
+    const created = await createTestUser({
+      email: 'bad-country@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        country: 'Japan',
+        city: 'Tokyo',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(422);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('should return 422 for invalid nationality', async () => {
+    const created = await createTestUser({
+      email: 'bad-nat@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        country: 'Maroc',
+        city: 'Casablanca',
+        nationality: 'Japanese',
+      });
+
+    expect(response.status).toBe(422);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('should return 422 when city does not belong to country', async () => {
+    const created = await createTestUser({
+      email: 'bad-city@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        country: 'Maroc',
+        city: 'Paris',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(422);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('should return 401 without auth', async () => {
+    const response = await request(app)
+      .patch('/profile')
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        country: 'Maroc',
+        city: 'Casablanca',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('UNAUTHORIZED');
+  });
+
+  it('should not modify email, preferredLanguage, or notifications', async () => {
+    const created = await createTestUser({
+      email: 'readonly@example.com',
+      password: 'SecurePass123!',
+      firstName: 'Old',
+      lastName: 'Name',
+      status: 'ACTIVE',
+      preferredLanguage: 'ar',
+      notificationEmail: false,
+      notificationPush: false,
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        phone: '+212600000000',
+        country: 'Maroc',
+        city: 'Casablanca',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.email).toBe('readonly@example.com');
+    expect(response.body.data.preferredLanguage).toBe('ar');
+    expect(response.body.data.notificationEmail).toBe(false);
+    expect(response.body.data.notificationPush).toBe(false);
+  });
+
+  it('should not expose passwordHash, authProvider, or status', async () => {
+    const created = await createTestUser({
+      email: 'no-leak@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        phone: '+212600000000',
+        country: 'Maroc',
+        city: 'Casablanca',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.body.data.passwordHash).toBeUndefined();
+    expect(response.body.data.authProvider).toBeUndefined();
+    expect(response.body.data.status).toBeUndefined();
+    expect(response.body.data.avatarUrl).toBeUndefined();
+    expect(response.body.data.createdAt).toBeUndefined();
+    expect(response.body.data.updatedAt).toBeUndefined();
+  });
+
+  it('should persist changes — GET /profile returns updated data', async () => {
+    const created = await createTestUser({
+      email: 'persist@example.com',
+      password: 'SecurePass123!',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        phone: '+212600000000',
+        country: 'France',
+        city: 'Paris',
+        nationality: 'Française',
+      });
+
+    const getResponse = await request(app)
+      .get('/profile')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(getResponse.body.data.firstName).toBe('Ahmed');
+    expect(getResponse.body.data.lastName).toBe('Benali');
+    expect(getResponse.body.data.phone).toBe('+212600000000');
+    expect(getResponse.body.data.country).toBe('France');
+    expect(getResponse.body.data.city).toBe('Paris');
+    expect(getResponse.body.data.nationality).toBe('Française');
+  });
+
+  it('should work for Google-authenticated users', async () => {
+    const created = await createTestGoogleUser({
+      email: 'google-edit@gmail.com',
+      firstName: 'Google',
+      lastName: 'User',
+      role: 'CLIENT',
+      status: 'ACTIVE',
+    });
+
+    const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
+
+    const response = await request(app)
+      .patch('/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        firstName: 'Updated',
+        lastName: 'GoogleUser',
+        phone: '+212600000000',
+        country: 'Maroc',
+        city: 'Rabat',
+        nationality: 'Marocaine',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.firstName).toBe('Updated');
+    expect(response.body.data.lastName).toBe('GoogleUser');
+    expect(response.body.data.phone).toBe('+212600000000');
+  });
+});

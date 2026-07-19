@@ -6,8 +6,8 @@ import type { Role } from '../../../generated/prisma/client';
 export function googleAuthController(role: Role) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { code, codeVerifier } = req.body;
-      const { result, refreshToken } = await googleAuthenticate(code, codeVerifier, role);
+      const { code, codeVerifier, reactivate } = req.body;
+      const { result, refreshToken } = await googleAuthenticate(code, codeVerifier, role, reactivate);
       setRefreshTokenCookie(res, refreshToken);
       res.status(200).json({
         success: true,

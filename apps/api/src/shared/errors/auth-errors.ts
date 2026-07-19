@@ -159,3 +159,13 @@ export class InvalidGoogleIdentityError extends AppError {
     Object.setPrototypeOf(this, InvalidGoogleIdentityError.prototype);
   }
 }
+
+export class AccountDeletedError extends AppError {
+  public readonly errorCode: ErrorCode;
+
+  constructor(message = 'Ce compte a été supprimé. Souhaitez-vous le recréer ?') {
+    super(message, 403);
+    this.errorCode = ErrorCodes.ACCOUNT_DELETED;
+    Object.setPrototypeOf(this, AccountDeletedError.prototype);
+  }
+}

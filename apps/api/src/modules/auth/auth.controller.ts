@@ -96,3 +96,36 @@ export async function meController(
     next(err);
   }
 }
+
+export async function changePasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    await authService.changePassword(req.user!.userId, { currentPassword, newPassword });
+    res.status(200).json({
+      success: true,
+      data: {
+        message: 'Votre mot de passe a été modifié.',
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteAccountController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    await authService.deleteAccount(req.user!.userId);
+    clearRefreshTokenCookie(res);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}

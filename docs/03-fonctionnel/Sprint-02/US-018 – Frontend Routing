@@ -1,0 +1,307 @@
+---
+title: US-018 — Identity & Profile Frontend Routing
+id: US-018
+epic: EP-Identity
+priority: Critical
+status: Validé
+owner: Product Team
+module: Identity & Profile
+
+depends_on:
+  - US-017 Frontend Architecture
+
+next:
+  - US-019 Frontend Data Flow
+---
+
+# US-018 — Identity & Profile Frontend Routing
+
+## Sprint
+
+Sprint 02 — Identity & Profile
+
+---
+
+# 1. Objectif
+
+Cette User Story définit l'organisation du routage du domaine **Identity & Profile**.
+
+Elle décrit :
+
+- les routes du domaine ;
+- les règles d'accès ;
+- les parcours de navigation ;
+- l'organisation des pages.
+
+Elle ne décrit pas :
+
+- l'architecture Frontend (US-017) ;
+- la circulation des données (US-019) ;
+- la consommation des API (US-020).
+
+Le fonctionnement général de React Router est défini dans **US-002 – Initialisation Frontend**.
+
+---
+
+# 2. Prérequis
+
+Les éléments suivants sont déjà disponibles :
+
+- React Router
+- AuthProvider
+- AuthGuard
+- GuestGuard
+- MainLayout
+
+Cette User Story décrit uniquement les routes du domaine **Identity & Profile**.
+
+---
+
+# 3. Principes
+
+Le routage du domaine respecte les principes suivants.
+
+## Une route = une fonctionnalité
+
+Chaque route représente une fonctionnalité métier clairement identifiée.
+
+Une route ne représente jamais un simple composant.
+
+---
+
+## Navigation déclarative
+
+Toutes les routes sont déclarées de manière centralisée.
+
+La navigation est indépendante de la logique métier.
+
+---
+
+## Contrôle d'accès
+
+L'accès aux routes est contrôlé par les Guards de l'application.
+
+Les pages ne vérifient jamais elles-mêmes les droits d'accès.
+
+---
+
+## Indépendance
+
+Le domaine **Identity & Profile** possède son propre espace de navigation.
+
+Il ne dépend pas des routes des autres domaines.
+
+---
+
+# 4. Organisation des routes
+
+Les routes du domaine sont regroupées dans un module dédié.
+
+```text
+identity/
+
+├── profile
+├── professional
+└── onboarding
+```
+
+Cette organisation facilite :
+
+- la lisibilité ;
+- la maintenance ;
+- l'évolution du domaine.
+
+---
+
+# 5. Routes du domaine
+
+| Route | Description | Accès |
+|---------|-------------|--------|
+| /profile | Consultation du profil utilisateur | AuthGuard |
+| /profile/edit | Modification du profil | AuthGuard |
+| /professional | Consultation du profil professionnel | AuthGuard |
+| /professional/create | Création du profil professionnel | AuthGuard |
+| /professional/edit | Modification du profil professionnel | AuthGuard |
+
+Toutes les routes nécessitent un utilisateur authentifié.
+
+---
+
+# 6. Organisation des pages
+
+Chaque route référence une page du domaine.
+
+```text
+pages/
+
+├── ProfilePage
+├── EditProfilePage
+├── ProfessionalPage
+├── CreateProfessionalPage
+└── EditProfessionalPage
+```
+
+Une page représente un écran complet de l'application.
+
+Les composants réutilisables restent localisés dans le dossier `components/`.
+
+---
+# 7. Contrôle d'accès
+
+Toutes les routes du domaine sont protégées par le mécanisme d'authentification de l'application.
+
+Le contrôle d'accès est assuré par les Guards définis dans le module Auth.
+
+Le domaine **Identity & Profile** ne contient aucune logique d'authentification.
+
+Les autorisations métier restent validées par le Backend.
+
+---
+
+# 8. Parcours de navigation
+
+Le domaine propose deux parcours principaux.
+
+## Gestion du profil utilisateur
+
+```text
+Mon Compte
+      │
+      ▼
+Consultation du profil
+      │
+      ▼
+Modification du profil
+      │
+      ▼
+Enregistrement
+      │
+      ▼
+Retour au profil
+```
+
+---
+
+## Gestion du profil professionnel
+
+```text
+Mon Compte
+      │
+      ▼
+Créer un profil professionnel
+      │
+      ▼
+Compléter les informations
+      │
+      ▼
+Enregistrer
+      │
+      ▼
+Consulter le profil professionnel
+      │
+      ▼
+Modifier le profil
+```
+
+Chaque parcours représente une suite cohérente d'écrans permettant à l'utilisateur d'accomplir une tâche métier.
+
+---
+
+# 9. Navigation entre les pages
+
+Les transitions entre les pages sont déclenchées par les actions de l'utilisateur.
+
+Exemples :
+
+- consulter son profil ;
+- modifier ses informations personnelles ;
+- créer un profil professionnel ;
+- mettre à jour son profil professionnel.
+
+La navigation ne contient aucune logique métier.
+
+Les décisions fonctionnelles sont prises par les couches applicatives et le Backend.
+
+---
+
+# 10. Organisation des layouts
+
+Les pages du domaine utilisent les layouts définis par l'application.
+
+Lorsque plusieurs pages partagent une même structure visuelle, un layout spécifique au domaine peut être utilisé.
+
+Les layouts sont responsables :
+
+- de la structure générale de l'écran ;
+- de la disposition des composants ;
+- des zones communes de navigation.
+
+Ils ne contiennent ni logique métier ni logique de navigation.
+
+---
+
+# 11. Conventions de routage
+
+Les routes du domaine respectent les conventions suivantes.
+
+## Nommage
+
+- chemins en minuscules ;
+- segments explicites ;
+- noms cohérents avec le vocabulaire métier.
+
+---
+
+## Stabilité
+
+Une route publique ne doit pas être renommée sans raison fonctionnelle.
+
+Toute évolution doit préserver la compatibilité avec les liens internes de l'application.
+
+---
+
+## Responsabilité
+
+Une route correspond à une seule fonctionnalité.
+
+Une même page ne doit pas couvrir plusieurs cas d'usage indépendants.
+
+---
+
+## Découplage
+
+Les routes du domaine ne doivent pas dépendre directement des routes d'un autre domaine fonctionnel.
+
+La navigation entre domaines passe par les points d'entrée définis par l'application.
+
+---
+
+# 12. Évolutivité
+
+Toute nouvelle fonctionnalité du domaine devra être intégrée dans l'organisation de routage existante.
+
+L'ajout d'une route ne doit pas remettre en cause la structure générale du module.
+
+Les nouvelles routes respecteront les conventions définies dans cette User Story.
+
+---
+
+# 13. Résultat attendu
+
+À l'issue de cette User Story, l'organisation du routage du domaine **Identity & Profile** est définie.
+
+Le document constitue la référence pour :
+
+- les routes du domaine ;
+- les règles d'accès ;
+- les parcours utilisateur ;
+- les conventions de navigation ;
+- l'organisation des pages.
+
+Les aspects suivants sont documentés dans des User Stories dédiées :
+
+- **US-017 — Frontend Architecture** : structure du module ;
+- **US-019 — Frontend Data Flow** : circulation des données et gestion du cache ;
+- **US-020 — API Consumption** : intégration avec les services REST.
+
+---

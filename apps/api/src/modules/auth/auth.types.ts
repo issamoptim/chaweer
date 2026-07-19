@@ -25,4 +25,10 @@ export interface MeUser {
   firstName: string;
   lastName: string;
   avatarUrl: string | null;
+  authProvider: string;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
 }

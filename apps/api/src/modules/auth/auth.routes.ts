@@ -2,13 +2,15 @@ import { Router } from 'express';
 import { validate } from '../../core/middleware/validate';
 import { authenticate } from '../../core/middleware/authenticate';
 import { authIpLimiter, authEmailLimiter } from '../../core/middleware/rate-limiter';
-import { registerSchema, loginSchema } from './auth.schema';
+import { registerSchema, loginSchema, changePasswordSchema } from './auth.schema';
 import {
   registerController,
   loginController,
   refreshController,
   logoutController,
   meController,
+  changePasswordController,
+  deleteAccountController,
 } from './auth.controller';
 import { googleAuthSchema } from './google/google-auth.schema';
 import { googleAuthController } from './google/google-auth.controller';
@@ -50,5 +52,9 @@ router.post(
 );
 
 router.get('/me', authenticate, meController);
+
+router.patch('/password', authIpLimiter, authenticate, validate(changePasswordSchema), changePasswordController);
+
+router.delete('/account', authenticate, deleteAccountController);
 
 export { router as authRoutes };

@@ -7,6 +7,7 @@ import { Inscription } from "@/app/pages/Inscription";
 import { EmailRegistration } from "@/app/pages/EmailRegistration";
 import { GoogleCallback } from "@/app/pages/GoogleCallback";
 import { ProfilePage, EditProfilePage } from "@/features/identity";
+import { SecurityPage } from "@/features/security";
 import { AuthGuard, GuestGuard } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
           {
             path: "/mon-compte/modifier",
             element: <EditProfilePage />,
+          },
+          {
+            path: "/mon-compte/securite",
+            element: <SecurityPage />,
           },
         ],
       },

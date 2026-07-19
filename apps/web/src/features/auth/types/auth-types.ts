@@ -16,6 +16,7 @@ export interface MeUser {
   firstName: string;
   lastName: string;
   avatarUrl: string | null;
+  authProvider: string;
 }
 
 export interface LoginResult {
@@ -46,6 +47,7 @@ export interface RegisterInput {
 export interface GoogleAuthInput {
   code: string;
   codeVerifier: string;
+  reactivate?: boolean;
 }
 
 export type AuthStatus = "loading" | "authenticated" | "anonymous";
@@ -69,6 +71,7 @@ export type AuthErrorCode =
   | "GOOGLE_ACCOUNT_ALREADY_LINKED"
   | "GOOGLE_ACCOUNT_NOT_VERIFIED"
   | "INVALID_GOOGLE_IDENTITY"
+  | "ACCOUNT_DELETED"
   | "RATE_LIMIT_EXCEEDED";
 
 export interface ApiErrorDetail {

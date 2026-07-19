@@ -1,3 +1,3 @@
-# 03-fonctionnel
+# 06-sprints
 
-Ce dossier contient la documentation fonctionnelle : user stories, use cases, maquettes, parcours utilisateurs et spécifications fonctionnelles.
+Ce dossier organise le travail par itérations (sprints) et consigne les objectifs, le backlog et les livrables de chaque sprint.

@@ -6,6 +6,7 @@ import { toAuthUser } from '../auth.service';
 import { exchangeCodeForTokens, verifyGoogleIdToken } from './google-token.service';
 import {
   AccountSuspendedError,
+  AccountDeletedError,
   ProviderMismatchError,
   InvalidGoogleIdentityError,
 } from '../../../shared/errors/auth-errors';
@@ -22,11 +23,12 @@ export async function googleAuthenticate(
   code: string,
   codeVerifier: string,
   role: Role,
+  reactivate = false,
 ): Promise<GoogleAuthResult> {
   const tokens = await exchangeCodeForTokens(code, codeVerifier);
   const claims = await verifyGoogleIdToken(tokens.id_token);
 
-  const user = await findOrCreateUser(claims, role);
+  const user = await findOrCreateUser(claims, role, reactivate);
   const refreshToken = await createSession(user.id);
   const accessToken = await signAccessToken({ userId: user.id, role: user.role });
 
@@ -42,6 +44,7 @@ export async function googleAuthenticate(
 async function findOrCreateUser(
   claims: GoogleClaims,
   role: Role,
+  reactivate: boolean,
 ): Promise<AuthUser & { id: string; role: Role }> {
   const existingIdentity = await prisma.externalIdentity.findUnique({
     where: {
@@ -63,7 +66,14 @@ async function findOrCreateUser(
     }
 
     if (user.status === 'DELETED') {
-      throw new AccountSuspendedError();
+      if (reactivate) {
+        const reactivated = await prisma.user.update({
+          where: { id: user.id },
+          data: { status: 'ACTIVE' },
+        });
+        return reactivated;
+      }
+      throw new AccountDeletedError();
     }
 
     return user;

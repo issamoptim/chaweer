@@ -6,7 +6,7 @@ import type { ApiError, GoogleAuthInput } from "../types/auth-types";
 
 interface UseGoogleLoginOptions {
   onSuccess?: () => void;
-  onError?: (message: string) => void;
+  onError?: (message: string, error?: ApiError) => void;
 }
 
 export function useGoogleLogin(options?: UseGoogleLoginOptions) {
@@ -24,7 +24,7 @@ export function useGoogleLogin(options?: UseGoogleLoginOptions) {
     },
     onError: (error: ApiError) => {
       const message = getAuthErrorMessage(error.code);
-      options?.onError?.(message);
+      options?.onError?.(message, error);
     },
   });
 }

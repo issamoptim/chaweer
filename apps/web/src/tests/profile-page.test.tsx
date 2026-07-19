@@ -10,6 +10,14 @@ import { ProfilePage } from "@/features/identity/pages/ProfilePage";
 import * as identityService from "@/features/identity/services/identity-service";
 import type { ProfileData } from "@/features/identity/types/identity-types";
 
+const { mockNavigate } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+}));
+vi.mock("react-router-dom", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react-router-dom")>();
+  return { ...actual, useNavigate: () => mockNavigate };
+});
+
 const mockUser: MeUser = {
   id: "user-1",
   email: "john@example.com",
@@ -17,6 +25,7 @@ const mockUser: MeUser = {
   lastName: "Doe",
   role: "CLIENT",
   avatarUrl: null,
+  authProvider: "LOCAL",
 };
 
 const mockProfile: ProfileData = {
@@ -90,7 +99,7 @@ describe("ProfilePage", () => {
     expect(screen.getByText("Compte Grand Public")).toBeInTheDocument();
     expect(screen.getByText("Informations personnelles")).toBeInTheDocument();
     expect(screen.getByText("Préférences")).toBeInTheDocument();
-    expect(screen.getByText("Zone de danger")).toBeInTheDocument();
+    expect(screen.getByText("Sécurité du compte")).toBeInTheDocument();
   });
 
   it("shows loading skeleton while fetching", () => {
@@ -248,20 +257,14 @@ describe("ProfilePage", () => {
   });
 
   it('"Modifier mon profil" button navigates to /mon-compte/modifier', async () => {
-    const { mockNavigate } = vi.hoisted(() => ({
-      mockNavigate: vi.fn(),
-    }));
-    vi.mock("react-router-dom", async (importOriginal) => {
-      const actual = await importOriginal<typeof import("react-router-dom")>();
-      return { ...actual, useNavigate: () => mockNavigate };
-    });
+    mockNavigate.mockClear();
 
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
     });
 
-    const { unmount } = renderWithProviders(<ProfilePage />);
+    renderWithProviders(<ProfilePage />);
 
     await waitFor(() => {
       expect(screen.getByText("Modifier mon profil")).toBeInTheDocument();
@@ -270,12 +273,11 @@ describe("ProfilePage", () => {
     fireEvent.click(screen.getByText("Modifier mon profil"));
 
     expect(mockNavigate).toHaveBeenCalledWith("/mon-compte/modifier");
-    unmount();
-    vi.doUnmock("react-router-dom");
-    vi.restoreAllMocks();
   });
 
-  it("delete account button opens confirmation modal", async () => {
+  it('"Sécurité du compte" button navigates to /mon-compte/securite', async () => {
+    mockNavigate.mockClear();
+
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
@@ -284,40 +286,12 @@ describe("ProfilePage", () => {
     renderWithProviders(<ProfilePage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Supprimer mon compte")).toBeInTheDocument();
+      expect(screen.getByText("Sécurité du compte")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText("Supprimer mon compte"));
+    fireEvent.click(screen.getByText("Sécurité du compte"));
 
-    await waitFor(() => {
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-      expect(screen.getByText(/suppression logique/i)).toBeInTheDocument();
-    });
-  });
-
-  it("delete account modal can be closed with Annuler", async () => {
-    vi.spyOn(identityService, "identityService", "get").mockReturnValue({
-      getProfile: vi.fn().mockResolvedValue(mockProfile),
-      updatePreferences: vi.fn(),
-    });
-
-    renderWithProviders(<ProfilePage />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Supprimer mon compte")).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText("Supprimer mon compte"));
-
-    await waitFor(() => {
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText("Annuler"));
-
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
+    expect(mockNavigate).toHaveBeenCalledWith("/mon-compte/securite");
   });
 
   it("SMS toggle is disabled with 'Bientôt disponible' label", async () => {

@@ -19,6 +19,7 @@ const errorMessages: Record<AuthErrorCode, string> = {
   GOOGLE_ACCOUNT_ALREADY_LINKED: "Ce compte Google est déjà associé à un autre utilisateur.",
   GOOGLE_ACCOUNT_NOT_VERIFIED: "Votre compte Google n'est pas vérifié.",
   INVALID_GOOGLE_IDENTITY: "L'identité Google est invalide. Veuillez réessayer.",
+  ACCOUNT_DELETED: "Ce compte a été supprimé. Souhaitez-vous le recréer ?",
   RATE_LIMIT_EXCEEDED: "Trop de tentatives. Veuillez réessayer dans quelques minutes.",
 };
 

@@ -1,6 +1,6 @@
 import { prisma } from '../../core/database/prisma';
 import { NotFoundError } from '../../core/errors';
-import type { ProfileData, PreferencesInput } from './profile.types';
+import type { ProfileData, PreferencesInput, UpdateProfileInput } from './profile.types';
 
 const profileSelect = {
   id: true,
@@ -44,6 +44,54 @@ export async function updatePreferences(
   }
   if (input.notificationPush !== undefined) {
     data.notificationPush = input.notificationPush;
+  }
+
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data,
+      select: profileSelect,
+    });
+
+    return user;
+  } catch (err) {
+    if (
+      err instanceof Error &&
+      'code' in err &&
+      (err as { code: string }).code === 'P2025'
+    ) {
+      throw new NotFoundError('Profil introuvable.');
+    }
+    throw err;
+  }
+}
+
+export async function updateProfile(
+  userId: string,
+  input: UpdateProfileInput,
+): Promise<ProfileData> {
+  const data: Record<string, string | null> = {};
+
+  // TODO(temporary): firstName and lastName are non-nullable in the current Prisma schema.
+  // Convert null to "" to allow clearing these fields at the business level.
+  // Remove this conversion once a migration makes these columns nullable.
+  if (input.firstName !== undefined) {
+    data.firstName = input.firstName ?? '';
+  }
+  if (input.lastName !== undefined) {
+    data.lastName = input.lastName ?? '';
+  }
+  if (input.phone !== undefined) {
+    data.phone = input.phone;
+  }
+  if (input.country !== undefined) {
+    data.country = input.country;
+  }
+  if (input.city !== undefined) {
+    data.city = input.city;
+  }
+  if (input.nationality !== undefined) {
+    data.nationality = input.nationality;
   }
 
   try {
