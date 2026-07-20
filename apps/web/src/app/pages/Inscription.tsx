@@ -35,7 +35,7 @@ export function Inscription() {
           <ProfessionalEntry
             text="Vous êtes avocat ?"
             linkText="Rejoindre Chaweer en tant qu'avocat"
-            to="/"
+            to="/pro/inscription"
           />
         </div>
       </AuthCard>

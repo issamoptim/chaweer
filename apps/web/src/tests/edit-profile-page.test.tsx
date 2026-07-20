@@ -17,6 +17,7 @@ const mockUser: MeUser = {
   lastName: "Benali",
   role: "CLIENT",
   avatarUrl: null,
+  authProvider: "LOCAL",
 };
 
 const mockProfile: ProfileData = {

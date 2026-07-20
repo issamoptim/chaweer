@@ -6,12 +6,21 @@ import type {
   MeUser,
   RefreshResult,
   RegisterInput,
+  RegisterProfessionalInput,
   RegisterResult,
 } from "@/features/auth/types/auth-types";
 
 export const authService = {
   register(input: RegisterInput): Promise<RegisterResult> {
     return apiClient.post<RegisterResult>("/auth/register", input);
+  },
+
+  registerProfessional(input: RegisterProfessionalInput): Promise<LoginResult> {
+    return apiClient.post<LoginResult>("/auth/register/professional", input);
+  },
+
+  googleAuthProfessional(input: GoogleAuthInput): Promise<LoginResult> {
+    return apiClient.post<LoginResult>("/auth/google/professional", input);
   },
 
   login(input: LoginInput): Promise<LoginResult> {

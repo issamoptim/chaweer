@@ -3,6 +3,7 @@ export interface OAuthState {
   state: string;
   from: string;
   reactivate?: boolean;
+  professional?: boolean;
 }
 
 const STORAGE_KEY = "google_pkce";

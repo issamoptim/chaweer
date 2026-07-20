@@ -88,6 +88,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -106,6 +107,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockImplementation(() => new Promise(() => {})),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -117,6 +119,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockRejectedValue(new Error("Network error")),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -131,6 +134,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -144,6 +148,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -163,6 +168,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences,
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -189,6 +195,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences,
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -215,6 +222,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences,
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -241,6 +249,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences,
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -262,6 +271,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -281,6 +291,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -298,6 +309,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -315,6 +327,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);
@@ -328,6 +341,7 @@ describe("ProfilePage", () => {
     vi.spyOn(identityService, "identityService", "get").mockReturnValue({
       getProfile: vi.fn().mockResolvedValue(mockProfile),
       updatePreferences: vi.fn(),
+      updateProfile: vi.fn(),
     });
 
     renderWithProviders(<ProfilePage />);

@@ -79,7 +79,12 @@ export function GoogleCallback() {
       return;
     }
 
-    googleLogin.mutate({ code, codeVerifier: stored.codeVerifier, reactivate: stored.reactivate ?? false });
+    googleLogin.mutate({
+      code,
+      codeVerifier: stored.codeVerifier,
+      reactivate: stored.reactivate ?? false,
+      professional: stored.professional ?? false,
+    });
   }, [searchParams, googleLogin]);
 
   const handleBackToLogin = () => {

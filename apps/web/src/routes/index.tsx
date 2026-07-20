@@ -9,6 +9,14 @@ import { GoogleCallback } from "@/app/pages/GoogleCallback";
 import { ProfilePage, EditProfilePage } from "@/features/identity";
 import { SecurityPage } from "@/features/security";
 import { AuthGuard, GuestGuard } from "@/features/auth";
+import {
+  ProfessionalGuard,
+  ProfessionalLayout,
+  ProfessionalRegistrationPage,
+  ProfessionalProfilePage,
+  ProfessionalExpertisePage,
+  ProfessionalOfferPage,
+} from "@/features/professional";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +67,32 @@ export const router = createBrowserRouter([
       {
         path: "*",
         element: <NotFound />,
+      },
+    ],
+  },
+  {
+    path: "/pro/inscription",
+    element: <ProfessionalRegistrationPage />,
+  },
+  {
+    element: <ProfessionalGuard />,
+    children: [
+      {
+        element: <ProfessionalLayout />,
+        children: [
+          {
+            path: "/pro/profil",
+            element: <ProfessionalProfilePage />,
+          },
+          {
+            path: "/pro/expertise",
+            element: <ProfessionalExpertisePage />,
+          },
+          {
+            path: "/pro/offre",
+            element: <ProfessionalOfferPage />,
+          },
+        ],
       },
     ],
   },

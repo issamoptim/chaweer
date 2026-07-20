@@ -44,6 +44,11 @@ export interface RegisterInput {
   lastName: string;
 }
 
+export interface RegisterProfessionalInput {
+  email: string;
+  password: string;
+}
+
 export interface GoogleAuthInput {
   code: string;
   codeVerifier: string;

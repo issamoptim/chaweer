@@ -13,8 +13,11 @@ export function useGoogleLogin(options?: UseGoogleLoginOptions) {
   const { login } = useAuth();
 
   return useMutation({
-    mutationFn: async (input: GoogleAuthInput) => {
-      const result = await authService.googleAuthClient(input);
+    mutationFn: async (input: GoogleAuthInput & { professional?: boolean }) => {
+      const { professional, ...authInput } = input;
+      const result = professional
+        ? await authService.googleAuthProfessional(authInput)
+        : await authService.googleAuthClient(authInput);
       const me = await authService.getMe(result.accessToken);
       return { result, me };
     },
