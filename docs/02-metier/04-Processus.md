@@ -1,572 +1,883 @@
 # Chaweer — Processus Métier
 
-> Version : 1.0
+> Version : 2.0
 >
-> Statut : Validé
+> Statut : En cours de rédaction
 >
 > Auteur : Issam Majdoubi
 >
 > Relecture : CTO
 >
-> Dernière mise à jour : 15 juillet 2026
+> Dernière mise à jour : XX/XX/2026
 
 ---
 
 # 1. Objectif
 
-Le présent document décrit les principaux processus métier de Chaweer.
+Le présent document décrit les processus métier de Chaweer.
 
-Un processus métier représente une suite cohérente d'activités permettant à un acteur d'atteindre un objectif précis tout en créant de la valeur pour l'écosystème.
+Un processus métier représente un enchaînement d'activités permettant à un ou plusieurs acteurs d'atteindre un objectif métier précis tout en créant de la valeur pour l'ensemble de l'écosystème de la plateforme.
 
-Il constitue la référence de l'organisation fonctionnelle de la plateforme.
+Ce document constitue la référence fonctionnelle décrivant le fonctionnement métier de Chaweer indépendamment de toute considération technique.
 
-Les règles de gestion détaillées sont décrites dans **05-Regles-de-Gestion.md**.
+Il précise notamment :
 
----
+- les principaux processus métier de la plateforme ;
+- les acteurs impliqués dans chaque processus ;
+- les objectifs poursuivis ;
+- les déclencheurs ;
+- les résultats attendus ;
+- les interactions entre les objets métier.
 
-# 2. Principes
-
-Les processus métier de Chaweer reposent sur plusieurs principes.
-
-- chaque processus poursuit un objectif métier clairement identifié ;
-- chaque acteur intervient selon un rôle défini ;
-- les processus privilégient la simplicité et la transparence ;
-- les processus sont indépendants de l'implémentation technique ;
-- les processus évoluent progressivement au rythme des versions du produit.
+Les règles détaillées régissant chacun de ces processus sont décrites dans le document **05-Regles-de-Gestion.md**.
 
 ---
 
-# 3. Cartographie des processus métier
+# 2. Portée
 
-Les processus de Chaweer sont organisés en quatre grandes familles.
+Le présent document couvre exclusivement les processus métier de la Version 1 de Chaweer.
 
-## Processus de gestion des professionnels
+La Version 1 est volontairement centrée sur une offre de services limitée afin de proposer une première expérience utilisateur simple, cohérente et maîtrisée.
 
-Ils couvrent l'ensemble du cycle de vie du professionnel au sein de la plateforme.
+Le périmètre comprend notamment :
+
+- la création et la gestion des comptes utilisateurs ;
+- le parcours « Devenir Professionnel » ;
+- la gestion du profil professionnel ;
+- la publication d'une offre de consultation ;
+- la gestion des disponibilités ;
+- la réservation d'une consultation juridique ;
+- la réalisation d'une consultation vidéo ;
+- le paiement ;
+- la publication d'un avis.
+
+Les prestations reposant sur une logique de mission, telles que l'analyse de contrat, la rédaction d'actes, la rédaction de contrats, la vérification de documents ou la représentation juridique, ne font pas partie du périmètre de la Version 1.
+
+Ces prestations feront l'objet de processus métier spécifiques dans une version ultérieure.
+
+---
+
+# 3. Principes
+
+Les processus métier de Chaweer reposent sur les principes suivants.
+
+## 3.1 Simplicité
+
+Chaque processus doit être le plus simple possible pour l'utilisateur.
+
+Le nombre d'étapes nécessaires à la réalisation d'une action est volontairement limité afin de proposer une expérience fluide.
+
+---
+
+## 3.2 Responsabilité des acteurs
+
+Chaque activité est réalisée par un acteur clairement identifié.
+
+Les responsabilités de chacun sont définies sans ambiguïté afin d'éviter tout chevauchement entre les rôles des utilisateurs, des professionnels et de la plateforme.
+
+---
+
+## 3.3 Indépendance de la solution technique
+
+Les processus décrits dans ce document sont indépendants de leur implémentation informatique.
+
+Ils décrivent le fonctionnement métier attendu sans présumer des choix techniques retenus pour leur réalisation.
+
+---
+
+## 3.4 Évolutivité
+
+Les processus sont conçus pour évoluer progressivement au rythme des futures versions de Chaweer.
+
+Les nouveaux services juridiques, les nouvelles professions ainsi que les nouvelles fonctionnalités devront pouvoir être intégrés sans remettre en cause les principes fondamentaux décrits dans ce document.
+
+---
+
+## 3.5 Traçabilité
+
+Toute action ayant un impact métier doit pouvoir être tracée.
+
+Les principales étapes d'un processus donnent lieu à la création ou à la mise à jour d'objets métier permettant de conserver un historique fiable des opérations réalisées.
+
+---
+
+# 4. Cartographie des processus métier
+
+Les processus métier de Chaweer sont organisés en quatre grandes familles.
+
+```mermaid
+flowchart TB
+
+A[Gestion des Utilisateurs]
+
+B[Gestion des Professionnels]
+
+C[Réalisation des Consultations]
+
+D[Processus Support]
+
+A --> B
+B --> C
+C --> D
+```
+
+## 4.1 Gestion des Utilisateurs
+
+Cette famille regroupe les processus permettant à une personne de créer un compte, d'accéder à la plateforme et de gérer son profil.
+
+Elle comprend notamment :
+
+- l'inscription ;
+- l'authentification ;
+- la gestion du profil utilisateur.
+
+---
+
+## 4.2 Gestion des Professionnels
+
+Cette famille couvre l'ensemble du cycle de vie du professionnel sur la plateforme.
+
+Elle comprend notamment :
+
+- le parcours « Devenir Professionnel » ;
+- la publication du profil professionnel ;
+- la gestion de l'offre de consultation ;
+- la gestion de l'agenda ;
+- la gestion des réservations ;
+- la réalisation des consultations.
+
+---
+
+## 4.3 Réalisation des Consultations
+
+Cette famille décrit le principal processus métier de la Version 1.
+
+Elle couvre l'ensemble du parcours permettant à un utilisateur de réserver puis de réaliser une consultation juridique avec un professionnel.
+
+Ce processus constitue le cœur fonctionnel de Chaweer.
+
+---
+
+## 4.4 Processus Support
+
+Les processus support interviennent de manière transverse afin d'accompagner les processus métier principaux.
 
 Ils comprennent notamment :
 
-- inscription ;
-- validation du compte ;
-- gestion du profil ;
-- gestion des offres ;
-- gestion des disponibilités ;
-- gestion des rendez-vous.
+- le paiement ;
+- les notifications ;
+- la réputation ;
+- l'administration de la plateforme.
+
+Ils ne créent pas directement de valeur métier mais garantissent le bon fonctionnement de l'ensemble de l'écosystème.
+
+# 5. Processus de gestion des utilisateurs
+
+Les processus de gestion des utilisateurs couvrent l'ensemble du cycle de vie d'un utilisateur sur la plateforme, depuis la création de son compte jusqu'à la gestion de ses informations personnelles.
+
+Ils constituent le point d'entrée de tous les parcours métier de Chaweer.
 
 ---
 
-## Processus de gestion des demandeurs
-
-Ils couvrent le parcours permettant à un particulier ou une entreprise d'accéder aux services proposés sur Chaweer.
-
-Ils comprennent notamment :
-
-- inscription ;
-- gestion du profil ;
-- recherche ;
-- consultation des offres ;
-- réservation.
-
----
-
-## Processus de réalisation des prestations
-
-Ils décrivent la manière dont une prestation est réalisée.
-
-Version 1 :
-
-- consultation vidéo.
-
-Versions futures :
-
-- demandes de prestation ;
-- propositions commerciales ;
-- missions ;
-- livraisons.
-
----
-
-## Processus support
-
-Ces processus interviennent de manière transverse dans toute la plateforme.
-
-Ils comprennent notamment :
-
-- paiements ;
-- notifications ;
-- réputation ;
-- administration.
-
----
-# 4. Processus de gestion des professionnels
-
-Les processus de gestion des professionnels couvrent l'ensemble du cycle de vie d'un professionnel sur Chaweer, depuis son inscription jusqu'à la gestion quotidienne de son activité.
-
----
-
-## 4.1 Inscription du professionnel
+## 5.1 Inscription
 
 ### Objectif
 
-Permettre à un professionnel de créer un compte afin de proposer ses services sur Chaweer.
+Permettre à une personne de créer un compte Chaweer afin d'accéder aux services proposés par la plateforme.
 
 ### Déclencheur
 
-Le professionnel souhaite rejoindre la plateforme.
+Le visiteur souhaite utiliser les services de Chaweer.
 
 ### Acteurs concernés
 
-- Professionnel
+- Visiteur
 - Plateforme
 
+### Préconditions
+
+Aucune.
+
 ### Déroulement
 
-Le professionnel :
+Le visiteur :
 
-- crée son compte ;
-- valide son adresse électronique ;
-- complète son profil initial.
+- renseigne les informations demandées ;
+- accepte les conditions générales d'utilisation ;
+- valide son adresse électronique/compte google ou son numéro de téléphone selon le mode d'inscription retenu.
+
+À l'issue de cette étape, un compte Utilisateur est créé.
+
+Le nouvel utilisateur peut :
+
+- utiliser la plateforme comme client ;
+- ou démarrer immédiatement le parcours **Devenir Professionnel**.
 
 ### Résultat
 
-Un compte professionnel est créé.
-
-Le professionnel peut poursuivre son processus d'onboarding.
+Le compte Utilisateur est créé et actif.
 
 ---
 
-## 4.2 Validation du compte professionnel
+## 5.2 Authentification
 
 ### Objectif
 
-Vérifier l'identité et les informations professionnelles avant toute publication d'offres.
+Permettre à un utilisateur d'accéder à son espace personnel de manière sécurisée.
 
 ### Déclencheur
 
-Le profil professionnel est complété.
+L'utilisateur souhaite accéder à son compte.
 
 ### Acteurs concernés
 
-- Professionnel
+- Utilisateur
 - Plateforme
 
+### Préconditions
+
+Le compte existe.
+
 ### Déroulement
 
-Le professionnel transmet les informations et justificatifs demandés.
+L'utilisateur :
 
-La plateforme procède aux vérifications nécessaires.
+- saisit ses identifiants ;
+- est authentifié par la plateforme.
 
-Après validation, le compte est activé.
+Après authentification, Chaweer adapte automatiquement les fonctionnalités disponibles selon le profil de l'utilisateur.
 
 ### Résultat
 
-Le professionnel est autorisé à publier des offres.
+L'utilisateur accède à son espace personnel.
 
 ---
 
-## 4.3 Gestion du profil
+## 5.3 Gestion du profil utilisateur
 
 ### Objectif
 
-Permettre au professionnel de maintenir ses informations à jour.
+Permettre à l'utilisateur de maintenir ses informations personnelles à jour.
 
 ### Déclencheur
 
-Le professionnel souhaite modifier son profil.
+L'utilisateur souhaite modifier son profil.
 
 ### Acteurs concernés
 
-- Professionnel
+- Utilisateur
+
+### Préconditions
+
+L'utilisateur est authentifié.
 
 ### Déroulement
 
-Le professionnel peut notamment mettre à jour :
-
-- ses informations personnelles ;
-- sa photo ;
-- sa biographie ;
-- ses domaines d'activité ;
-- ses coordonnées professionnelles.
-
-### Résultat
-
-Le profil reflète les informations les plus récentes.
-
----
-
-## 4.4 Gestion des offres
-
-### Objectif
-
-Permettre au professionnel de proposer ses services.
-
-### Déclencheur
-
-Le professionnel souhaite publier ou modifier une offre.
-
-### Acteurs concernés
-
-- Professionnel
-
-### Déroulement
-
-Le professionnel :
-
-- active une prestation du catalogue officiel ;
-- configure son offre ;
-- la publie ;
-- peut ensuite la modifier, la désactiver ou l'archiver.
-
-### Résultat
-
-L'offre devient disponible selon son état.
-
----
-
-## 4.5 Gestion des disponibilités
-
-### Objectif
-
-Permettre au professionnel de gérer son agenda.
-
-### Déclencheur
-
-Le professionnel souhaite ouvrir ou modifier ses disponibilités.
-
-### Acteurs concernés
-
-- Professionnel
-
-### Déroulement
-
-Le professionnel :
-
-- définit ses horaires ;
-- ouvre des créneaux ;
-- bloque certains créneaux ;
-- met à jour son agenda.
-
-### Résultat
-
-Les créneaux disponibles peuvent être proposés aux demandeurs.
-
----
-
-## 4.6 Gestion des rendez-vous
-
-### Objectif
-
-Permettre au professionnel de gérer les consultations réservées.
-
-### Déclencheur
-
-Une demande de réservation est reçue.
-
-### Acteurs concernés
-
-- Professionnel
-- Demandeur
-
-### Déroulement
-
-Le professionnel peut :
-
-- consulter les demandes ;
-- confirmer un rendez-vous ;
-- refuser un rendez-vous ;
-- consulter son planning ;
-- démarrer une consultation ;
-- clôturer une consultation ;
-- rédiger un compte rendu facultatif.
-
-### Résultat
-
-Le rendez-vous suit son cycle de vie jusqu'à sa clôture.
-
----
-
-# 5. Processus de gestion des demandeurs
-
-Les processus de gestion des demandeurs couvrent l'ensemble du parcours d'un particulier ou d'une entreprise souhaitant accéder aux services proposés sur Chaweer.
-
----
-
-## 5.1 Inscription du demandeur
-
-### Objectif
-
-Permettre à un utilisateur de créer un compte Chaweer.
-
-### Déclencheur
-
-Le demandeur souhaite utiliser la plateforme.
-
-### Acteurs concernés
-
-- Demandeur
-- Plateforme
-
-### Déroulement
-
-Le demandeur :
-
-- crée son compte ;
-- valide son adresse électronique ;
-- complète son profil.
-
-### Résultat
-
-Le compte est créé.
-
----
-
-## 5.2 Gestion du profil
-
-### Objectif
-
-Permettre au demandeur de maintenir ses informations personnelles.
-
-### Déclencheur
-
-Le demandeur souhaite modifier son profil.
-
-### Acteurs concernés
-
-- Demandeur
-
-### Déroulement
-
-Le demandeur peut notamment :
+L'utilisateur peut notamment :
 
 - modifier ses informations personnelles ;
-- consulter son historique ;
-- gérer ses informations de contact.
+- modifier ses coordonnées ;
+- modifier sa photo de profil ;
+- consulter l'historique de ses consultations ;
+- gérer les paramètres de son compte.
+
+Les modifications sont immédiatement prises en compte.
 
 ### Résultat
 
-Le profil est mis à jour.
+Le profil utilisateur est mis à jour.
 
 ---
 
-## 5.3 Recherche
+# 6. Processus de gestion des professionnels
+
+Les processus de gestion des professionnels couvrent l'ensemble du cycle de vie d'un professionnel sur Chaweer.
+
+Ils permettent à un utilisateur de proposer des consultations juridiques via la plateforme.
+
+---
+
+## 6.1 Parcours « Devenir Professionnel »
 
 ### Objectif
 
-Permettre au demandeur d'identifier le professionnel répondant le mieux à son besoin.
+Permettre à une personne de créer ou d'activer un compte professionnel afin de proposer des consultations juridiques sur Chaweer.
 
 ### Déclencheur
 
-Le demandeur recherche une assistance juridique.
+Le parcours peut être initié dans deux situations :
+
+- un visiteur choisit l'option « Vous êtes avocat ? Créer un compte professionnel » lors de son inscription ;
+- un utilisateur déjà inscrit souhaite devenir professionnel.
 
 ### Acteurs concernés
 
-- Demandeur
+- Visiteur
+- Utilisateur
+- Plateforme
+
+### Préconditions
+
+Aucune.
+
+Si la personne possède déjà un compte Chaweer, celui-ci est réutilisé.
 
 ### Déroulement
 
-Le demandeur peut :
+Le candidat professionnel :
 
-- rechercher un professionnel ;
-- rechercher une prestation ;
-- filtrer les résultats ;
-- consulter les fiches professionnelles ;
-- comparer plusieurs professionnels.
+- choisit le parcours « Devenir Professionnel » ;
+- renseigne les informations professionnelles demandées ;
+- complète son profil ;
+- accepte les conditions applicables aux professionnels.
+
+Si le candidat ne possède pas encore de compte Chaweer, un compte Utilisateur est créé automatiquement au cours du processus.
+
+À l'issue du parcours, le compte dispose des fonctionnalités professionnelles.
 
 ### Résultat
 
-Le demandeur sélectionne le professionnel de son choix.
+Le professionnel peut configurer son offre de consultation, son agenda et publier son profil dans l'annuaire dès que les informations minimales requises sont renseignées.
 
-# 6. Processus de réalisation — Réservation d'une consultation vidéo
+### Objectif
 
-La réservation d'une consultation vidéo constitue le principal processus métier de la première version de Chaweer.
+Permettre à un utilisateur/visiteur  d'activer un profil professionnel.
 
-Il permet à un demandeur de réserver une consultation auprès d'un professionnel dans un cadre simple, transparent et sécurisé.
+### Déclencheur
+
+Le visiteur choisit le parcours « Devenir Professionnel » lors de son inscription ou un utilisateur existant souhaite proposer ses services sur Chaweer.
+
+### Acteurs concernés
+
+- Utilisateur
+- Plateforme
+
+### Préconditions
+
+L'utilisateur possède un compte Chaweer.
+
+### Déroulement
+
+L'utilisateur :
+
+- choisit la profession « Avocat » ;
+- renseigne les informations professionnelles demandées ;
+- complète son profil ;
+- configure les informations minimales obligatoires.
+
+À l'issue du parcours, le compte utilisateur devient également un compte professionnel.
+
+En Version 1, aucune validation manuelle par Chaweer n'est requise.
+
+### Résultat
+
+Le professionnel peut publier son profil et commencer à configurer son activité.
 
 ---
 
-## 6.1 Objectif
+## 6.2 Publication du profil professionnel
 
-Permettre à un demandeur de réserver une consultation vidéo avec un professionnel selon un créneau confirmé, un paiement sécurisé et un déroulement entièrement dématérialisé.
+### Objectif
 
----
+Permettre au professionnel de rendre son profil visible dans l'annuaire.
 
-## 6.2 Déclencheur
+### Déclencheur
 
-Le demandeur souhaite réserver une consultation vidéo proposée par un professionnel.
+Le professionnel complète les informations obligatoires de son profil.
 
----
+### Acteurs concernés
 
-## 6.3 Acteurs concernés
-
-- Demandeur
 - Professionnel
 - Plateforme
 
----
+### Préconditions
 
-## 6.4 Déroulement
+Le parcours « Devenir Professionnel » est terminé.
 
-### Étape 1 — Sélection du professionnel
+### Déroulement
 
-Le demandeur peut accéder à une consultation selon deux parcours.
+Le professionnel complète les informations requises.
 
-#### Recherche d'un professionnel
+Lorsque les informations minimales sont présentes, la plateforme publie automatiquement le profil.
 
-Le demandeur recherche un professionnel.
+Le profil devient immédiatement visible dans l'annuaire.
 
-Après consultation de sa fiche, il sélectionne l'offre de consultation vidéo proposée.
+Aucune validation préalable n'est réalisée par Chaweer en Version 1.
 
----
+### Résultat
 
-#### Recherche d'une consultation vidéo
-
-Le demandeur recherche directement des consultations vidéo.
-
-Chaweer présente les professionnels proposant cette prestation.
-
-Le demandeur choisit ensuite le professionnel souhaité.
-
-Les deux parcours convergent vers le même processus de réservation.
+Le professionnel est visible dans les résultats de recherche.
 
 ---
 
-### Étape 2 — Choix du créneau
+## 6.3 Gestion de l'offre de consultation
 
-Le demandeur consulte les disponibilités du professionnel.
+### Objectif
 
-Il sélectionne un créneau libre.
+Permettre au professionnel de proposer sa consultation juridique.
 
-Cette action crée une demande de réservation.
+### Déclencheur
 
-Le rendez-vous n'est pas encore confirmé.
+Le professionnel souhaite configurer son offre.
+
+### Acteurs concernés
+
+- Professionnel
+
+### Préconditions
+
+Le profil professionnel est publié.
+
+### Déroulement
+
+Le professionnel configure son unique offre de consultation.
+
+Il définit notamment :
+
+- le prix ;
+- la durée ;
+- les modalités de réalisation.
+
+Le professionnel peut modifier cette offre à tout moment.
+
+En Version 1, un professionnel ne peut disposer que d'une seule offre de consultation.
+
+### Résultat
+
+L'offre de consultation est publiée et disponible à la réservation.
 
 ---
 
-### Étape 3 — Confirmation du professionnel
+## 6.4 Gestion de l'agenda
 
-Le professionnel reçoit la demande.
+### Objectif
+
+Permettre au professionnel de gérer ses disponibilités.
+
+### Déclencheur
+
+Le professionnel souhaite ouvrir ou modifier ses créneaux.
+
+### Acteurs concernés
+
+- Professionnel
+
+### Préconditions
+
+Une offre de consultation est publiée.
+
+### Déroulement
+
+Le professionnel configure son agenda.
+
+Il peut notamment :
+
+- définir ses plages de disponibilité ;
+- ouvrir des créneaux ;
+- bloquer des créneaux ;
+- supprimer des disponibilités.
+
+Les créneaux générés deviennent immédiatement réservables.
+
+Chaque professionnel dispose d'un agenda unique.
+
+### Résultat
+
+Les disponibilités sont publiées et peuvent être réservées par les utilisateurs.
+
+## 6.5 Gestion des réservations
+
+### Objectif
+
+Permettre au professionnel de gérer les demandes de réservation de consultations qui lui sont adressées.
+
+### Déclencheur
+
+Une demande de réservation est créée par un utilisateur.
+
+### Acteurs concernés
+
+- Professionnel
+- Utilisateur
+- Plateforme
+
+### Préconditions
+
+- Le professionnel possède une offre de consultation active.
+- Le créneau demandé est disponible.
+
+### Déroulement
+
+Lorsqu'une demande de réservation est reçue, le professionnel est notifié.
 
 Il peut :
 
-- confirmer le rendez-vous ;
-- refuser la demande.
+- consulter les informations de la demande ;
+- confirmer la réservation ;
+- refuser la réservation.
 
-La réservation devient éligible au paiement uniquement après confirmation.
+En cas de confirmation :
 
----
+- la réservation passe à l'état **Confirmée** ;
+- l'utilisateur est invité à procéder au paiement.
 
-### Étape 4 — Paiement
+En cas de refus :
 
-Après confirmation, le demandeur reçoit une notification.
+- la réservation est clôturée ;
+- le créneau redevient disponible ;
+- l'utilisateur est informé de la décision.
 
-Il est invité à finaliser sa réservation en procédant au paiement.
+### Résultat
 
-La réservation devient effective uniquement après validation du paiement.
-
-À défaut de paiement dans le délai prévu par la plateforme, la demande est automatiquement annulée et le créneau redevient disponible.
-
----
-
-### Étape 5 — Préparation de la consultation
-
-Après validation du paiement :
-
-- la salle de visioconférence est créée automatiquement ;
-- le lien est communiqué au demandeur et au professionnel ;
-- le lien reste inactif.
-
-Il devient accessible une heure avant le début de la consultation.
+La réservation est soit confirmée en attente de paiement, soit refusée.
 
 ---
 
-### Étape 6 — Réalisation de la consultation
+## 6.6 Réalisation des consultations
+
+### Objectif
+
+Permettre au professionnel de réaliser une consultation juridique dans les conditions prévues par la plateforme.
+
+### Déclencheur
+
+Une réservation confirmée a été payée.
+
+### Acteurs concernés
+
+- Professionnel
+- Utilisateur
+- Plateforme
+
+### Préconditions
+
+- La réservation est confirmée.
+- Le paiement est validé.
+- La salle de visioconférence a été créée.
+
+### Déroulement
+
+Une heure avant le début de la consultation, la plateforme ouvre automatiquement l'accès à la salle de visioconférence.
 
 À l'heure prévue :
 
-- le demandeur rejoint la salle de visioconférence ;
 - le professionnel rejoint la consultation ;
+- l'utilisateur rejoint la consultation ;
 - la consultation se déroule.
 
----
+À son issue, le professionnel clôture la consultation.
 
-### Étape 7 — Clôture
-
-À l'issue de la consultation, le professionnel clôture la prestation.
-
-Il peut, s'il le souhaite, rédiger un compte rendu.
-
-Le compte rendu est partagé avec le demandeur.
+Il peut, s'il le souhaite, ajouter un compte rendu ou des commentaires destinés au client.
 
 Cette étape est facultative.
 
+Après la clôture :
+
+- la consultation est archivée ;
+- l'utilisateur est invité à déposer un avis ;
+- le processus de versement des fonds au professionnel est engagé conformément aux règles de paiement.
+
+### Résultat
+
+La consultation est terminée et archivée.
+
+Les deux parties retrouvent la consultation dans leur historique.
+
 ---
 
-### Étape 8 — Évaluation
+# 7. Processus principal — Réservation d'une consultation
 
-Une fois la consultation clôturée :
+La réservation d'une consultation constitue le processus métier central de la Version 1 de Chaweer.
 
-- le paiement suit son processus de versement au professionnel conformément aux règles financières de la plateforme ;
-- le demandeur est invité à publier un avis ;
-- les indicateurs de réputation du professionnel sont mis à jour.
+Il décrit le parcours complet permettant à un utilisateur de réserver puis de réaliser une consultation juridique avec un professionnel.
+
+## 7.1 Objectif
+
+Permettre à un utilisateur de réserver une consultation juridique auprès d'un professionnel de manière simple, sécurisée et entièrement dématérialisée.
+
+## 7.2 Acteurs concernés
+
+- Utilisateur
+- Professionnel
+- Plateforme
+
+## 7.3 Préconditions
+
+- Le professionnel possède une offre de consultation active.
+- Le professionnel dispose de créneaux disponibles.
+- L'utilisateur est authentifié.
+
+## 7.4 Déroulement
+
+```mermaid
+flowchart TD
+
+A[Recherche d'un professionnel]
+B[Consultation de la fiche]
+C[Choix de la consultation]
+D[Choix du créneau]
+E[Création de la réservation]
+F[Confirmation du professionnel]
+G[Paiement]
+H[Validation de la réservation]
+I[Création de la salle vidéo]
+J[Ouverture H-1]
+K[Consultation]
+L[Clôture]
+M[Avis]
+
+A --> B
+B --> C
+C --> D
+D --> E
+E --> F
+F --> G
+G --> H
+H --> I
+I --> J
+J --> K
+K --> L
+L --> M
+```
+
+### Étape 1 — Recherche
+
+L'utilisateur recherche un professionnel dans l'annuaire.
+
+Après consultation de sa fiche, il sélectionne l'offre de consultation proposée.
+
+### Étape 2 — Choix du créneau
+
+L'utilisateur consulte les disponibilités du professionnel et sélectionne un créneau libre.
+
+Une demande de réservation est créée.
+
+### Étape 3 — Confirmation
+
+Le professionnel examine la demande.
+
+Il peut :
+
+- confirmer la réservation ;
+- refuser la réservation.
+
+### Étape 4 — Paiement
+
+Après confirmation, l'utilisateur procède au paiement.
+
+La réservation devient définitive uniquement après validation du paiement.
+
+### Étape 5 — Préparation
+
+La plateforme crée automatiquement la salle de visioconférence.
+
+L'accès est ouvert une heure avant le rendez-vous.
+
+### Étape 6 — Consultation
+
+Les deux parties rejoignent la salle et réalisent la consultation.
+
+### Étape 7 — Clôture
+
+Le professionnel clôture la consultation.
+
+Le processus financier est poursuivi conformément aux règles de paiement.
+
+L'utilisateur est invité à publier un avis.
+
+## 7.5 Résultat
+
+La consultation est réalisée.
+
+La réservation est clôturée.
+
+La consultation est archivée.
+
+Le professionnel peut être évalué.
+
+# 8. Processus support
+
+Les processus support accompagnent les processus métier principaux de Chaweer.
+
+Ils ne constituent pas le cœur de l'activité de la plateforme, mais garantissent son bon fonctionnement, sa fiabilité et la qualité de l'expérience utilisateur.
 
 ---
 
-## 6.5 Résultat
+## 8.1 Paiement
+
+### Objectif
+
+Permettre le règlement sécurisé des consultations réservées sur la plateforme.
+
+### Déclencheur
+
+Une réservation a été confirmée par le professionnel.
+
+### Acteurs concernés
+
+- Utilisateur
+- Plateforme
+- Prestataire de paiement
+
+### Préconditions
+
+- La réservation est confirmée.
+- Le paiement est attendu.
+
+### Déroulement
+
+L'utilisateur procède au paiement de la consultation.
+
+La plateforme vérifie le résultat de la transaction.
+
+En cas de succès :
+
+- la réservation est définitivement validée ;
+- la salle de visioconférence est préparée ;
+- les parties sont notifiées.
+
+En cas d'échec :
+
+- la réservation reste en attente de paiement pendant la durée prévue ;
+- à défaut de paiement, la réservation est automatiquement annulée.
+
+### Résultat
+
+Le paiement est enregistré et la réservation poursuit son cycle de vie.
+
+---
+
+## 8.2 Notifications
+
+### Objectif
+
+Informer les utilisateurs des événements importants survenant au cours des différents processus métier.
+
+### Déclencheur
+
+Tout changement significatif intervenant dans un processus métier.
+
+### Acteurs concernés
+
+- Plateforme
+- Utilisateur
+- Professionnel
+
+### Déroulement
+
+La plateforme envoie les notifications appropriées selon l'événement.
+
+Exemples :
+
+- création du compte ;
+- publication du profil professionnel ;
+- nouvelle demande de réservation ;
+- confirmation de réservation ;
+- refus de réservation ;
+- paiement accepté ;
+- paiement refusé ;
+- rappel avant consultation ;
+- ouverture de la salle de visioconférence ;
+- consultation terminée ;
+- invitation à déposer un avis.
+
+### Résultat
+
+Les acteurs concernés sont informés en temps utile des événements impactant leur activité.
+
+---
+
+## 8.3 Réputation
+
+### Objectif
+
+Permettre d'évaluer la qualité des prestations proposées par les professionnels.
+
+### Déclencheur
+
+Une consultation est clôturée.
+
+### Acteurs concernés
+
+- Utilisateur
+- Professionnel
+- Plateforme
+
+### Préconditions
 
 La consultation est terminée.
 
-Les deux parties disposent d'un historique de la prestation.
+### Déroulement
 
-La réputation du professionnel est mise à jour et le paiement est traité conformément aux règles de la plateforme.
+Après la consultation :
 
----
+- l'utilisateur est invité à publier un avis ;
+- la plateforme met à jour les indicateurs de réputation du professionnel ;
+- les informations sont prises en compte dans son profil public.
 
-## 6.6 Gestion des exceptions
+Les modalités de calcul sont décrites dans le document **07-Reputation.md**.
 
-### Refus de la demande
+### Résultat
 
-Le professionnel peut refuser une demande de réservation.
-
-Le demandeur est immédiatement notifié.
-
-Le créneau redevient disponible.
+La réputation du professionnel est actualisée.
 
 ---
 
-### Annulation par le professionnel
+## 8.4 Administration
 
-Le professionnel peut exceptionnellement annuler un rendez-vous confirmé.
+### Objectif
 
-Dans ce cas :
+Permettre l'administration et le bon fonctionnement de la plateforme.
 
-- le demandeur est immédiatement informé ;
-- le paiement est intégralement remboursé ;
-- cette annulation est prise en compte dans les indicateurs de réputation du professionnel.
+### Acteurs concernés
 
----
+- Administrateur
 
-### Absence du demandeur
+### Déroulement
 
-Si le demandeur ne rejoint pas la consultation dans le délai de grâce défini par Chaweer :
+Les administrateurs assurent notamment :
 
-- le professionnel peut déclarer le demandeur absent ;
-- la consultation est considérée comme réalisée ;
-- le paiement est versé au professionnel.
+- la gestion du catalogue des prestations ;
+- la gestion des référentiels ;
+- la modération des contenus ;
+- le traitement des signalements ;
+- le suivi de l'activité de la plateforme.
 
----
+Les fonctionnalités d'administration sont réservées aux utilisateurs autorisés.
 
-### Absence du professionnel
+### Résultat
 
-Si le professionnel ne rejoint pas la consultation dans le délai de grâce défini par Chaweer :
-
-- le demandeur peut déclarer le professionnel absent ;
-- le paiement est intégralement remboursé ;
-- cette absence est prise en compte dans les indicateurs de réputation du professionnel.
+Le fonctionnement global de Chaweer est assuré.
 
 ---
 
-### Incident technique
+# 9. Hors périmètre de la Version 1
 
-En cas d'incident empêchant le bon déroulement de la consultation, les parties peuvent signaler le problème à la plateforme.
+La Version 1 est exclusivement dédiée à la consultation juridique.
 
-Les modalités de traitement sont définies dans le document **10-Litiges.md**.
+Les prestations suivantes ne sont pas couvertes par les processus décrits dans ce document :
+
+- analyse de contrat ;
+- rédaction d'actes ;
+- rédaction de contrats ;
+- vérification de documents ;
+- représentation et suivi de procédures ;
+- toute autre prestation reposant sur une logique de mission ou de livraison.
+
+Ces prestations feront l'objet de processus métier spécifiques dans les versions ultérieures.
+
+---
+
+# 10. Références
+
+Le présent document est complété par les documents suivants :
+
+- 00-Architecture-Metier.md
+- 01-Glossaire.md
+- 02-Acteurs.md
+- 03-Catalogue-Prestations.md
+- 05-Regles-de-Gestion.md
+- 06-Modele-Metier.md
+- 07-Reputation.md
+
+Les règles détaillées décrivant les contraintes métier applicables à chacun des processus sont définies dans **05-Regles-de-Gestion.md**.

@@ -1,6 +1,6 @@
 # Modèle Métier – Chaweer
 
-> Version : 1.0
+> Version : 2.0
 >
 > Statut : En rédaction
 >
@@ -10,275 +10,596 @@
 
 ---
 
-# Objectif
+# 1. Objectif
 
-Ce document décrit les objets métier qui composent le domaine fonctionnel de Chaweer.
+Le présent document décrit le modèle métier de Chaweer.
 
-Il constitue la référence du modèle métier de la plateforme.
+Il constitue la référence officielle du domaine métier de la plateforme.
 
-Il ne décrit ni la structure technique de la base de données, ni les API, ni les interfaces utilisateur. Il décrit exclusivement les concepts métier manipulés par Chaweer, leurs responsabilités, leurs relations et leur cycle de vie.
+Son objectif est de formaliser les concepts métier, leurs responsabilités, leurs relations, leurs règles d'organisation et leur cycle de vie afin de garantir une compréhension commune du fonctionnement de la plateforme.
 
-Ce document sert de référence pour :
+Ce document est indépendant de toute implémentation technique. Il ne décrit ni la structure de la base de données, ni les API, ni l'architecture logicielle, ni les interfaces utilisateur.
 
-- la conception fonctionnelle ;
-- la conception technique ;
-- le développement ;
-- les tests ;
-- les évolutions futures de la plateforme.
+Le modèle métier constitue le socle fonctionnel de Chaweer. Il sert de référence à l'ensemble des parties prenantes du projet et garantit la cohérence des évolutions fonctionnelles.
 
 ---
 
-# Principes de modélisation
+# Ce document sert de référence pour
 
-Le modèle métier de Chaweer repose sur les principes suivants.
-
-## Responsabilité unique
-
-Chaque objet métier possède une responsabilité clairement définie.
-
-Une information ne doit appartenir qu'à un seul objet métier.
-
----
-
-## Séparation du métier et de la technique
-
-Le présent document décrit uniquement le métier.
-
-Les notions techniques (base de données, API, sécurité, authentification technique, Prisma, etc.) sont décrites dans le référentiel technique.
+- comprendre le domaine métier de Chaweer ;
+- définir les objets métier de la plateforme ;
+- formaliser les responsabilités de chaque concept métier ;
+- décrire les relations entre les différents concepts ;
+- concevoir les fonctionnalités de la plateforme ;
+- guider la conception technique ;
+- assurer la cohérence du développement ;
+- définir les cas de test fonctionnels ;
+- accompagner l'évolution progressive du produit.
 
 ---
 
-## Évolutivité
+# 2. Portée
 
-Le modèle est conçu afin de permettre l'intégration progressive de nouvelles fonctionnalités sans remettre en cause son architecture.
+Le présent document décrit le cœur du domaine métier de Chaweer.
 
----
+Il couvre notamment :
 
-## Traçabilité
+- les objets métier ;
+- les référentiels métier utilisés par ces objets ;
+- les relations entre les différents concepts ;
+- les responsabilités de chaque objet métier ;
+- les principaux cycles de vie ;
+- les règles d'organisation générales du domaine.
 
-Les objets métier conservent leur historique conformément aux règles de gestion définies dans le document **05-Regles-de-Gestion.md**.
+En revanche, il ne détaille pas les processus métier, les règles de gestion, les interfaces utilisateurs ni les aspects techniques de mise en œuvre.
 
----
-
-## Référentiel unique
-
-Chaque objet métier constitue la source officielle des informations dont il est responsable.
-
-Les autres objets utilisent ces informations sans les dupliquer.
-
----
-
-# Vue d'ensemble du domaine
-
-Le domaine métier de Chaweer est construit autour de neuf objets métier.
-
-## Objets métier de la Version 1
-
-| N° | Objet métier | Description |
-|----|--------------|-------------|
-| 1 | Utilisateur | Personne utilisant la plateforme Chaweer. |
-| 2 | Professionnel | Utilisateur proposant des prestations juridiques. |
-| 3 | Offre | Prestation commercialisée par un professionnel. |
-| 4 | Agenda | Disponibilités du professionnel. |
-| 5 | Créneau | Unité de réservation de l'agenda. |
-| 6 | Réservation | Demande de consultation effectuée par un utilisateur. |
-| 7 | Consultation | Prestation réalisée entre un utilisateur et un professionnel. |
-| 8 | Paiement | Transaction financière associée à une réservation. |
-| 9 | Avis | Évaluation laissée après une consultation. |
+Ces éléments sont documentés dans les référentiels dédiés.
 
 ---
 
-# Objets métier des versions futures
+# 3. Documents de référence
 
-## Version 2
+Le présent document s'appuie sur les référentiels suivants :
 
-- Entreprise
-- Notaire
-- Adoul
-- Commissaire de justice
-- Expert judiciaire
-- Traducteur assermenté
+| Document | Description |
+|----------|-------------|
+| 00-Architecture-Metier.md | Architecture globale du domaine métier |
+| 01-Glossaire.md | Définitions des termes métier |
+| 02-Acteurs.md | Description des acteurs métier |
+| 03-Catalogue-Prestations.md | Catalogue officiel des prestations |
+| 04-Processus.md | Processus métier |
+| 05-Regles-de-Gestion.md | Règles de gestion |
+| 07-Reputation.md | Gestion de la réputation |
+| 08-Classement.md | Classement des professionnels |
+| 09-Paiements.md | Paiements |
+| 10-Notifications.md | Notifications |
+| 11-Litiges.md | Gestion des litiges |
+| 12-Politiques.md | Politiques de la plateforme |
 
-## Version 3
+---
+# 4. Vision du domaine
 
-- Cabinet
-- Collaborateur
-- Assistant
-- Mission juridique
-- Devis
-- Dossier juridique
+Chaweer est une plateforme numérique de services juridiques ayant pour vocation de faciliter la mise en relation entre les justiciables et les professionnels du droit réglementés.
 
-Ces objets ne sont pas décrits dans le présent document.
+La plateforme ne constitue pas un cabinet juridique. Elle fournit un cadre sécurisé permettant aux utilisateurs de rechercher un professionnel, de réserver une prestation, d'effectuer un paiement, de réaliser une consultation et d'interagir tout au long du parcours de service.
+
+Le domaine métier de Chaweer est construit afin de répondre à trois objectifs majeurs :
+
+- faciliter l'accès aux services juridiques ;
+- offrir aux professionnels un environnement leur permettant de développer leur activité ;
+- garantir un fonctionnement homogène, évolutif et administrable de la plateforme.
+
+Le modèle métier est conçu selon une architecture générique permettant d'intégrer progressivement de nouvelles professions juridiques sans remettre en cause les concepts fondamentaux du domaine.
+
+Dans sa première version, Chaweer prend uniquement en charge la profession d'Avocat.
+
+Le modèle métier a toutefois été conçu pour intégrer ultérieurement d'autres professions réglementées telles que les Notaires, les Commissaires de justice, les Experts judiciaires ou les Traducteurs assermentés.
+
+L'ensemble du domaine repose sur une séparation claire entre les acteurs, les référentiels métier, les objets métier et les processus métier.
+
+Cette organisation permet de garantir la cohérence fonctionnelle de la plateforme tout en facilitant son évolution.
+
+# 5. Architecture du domaine métier
+
+Le domaine métier de Chaweer est organisé autour de quatre grandes familles de concepts.
+
+## 5.1 Acteurs métier
+
+Les acteurs représentent les personnes ou les rôles qui interagissent avec la plateforme.
+
+Ils exécutent les différents parcours métier mais ne constituent pas nécessairement des objets métier.
+
+Les acteurs sont décrits dans le document **02-Acteurs.md**.
+
+Les principaux acteurs sont notamment :
+
+- Visiteur
+- Utilisateur
+- Professionnel
+- Administrateur
 
 ---
 
-# Carte du domaine métier
+## 5.2 Référentiels métier
 
-                            Utilisateur
-                                  │
-                                  │ 1
-                                  │
-                                  ▼ 0..1
-                           Professionnel
-                                  │
-                 ┌────────────────┼────────────────┐
-                 │                │                │
-               Offre          Agenda       Domaines d'activité
-                 │                │
-                 │           Créneaux
-                 │                │
-                 └────────────┬───┘
-                              │
-                        Réservation
-                              │
-              ┌───────────────┼────────────────┐
-              │               │                │
-         Paiement      Consultation        Avis
+Les référentiels regroupent les données administrées par Chaweer.
+
+Ils garantissent une nomenclature unique et homogène pour l'ensemble de la plateforme.
+
+Ils constituent les sources officielles des données de référence utilisées par les objets métier.
+
+Parmi les principaux référentiels figurent notamment :
+
+- les Professions ;
+- les Référentiels de Profession ;
+- le Catalogue des prestations.
+
+Chaque profession possède son propre référentiel définissant notamment :
+
+- les spécialités ;
+- les services proposés ;
+- les documents de vérification ;
+- les informations constituant le profil professionnel ;
+- les règles spécifiques applicables à la profession.
+
+Les référentiels sont exclusivement administrés par Chaweer.
 
 ---
 
-# Catalogue des objets métier
+## 5.3 Objets métier
 
-Le domaine métier de Chaweer est composé des objets suivants.
+Les objets métier représentent les concepts manipulés par la plateforme.
 
-.
+Ils portent les informations métier, les responsabilités, les relations et les cycles de vie nécessaires au fonctionnement de Chaweer.
 
-# Objet métier n°1 : Utilisateur
+Ils constituent le cœur du présent document.
+
+Chaque objet métier est défini indépendamment de son implémentation technique.
+
+---
+
+## 5.4 Processus métier
+
+Les processus métier décrivent les interactions entre les différents acteurs et les objets métier.
+
+Ils orchestrent les différentes étapes du parcours utilisateur, depuis la recherche d'un professionnel jusqu'à la clôture d'une prestation.
+
+Les processus sont documentés dans **04-Processus.md**.
+
+# 6. Principes structurants du domaine
+
+Le modèle métier de Chaweer repose sur un ensemble de principes destinés à garantir la cohérence fonctionnelle, la maintenabilité et l'évolutivité de la plateforme.
+
+Ces principes s'appliquent à l'ensemble des objets métier et des référentiels du domaine.
+
+---
+
+## 6.1 Séparation des responsabilités
+
+Chaque concept métier possède une responsabilité unique et clairement identifiée.
+
+Un concept ne doit porter que les informations nécessaires à sa responsabilité.
+
+Par exemple :
+
+- l'Utilisateur porte l'identité de la personne ;
+- le Professionnel porte son activité professionnelle ;
+- l'Offre porte les caractéristiques commerciales d'une prestation ;
+- la Réservation porte l'engagement entre un client et un professionnel.
+
+Cette séparation limite les dépendances entre les concepts et facilite les évolutions futures.
+
+---
+
+## 6.2 Les référentiels sont la source de vérité
+
+Les référentiels constituent les sources officielles des données de référence de la plateforme.
+
+Ils sont administrés exclusivement par Chaweer.
+
+Les objets métier utilisent ces référentiels sans les dupliquer.
+
+À titre d'exemple :
+
+- une Profession est définie dans le référentiel des professions ;
+- une Spécialité est définie dans le référentiel de la profession ;
+- une Prestation est définie dans le Catalogue des prestations.
+
+---
+
+## 6.3 Les objets métier représentent les activités de la plateforme
+
+Les objets métier matérialisent les interactions entre les différents acteurs.
+
+Ils décrivent les informations manipulées tout au long du parcours utilisateur.
+
+Chaque objet métier possède notamment :
+
+- une responsabilité ;
+- des données métier ;
+- un cycle de vie ;
+- des relations avec les autres objets ;
+- des règles de gestion associées.
+
+---
+
+## 6.4 Les relations entre objets métier
+
+Les objets métier ne sont pas isolés.
+
+Ils collaborent afin de représenter un processus métier complet.
+
+À titre d'exemple :
+
+- un Utilisateur effectue une Réservation ;
+- une Réservation concerne une Offre ;
+- une Offre appartient à un Professionnel ;
+- un Professionnel exerce une Profession ;
+- une Consultation est issue d'une Réservation ;
+- un Paiement valide une Réservation ;
+- un Avis évalue une Consultation.
+
+L'ensemble de ces relations constitue le modèle métier de Chaweer.
+
+---
+
+## 6.5 Évolutivité du modèle
+
+Le modèle métier est conçu pour évoluer progressivement.
+
+L'ajout d'une nouvelle profession ne doit pas remettre en cause l'organisation générale du domaine.
+
+Chaque nouvelle profession est intégrée au travers de son propre Référentiel de Profession.
+
+Les objets métier existants continuent d'être utilisés sans modification majeure.
+
+---
+
+## 6.6 Indépendance de l'implémentation
+
+Le modèle métier est indépendant des choix techniques.
+
+Un objet métier ne correspond pas nécessairement à une table de base de données, une API ou une classe logicielle.
+
+Il décrit un concept métier.
+
+Son implémentation pourra évoluer sans remettre en cause le modèle fonctionnel.
+
+## 6.7 Collecte progressive des informations
+
+Chaweer applique le principe de collecte progressive des informations.
+
+Une donnée métier n'est demandée à un utilisateur que lorsqu'elle devient nécessaire à l'exécution d'un processus métier.
+
+Ce principe permet :
+
+- de réduire les frictions lors de l'inscription ;
+- d'améliorer le taux de conversion ;
+- de simplifier l'expérience utilisateur ;
+- de limiter la collecte de données personnelles.
+
+Les profils utilisateurs et professionnels peuvent ainsi être enrichis progressivement tout au long de leur utilisation de la plateforme.
+
+# 7. Cartographie du domaine métier
+
+Le domaine métier de Chaweer est organisé autour de plusieurs familles de concepts qui collaborent afin de couvrir l'ensemble du parcours utilisateur.
+
+Cette cartographie permet de comprendre rapidement les principales dépendances fonctionnelles entre les concepts du domaine.
+
+```mermaid
+flowchart TB
+
+subgraph A["Acteurs"]
+VIS[Visiteur]
+USR[Utilisateur]
+PRO[Professionnel]
+ADM[Administrateur]
+end
+
+subgraph B["Référentiels métier"]
+PRF[Profession]
+REF[Référentiel de Profession]
+CAT[Catalogue des Prestations]
+end
+
+subgraph C["Objets métier"]
+
+OFF[Offre]
+AGD[Agenda]
+SLOT[Créneau]
+RES[Réservation]
+CNS[Consultation]
+PAY[Paiement]
+REV[Avis]
+
+end
+
+VIS --> USR
+
+USR --> RES
+USR --> REV
+
+USR -.devient.-> PRO
+
+PRO --> OFF
+PRO --> AGD
+
+AGD --> SLOT
+
+OFF --> RES
+SLOT --> RES
+
+RES --> PAY
+RES --> CNS
+
+CNS --> REV
+
+PRO --> PRF
+PRF --> REF
+
+REF --> OFF
+
+CAT --> OFF
+
+ADM --> PRF
+ADM --> REF
+ADM --> CAT
+
+```
+
+
+## Lecture de la cartographie
+
+Le domaine métier repose sur trois axes principaux.
+
+### Les acteurs
+
+Les acteurs utilisent la plateforme.
+
+Ils initient les différents processus métier.
+
+Le Visiteur peut consulter librement les contenus publics.
+
+L'Utilisateur dispose d'un compte lui permettant d'accéder aux services de Chaweer.
+
+Le Professionnel est un Utilisateur autorisé à proposer des prestations juridiques.
+
+L'Administrateur assure l'administration fonctionnelle de la plateforme.
+
+---
+
+### Les référentiels
+
+Les référentiels constituent les sources officielles des données de référence.
+
+Ils sont administrés exclusivement par Chaweer.
+
+Ils garantissent la cohérence fonctionnelle de l'ensemble de la plateforme.
+
+Les principaux référentiels sont :
+
+- les Professions ;
+- les Référentiels de Profession ;
+- le Catalogue des Prestations.
+
+---
+
+### Les objets métier
+
+Les objets métier représentent les informations manipulées au cours des différents processus.
+
+Ils décrivent notamment :
+
+- les offres proposées ;
+- les disponibilités ;
+- les réservations ;
+- les consultations ;
+- les paiements ;
+- les avis.
+# 9. Les objets métier
+
+Les objets métier représentent les concepts fonctionnels manipulés par Chaweer.
+
+Ils constituent le cœur du modèle métier et permettent de décrire les informations, les responsabilités et les interactions nécessaires au fonctionnement de la plateforme.
+
+Chaque objet métier est défini indépendamment de son implémentation technique.
+
+Un objet métier ne correspond pas nécessairement à une table de base de données, une API ou un composant logiciel. Il représente avant tout un concept du domaine fonctionnel.
+
+Tous les objets métier décrits dans ce document respectent une structure commune afin de garantir une documentation homogène.
+
+Chaque objet métier est décrit selon les rubriques suivantes :
+
+- Définition
+- Rôle dans l'écosystème
+- Responsable métier
+- Données métier
+- Capacités
+- Relations
+- Cycle de vie
+- Règles de gestion associées
+- Objectif Business
+- Évolutions futures
+
+Cette structure facilite la compréhension du domaine et garantit une cohérence entre les différents concepts métier.
+
+# 9.1 Utilisateur
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+L'Utilisateur représente toute personne physique disposant d'un compte sur la plateforme Chaweer.
 
-L'utilisateur représente toute personne physique utilisant la plateforme Chaweer.
+Il constitue l'identité métier de référence permettant d'accéder aux fonctionnalités proposées par la plateforme.
 
-Il constitue l'identité métier de la plateforme et permet d'accéder aux différents services proposés.
+L'Utilisateur est le point d'entrée de l'ensemble des parcours métier.
+
+Il peut utiliser Chaweer pour rechercher un professionnel, réserver une prestation, effectuer un paiement, participer à une consultation et suivre son historique.
+
+L'Utilisateur est distinct du Visiteur.
+
+Le Visiteur consulte librement les contenus publics de la plateforme sans disposer d'un compte.
+
+À l'inverse, l'Utilisateur est authentifié et bénéficie des services nécessitant une identification.
+
+Un Utilisateur peut également exercer une profession juridique réglementée.
+
+Dans ce cas, il est associé à un objet métier **Professionnel**.
 
 Dans la Version 1, tous les utilisateurs sont des personnes physiques.
 
 ---
 
-# Rôle dans l'écosystème
+## Rôle dans l'écosystème
 
-L'utilisateur constitue le point d'entrée de l'ensemble des parcours métier de Chaweer.
+L'Utilisateur constitue le principal consommateur des services proposés par Chaweer.
 
-Il peut utiliser la plateforme pour :
+Il intervient dans la majorité des processus métier :
 
-- rechercher un professionnel ;
-- réserver une consultation ;
-- effectuer un paiement ;
-- suivre son historique ;
-- publier un avis.
+- création d'un compte ;
+- recherche d'un professionnel ;
+- consultation des profils ;
+- réservation d'une prestation ;
+- paiement ;
+- participation à une consultation ;
+- dépôt d'un avis.
 
-Certains utilisateurs peuvent également exercer une activité professionnelle sur la plateforme.
-
-Ils disposent alors d'un objet métier **Professionnel** associé.
+L'Utilisateur est également le propriétaire de ses données personnelles.
 
 ---
 
-# Responsable métier
+## Responsable métier
 
-L'utilisateur est responsable des informations relatives à son identité.
+L'Utilisateur est responsable :
+
+- de son identité ;
+- de ses coordonnées ;
+- des informations de son profil ;
+- de la confidentialité de son compte.
 
 Chaweer est responsable :
 
 - de l'authentification ;
 - de la sécurité du compte ;
-- de son cycle de vie.
+- du respect des politiques de confidentialité ;
+- du cycle de vie du compte.
 
 ---
 
-# Données métier
+## Données métier
 
-## Identité
+L'Utilisateur possède un profil évolutif.
 
-- Nom
-- Prénom
+Chaweer applique le principe de **collecte progressive des informations** (Progressive Profiling).
 
----
+Seules les informations strictement nécessaires sont demandées à chaque étape du parcours utilisateur.
 
-## Coordonnées
+Les informations complémentaires sont collectées uniquement lorsqu'elles deviennent nécessaires à l'utilisation d'un service.
+
+### Identification
+
+L'identification d'un utilisateur repose sur au moins un moyen de connexion.
+
+Exemples :
 
 - Adresse e-mail
 - Numéro de téléphone
+- Compte Google
+- Autres fournisseurs d'identité (versions futures)
 
----
+### Informations personnelles
 
-## Authentification
+Les informations personnelles sont facultatives lors de la création du compte.
 
-- Mode de connexion
-    - Email
-    - Téléphone
-    - Compte Google
+Elles peuvent être complétées ultérieurement.
 
-- Identifiant de connexion
+Exemples :
 
----
+- Prénom
+- Nom
+- Photo de profil
+- Date de naissance
+- Sexe
 
-## Préférences
+### Préférences
+
+Les préférences utilisateur sont optionnelles.
+
+Exemples :
 
 - Langue
+- Préférences de notification
 
----
+### Traçabilité
 
-## Traçabilité
+Chaweer conserve les informations nécessaires au suivi du cycle de vie du compte.
 
-- Date d'inscription
+- Date de création
 - Dernière connexion
+- Dernière mise à jour
 
----
+### Statut
 
-## Statut
-
+- En attente d'activation
 - Actif
 - Suspendu
 - Fermé
 
 ---
 
-# Capacités
+## Capacités
 
-Un utilisateur peut :
+Un Utilisateur peut :
 
 - créer un compte ;
 - s'authentifier ;
-- gérer ses informations personnelles ;
+- modifier ses informations personnelles ;
+- gérer ses préférences ;
 - rechercher un professionnel ;
-- réserver une consultation ;
+- consulter des offres ;
+- réserver une prestation ;
 - effectuer un paiement ;
 - consulter son historique ;
-- publier un avis.
+- participer à une consultation ;
+- publier un avis ;
+- demander la fermeture de son compte.
 
-Les fonctionnalités disponibles dépendent de son éventuel statut de professionnel.
-
----
-
-# Relations
-
-Un utilisateur peut :
-
-- créer plusieurs réservations ;
-- effectuer plusieurs paiements ;
-- publier plusieurs avis.
-
-Un utilisateur peut également être associé à un professionnel.
-
-Cardinalités :
-
-Utilisateur (1) -------- (0..1) Professionnel
-
-Utilisateur (1) -------- (N) Réservation
-
-Utilisateur (1) -------- (N) Paiement
-
-Utilisateur (1) -------- (N) Avis
+Certaines fonctionnalités dépendent de son éventuel statut de Professionnel.
 
 ---
 
-# Cycle de vie
+## Relations
+
+Un Utilisateur :
+
+- peut devenir Professionnel ;
+- peut effectuer plusieurs réservations ;
+- peut réaliser plusieurs paiements ;
+- peut participer à plusieurs consultations ;
+- peut publier plusieurs avis.
+
+### Cardinalités
+
+Utilisateur (1) ─────── (0..1) Professionnel
+
+Utilisateur (1) ─────── (N) Réservation
+
+Utilisateur (1) ─────── (N) Paiement
+
+Utilisateur (1) ─────── (N) Consultation
+
+Utilisateur (1) ─────── (N) Avis
+
+---
+
+## Cycle de vie
 
 Créé
+
+↓
+
+En attente d'activation
 
 ↓
 
@@ -294,175 +615,239 @@ Fermé
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-CPT
+- RG-AUTH
+- RG-PRIV
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-L'utilisateur constitue le client principal de Chaweer.
+Le modèle Utilisateur a été conçu pour minimiser les frictions lors de l'inscription.
 
-Il représente toute personne utilisant la plateforme, qu'elle recherche un professionnel ou qu'elle exerce une activité juridique.
+Chaweer privilégie une expérience simple et rapide en limitant les informations demandées lors de la création du compte.
+
+Les informations complémentaires sont collectées progressivement en fonction des besoins des différents parcours métier.
+
+Cette approche favorise l'acquisition des utilisateurs tout en garantissant la disponibilité des informations nécessaires lorsque celles-ci deviennent indispensables.
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-## Version 2
+### Version 2
 
-- Utilisateur Entreprise
+- Comptes Entreprise
+- Comptes représentant légal
+- Gestion de plusieurs moyens d'authentification
 
-## Version 3
+### Version 3
 
+- Organisations
 - Comptes multi-utilisateurs
-- Gestion d'organisations
+- Délégation de gestion
+- Authentification fédérée
 
----
 
-# Objet métier n°2 : Professionnel
+# 9.2 Professionnel
 
 > Version : V1
 
----
+## Définition
 
-# Définition
-
-Le professionnel représente un utilisateur habilité à proposer des prestations juridiques sur la plateforme Chaweer.
+Le Professionnel représente un Utilisateur autorisé à proposer des prestations juridiques sur la plateforme Chaweer.
 
 Il constitue le fournisseur de services de la marketplace.
 
-Dans la Version 1, le seul type de professionnel pris en charge est **l'Avocat**.
+Le Professionnel ne possède pas de compte distinct. Il s'agit d'un Utilisateur ayant complété un parcours d'onboarding professionnel et dont le profil est autorisé à publier des prestations.
+
+Chaque Professionnel exerce une unique Profession juridique réglementée.
+
+Les caractéristiques propres à cette profession sont définies dans le Référentiel de Profession correspondant.
+
+Dans la Version 1, seule la profession d'Avocat est prise en charge.
 
 ---
 
-# Rôle dans l'écosystème
+## Rôle dans l'écosystème
 
-Le professionnel met son expertise juridique à disposition des utilisateurs.
+Le Professionnel met son expertise à disposition des utilisateurs.
 
-Il construit progressivement sa réputation grâce à la qualité de ses prestations et aux avis laissés par ses clients.
+Il construit progressivement sa présence sur la plateforme grâce à :
 
-Le professionnel est au cœur du modèle économique de Chaweer.
+- son profil professionnel ;
+- ses offres ;
+- ses disponibilités ;
+- la qualité de ses consultations ;
+- les avis de ses clients ;
+- son score de réputation.
+
+Le Professionnel constitue le principal créateur de valeur de Chaweer.
 
 ---
 
-# Responsable métier
+## Responsabilités
 
-Le professionnel est responsable :
+Le Professionnel est responsable :
 
-- des informations de son profil professionnel ;
-- des offres qu'il publie ;
-- de son agenda ;
-- de ses disponibilités.
+- de l'exactitude des informations de son profil ;
+- des prestations qu'il propose ;
+- de ses disponibilités ;
+- de la qualité des consultations réalisées ;
+- du respect des obligations liées à sa profession.
 
 Chaweer est responsable :
 
-- de la publication de son profil ;
-- du respect des règles de la plateforme ;
-- de la suspension éventuelle du profil.
+- de la publication du profil ;
+- du contrôle du respect des règles de la plateforme ;
+- de la modération ;
+- des éventuelles suspensions.
 
 ---
 
-# Données métier
+## Données métier
 
-## Profession
+Le modèle Professionnel est construit autour de plusieurs ensembles d'informations.
 
-- Profession
-- Barreau
-- Numéro d'inscription professionnelle
+### Profession
 
----
+Le Professionnel exerce une profession juridique réglementée.
 
-## Présentation
+Exemples :
 
-- Photo
-- Biographie
-- Années d'expérience
+- Avocat
+- Notaire
+- Commissaire de justice
+- Expert judiciaire
+- Traducteur assermenté
 
----
-
-## Coordonnées professionnelles
-
-- Ville
-- Adresse professionnelle
-- Nom du cabinet (facultatif)
+Chaque Profession est définie dans son Référentiel de Profession.
 
 ---
 
-## Expertise
+### Informations professionnelles
 
-- Domaines d'activité
-- Langues parlées
+Selon la profession exercée, le profil peut notamment comporter :
 
----
+- numéro d'inscription professionnelle ;
+- ordre professionnel ;
+- barreau ;
+- années d'expérience ;
+- langues parlées ;
+- ville d'exercice ;
+- adresse professionnelle.
 
-## Vérification
-
-- Statut de vérification
-
-Dans la Version 1, aucun contrôle systématique n'est effectué par Chaweer.
-
-La plateforme pourra suspendre un professionnel en cas de signalement ou d'anomalie.
-
-Un système de vérification officielle sera introduit dans une version ultérieure.
+Les informations disponibles dépendent du Référentiel de Profession.
 
 ---
 
-# Capacités
+### Profil public
 
-Le professionnel peut :
+Le profil public représente les informations visibles par les utilisateurs.
 
-- compléter son profil professionnel ;
-- publier ses offres ;
-- activer ou désactiver ses offres ;
-- gérer son agenda ;
-- bloquer des créneaux ;
-- confirmer une réservation ;
-- refuser une réservation ;
+Il peut notamment comprendre :
+
+- photo ;
+- biographie ;
+- spécialités ;
+- expériences ;
+- langues ;
+- indicateurs de réputation.
+
+---
+
+### Vérification
+
+Le Professionnel possède un statut de vérification.
+
+Exemples :
+
+- Non vérifié
+- Vérification en cours
+- Vérifié
+- Suspendu
+
+Les modalités de vérification dépendent de la profession exercée.
+
+---
+
+### Statut
+
+- En onboarding
+- Actif
+- Suspendu
+- Archivé
+
+---
+
+## Capacités
+
+Un Professionnel peut notamment :
+
+- compléter son profil ;
+- publier des offres ;
+- gérer ses disponibilités ;
+- accepter ou refuser une réservation ;
 - proposer un autre créneau ;
 - réaliser une consultation ;
-- clôturer une consultation ;
 - publier un compte rendu ;
-- répondre à un avis.
+- répondre à un avis ;
+- consulter ses statistiques d'activité.
+
+Les capacités disponibles peuvent varier selon la profession exercée.
 
 ---
 
-# Relations
+## Relations
 
-Le professionnel est obligatoirement associé à un utilisateur.
+Un Professionnel :
 
-Il possède :
+- est associé à un unique Utilisateur ;
+- exerce une unique Profession ;
+- dépend d'un Référentiel de Profession ;
+- possède plusieurs Offres ;
+- possède un Agenda ;
+- reçoit plusieurs Réservations ;
+- réalise plusieurs Consultations ;
+- reçoit plusieurs Avis.
 
-- plusieurs offres ;
-- un agenda ;
-- plusieurs réservations ;
-- plusieurs consultations ;
-- plusieurs avis.
+### Cardinalités
 
-Cardinalités
+Utilisateur (1) ─────── (0..1) Professionnel
 
-Utilisateur (1) -------- (0..1) Professionnel
+Profession (1) ─────── (N) Professionnel
 
-Professionnel (1) -------- (N) Offre
+Référentiel de Profession (1) ─────── (N) Professionnel
 
-Professionnel (1) -------- (1) Agenda
+Professionnel (1) ─────── (N) Offre
 
-Professionnel (1) -------- (N) Réservation
+Professionnel (1) ─────── (1) Agenda
 
-Professionnel (1) -------- (N) Consultation
+Professionnel (1) ─────── (N) Réservation
 
-Professionnel (1) -------- (N) Avis
+Professionnel (1) ─────── (N) Consultation
+
+Professionnel (1) ─────── (N) Avis
 
 ---
 
-# Cycle de vie
+## Cycle de vie
 
-Créé
+Création du compte
 
 ↓
 
-Profil complété
+Onboarding professionnel
+
+↓
+
+Vérification
+
+↓
+
+Publication
 
 ↓
 
@@ -478,7 +863,7 @@ Archivé
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-PRO
 - RG-OFR
@@ -489,943 +874,680 @@ Archivé
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-Le professionnel constitue le principal créateur de valeur de la plateforme.
+Le Professionnel constitue le principal fournisseur de services de Chaweer.
 
-Il commercialise ses prestations, réalise les consultations et construit progressivement sa réputation.
+Le modèle métier a été conçu afin de permettre l'intégration progressive de nouvelles professions juridiques tout en conservant un fonctionnement homogène de la plateforme.
 
-La qualité des professionnels référencés conditionne directement la confiance accordée à Chaweer.
+Chaque Professionnel s'appuie sur un Référentiel de Profession qui définit les informations, les règles et les fonctionnalités spécifiques à sa profession.
 
----
-
-# Évolutions futures
-
-## Version 2
-
-Le modèle sera étendu aux professions suivantes :
-
-- Notaire
-- Adoul
-- Commissaire de justice
-- Expert judiciaire
-- Traducteur assermenté
-
-Les professionnels pourront bénéficier :
-
-- d'un badge de vérification ;
-- d'un contrôle automatique de leur appartenance à leur ordre professionnel.
-
-## Version 3
-
-Le professionnel pourra être rattaché à :
-
-- un cabinet ;
-- une équipe ;
-- un ou plusieurs collaborateurs ;
-- un ou plusieurs assistants.
-
-Des habilitations permettront de déléguer certaines actions, notamment :
-
-- gestion de l'agenda ;
-- confirmation des réservations ;
-- suivi des consultations.
+Cette approche garantit l'évolutivité du modèle métier sans remettre en cause les objets existants.
 
 ---
 
-# Objet métier n°3 : Domaine d'activité
+## Évolutions futures
+
+### Version 2
+
+- Intégration des Notaires
+- Intégration des Commissaires de justice
+- Intégration des Experts judiciaires
+- Intégration des Traducteurs assermentés
+- Vérification automatique auprès des ordres professionnels
+
+### Version 3
+
+- Cabinets
+- Collaborateurs
+- Assistants
+- Gestion d'équipes
+- Délégation de certaines actions
+- Statistiques avancées
+
+# 10. Les référentiels métier
+
+Les référentiels métier regroupent les données de référence administrées par Chaweer.
+
+Contrairement aux objets métier, les référentiels ne représentent pas des événements ou des interactions entre les acteurs de la plateforme.
+
+Ils définissent le cadre fonctionnel dans lequel les objets métier évoluent.
+
+Les référentiels garantissent :
+
+- une nomenclature commune ;
+- une homogénéité des informations ;
+- une évolution maîtrisée de la plateforme ;
+- la réutilisation des mêmes concepts par l'ensemble des professionnels.
+
+Les référentiels sont exclusivement administrés par Chaweer.
+
+Les professionnels les utilisent mais ne peuvent pas les modifier.
+
+Dans la Version 1, les principaux référentiels sont :
+
+- Profession ;
+- Référentiel de Profession ;
+- Catalogue des prestations.
+
+# 10.1 Profession
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+Une Profession représente un métier juridique réglementé reconnu par Chaweer.
 
-Le domaine d'activité représente un domaine d'expertise juridique dans lequel un professionnel exerce son activité.
+Elle constitue le premier niveau de structuration du domaine métier.
 
-Il permet de qualifier les compétences du professionnel et de faciliter la recherche des utilisateurs.
+Chaque Profession définit un cadre fonctionnel propre et s'appuie sur un Référentiel de Profession qui regroupe l'ensemble des éléments nécessaires à son fonctionnement (spécialités, services, règles métier, documents, profil et workflow).
 
-Les domaines d'activité constituent un référentiel métier administré par Chaweer.
+Une Profession est un référentiel administré exclusivement par Chaweer.
 
----
-
-# Rôle dans l'écosystème
-
-Les domaines d'activité permettent :
-
-- de décrire les compétences d'un professionnel ;
-- de faciliter la recherche d'un professionnel ;
-- de filtrer les résultats ;
-- d'associer les offres à une expertise juridique ;
-- d'améliorer la pertinence du classement.
-
-Ils constituent un vocabulaire commun utilisé dans l'ensemble de la plateforme.
+Elle ne peut être créée, modifiée ou supprimée par les Professionnels.
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-Le référentiel des domaines d'activité est administré exclusivement par Chaweer.
+La Profession permet d'organiser les différents métiers juridiques supportés par la plateforme.
 
-Le professionnel sélectionne un ou plusieurs domaines parmi ceux proposés.
+Elle constitue le point d'entrée de l'onboarding des Professionnels et détermine le référentiel applicable à chacun d'eux.
 
-Il ne peut pas créer de nouveaux domaines.
-
----
-
-# Données métier
-
-Chaque domaine d'activité possède notamment :
-
-## Identification
-
-- Nom
-- Description
-
-## Classification
-
-- Catégorie juridique
-- Ordre d'affichage
-
-## Statut
-
-- Actif
-- Archivé
+Chaque Profession possède son propre cadre fonctionnel tout en partageant un modèle métier commun avec les autres professions.
 
 ---
 
-# Capacités
+## Responsabilités
 
-Chaweer peut :
+Une Profession définit notamment :
 
-- créer un domaine d'activité ;
-- modifier sa description ;
-- l'archiver ;
-- le réactiver.
+- son identité ;
+- son Référentiel de Profession ;
+- les conditions de rattachement des Professionnels ;
+- les référentiels utilisés par cette profession.
 
-Le professionnel peut :
-
-- sélectionner un ou plusieurs domaines ;
-- retirer un domaine de son profil.
+La gestion des Professions relève exclusivement de Chaweer.
 
 ---
 
-# Relations
+## Relations
 
-Un domaine d'activité peut être associé à :
+Une Profession :
 
-- plusieurs professionnels ;
-- plusieurs offres.
+- possède un unique Référentiel de Profession ;
+- regroupe plusieurs Professionnels.
 
-Un professionnel peut être associé à plusieurs domaines d'activité.
+### Cardinalités
 
-Une offre est rattachée à un ou plusieurs domaines d'activité.
+Profession (1) ─────── (1) Référentiel de Profession
 
-Cardinalités
-
-Domaine (1) -------- (N) Professionnel
-
-Domaine (1) -------- (N) Offre
-
-Professionnel (N) -------- (N) Domaine
-
-Offre (N) -------- (N) Domaine
+Profession (1) ─────── (N) Professionnel
 
 ---
 
-# Cycle de vie
+## Cycle de vie
+
+Créée
+
+↓
+
+Active
+
+↓
+
+Archivée
+
+Une Profession archivée n'est plus proposée lors de l'onboarding de nouveaux Professionnels mais reste associée aux données historiques.
+
+---
+
+## Règles de gestion associées
+
+- RG-PRF
+
+---
+
+## Objectif Business
+
+La Profession constitue le premier niveau de structuration du domaine métier.
+
+Elle permet d'intégrer progressivement de nouvelles professions juridiques tout en conservant une architecture homogène.
+
+Chaque Profession dispose de son propre référentiel sans remettre en cause le fonctionnement global de la plateforme.
+
+---
+
+## Évolutions futures
+
+### Version 2
+
+- Ajout de nouvelles professions réglementées.
+- Paramétrage spécifique par profession.
+
+### Version 3
+
+- Internationalisation des professions.
+- Gestion des équivalences entre professions selon les juridictions.
+
+# 10.2 Référentiel de Profession
+
+> Version : V1
+
+## Définition
+
+Le Référentiel de Profession regroupe l'ensemble des informations, règles et nomenclatures propres à une Profession.
+
+Il constitue la source de référence utilisée par Chaweer pour configurer le comportement métier de chaque profession juridique.
+
+Chaque Profession possède un unique Référentiel de Profession.
+
+Le contenu de ce référentiel est administré exclusivement par Chaweer.
+
+---
+
+## Rôle dans l'écosystème
+
+Le Référentiel de Profession définit le cadre fonctionnel applicable aux Professionnels d'une même profession.
+
+Il permet de standardiser les informations demandées, les prestations proposées, les documents requis et les règles spécifiques.
+
+Les Professionnels utilisent ce référentiel mais ne peuvent pas le modifier.
+
+---
+
+## Composition
+
+Un Référentiel de Profession peut notamment contenir :
+
+- les spécialités ;
+- le catalogue des services autorisés ;
+- les informations du profil professionnel ;
+- les documents de vérification ;
+- les règles métier spécifiques ;
+- le workflow d'onboarding ;
+- les paramètres propres à la profession.
+
+Chaque élément est documenté dans les référentiels spécialisés correspondants.
+
+---
+
+## Responsabilités
+
+Le Référentiel de Profession définit notamment :
+
+- les données attendues pour les Professionnels ;
+- les spécialités disponibles ;
+- les prestations autorisées ;
+- les règles de validation ;
+- les documents obligatoires ;
+- le parcours d'onboarding.
+
+Sa maintenance relève exclusivement de Chaweer.
+
+---
+
+## Relations
+
+Un Référentiel de Profession :
+
+- est associé à une unique Profession ;
+- est utilisé par plusieurs Professionnels ;
+- référence le Catalogue des prestations applicable à cette profession.
+
+### Cardinalités
+
+Profession (1) ─────── (1) Référentiel de Profession
+
+Référentiel de Profession (1) ─────── (N) Professionnel
+
+Référentiel de Profession (1) ─────── (1) Catalogue des prestations
+
+---
+
+## Cycle de vie
 
 Créé
 
 ↓
 
-Actif
+Publié
+
+↓
+
+Mis à jour
 
 ↓
 
 Archivé
 
----
-
-# Règles de gestion associées
-
-- RG-PRO
-- RG-OFR
+Les évolutions du référentiel sont versionnées afin de garantir la cohérence des données historiques.
 
 ---
 
-# Objectif Business
+## Règles de gestion associées
 
-Les domaines d'activité permettent d'harmoniser la présentation des compétences des professionnels.
-
-Ils garantissent une expérience de recherche homogène et facilitent la mise en relation entre les utilisateurs et les professionnels.
+- RG-REF
 
 ---
 
-# Évolutions futures
+## Objectif Business
 
-Version 2
+Le Référentiel de Profession centralise les règles propres à chaque profession juridique.
 
-- Hiérarchie des domaines
-- Sous-domaines
-- Domaines recommandés automatiquement
+Il garantit une gestion homogène des Professionnels tout en permettant d'adapter les fonctionnalités aux spécificités de chaque métier.
 
-Version 3
+Cette approche facilite l'ajout de nouvelles professions sans modifier les objets métier de la plateforme.
 
-- Taxonomie multi-niveaux
-- Compétences spécialisées
-- Certifications par domaine
+---
 
-# Objet métier n°4 : Offre
+## Évolutions futures
+
+### Version 2
+
+- Versionnement des référentiels.
+- Paramétrage avancé par profession.
+
+### Version 3
+
+- Héritage entre référentiels.
+- Référentiels partagés entre plusieurs professions.
+- Gestion multijuridiction.
+
+# 10.3 Catalogue des prestations
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+Le Catalogue des prestations constitue le référentiel des prestations pouvant être proposées sur Chaweer.
 
-L'offre représente une prestation juridique proposée par un professionnel sur la plateforme Chaweer.
+Il recense l'ensemble des types de prestations disponibles pour une ou plusieurs professions.
 
-Elle est créée à partir d'une prestation du catalogue officiel de Chaweer et personnalisée par le professionnel selon son activité.
+Le Catalogue est administré exclusivement par Chaweer.
 
-L'offre constitue l'élément commercial visible par les utilisateurs et pouvant faire l'objet d'une réservation.
-
----
-
-# Rôle dans l'écosystème
-
-L'offre constitue le lien entre :
-
-- le catalogue officiel des prestations ;
-- le professionnel ;
-- les utilisateurs.
-
-Elle permet au professionnel de commercialiser ses prestations tout en garantissant une présentation homogène sur l'ensemble de la plateforme.
-
-Une réservation est toujours effectuée sur une offre.
+Les Professionnels ne créent pas de nouvelles prestations dans le Catalogue. Ils sélectionnent celles qu'ils souhaitent proposer au travers de leurs Offres.
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-Le professionnel est responsable de ses offres.
+Le Catalogue des prestations permet de standardiser les services proposés sur la plateforme.
 
-Il définit notamment :
+Il garantit une nomenclature homogène des prestations et facilite :
 
-- les prestations qu'il souhaite proposer ;
-- le prix ;
-- la durée (si applicable) ;
-- la description.
+- la recherche des services ;
+- la comparaison des Offres ;
+- le classement des Professionnels ;
+- les statistiques d'activité.
 
-Chaweer est responsable du catalogue officiel des prestations.
-
-Le professionnel ne peut pas créer librement de nouveaux types de prestations.
+Le Catalogue constitue la base de création des Offres publiées par les Professionnels.
 
 ---
 
-# Données métier
+## Composition
 
-## Identification
+Chaque prestation du Catalogue définit notamment :
 
-- Titre
-- Description
+- son intitulé ;
+- sa description ;
+- la ou les professions concernées ;
+- le mode de réalisation ;
+- les paramètres fonctionnels éventuels.
 
----
-
-## Prestation
-
-- Référence de la prestation du catalogue officiel
-
----
-
-## Tarification
-
-### Prestations à réservation directe
-
-- Prix fixe
-
-Exemple :
-
-- Consultation vidéo
-
-### Prestations sur devis
-
-- Fourchette tarifaire indicative
-
-Exemples :
-
-- Analyse juridique
-- Rédaction juridique
-
-Le prix définitif est fixé lors de la proposition commerciale.
+Les conditions commerciales (prix, durée, disponibilité, promotions...) ne font pas partie du Catalogue.
 
 ---
 
-## Paramètres
+## Responsabilités
 
-- Durée (si applicable)
-- Active
-- Date de création
-- Date d'archivage
+Le Catalogue définit :
 
----
+- les prestations disponibles ;
+- leurs caractéristiques fonctionnelles ;
+- leur rattachement aux professions concernées.
 
-## Domaine d'activité
-
-Une offre est rattachée à un ou plusieurs domaines d'activité du professionnel.
+Sa gestion relève exclusivement de Chaweer.
 
 ---
 
-# Capacités
+## Relations
 
-Le professionnel peut :
+Le Catalogue des prestations :
 
-- créer une offre ;
-- activer une offre ;
-- désactiver une offre ;
-- archiver une offre ;
-- modifier son prix ;
-- modifier sa durée ;
-- modifier sa description.
+- est utilisé par un ou plusieurs Référentiels de Profession ;
+- sert de base à la création des Offres publiées par les Professionnels.
 
-Les modifications s'appliquent uniquement aux nouvelles réservations.
+### Cardinalités
 
----
+Catalogue des prestations (1) ─────── (N) Référentiel de Profession
 
-# Relations
-
-Une offre :
-
-- appartient à un professionnel ;
-- est basée sur une prestation du catalogue officiel ;
-- est associée à un ou plusieurs domaines d'activité ;
-- peut recevoir plusieurs réservations.
-
-Cardinalités
-
-Professionnel (1) -------- (N) Offre
-
-Catalogue des prestations (1) -------- (N) Offre
-
-Offre (N) -------- (N) Domaine d'activité
-
-Offre (1) -------- (N) Réservation
+Catalogue des prestations (1) ─────── (N) Offre
 
 ---
 
-# Cycle de vie
+## Cycle de vie
 
 Créée
 
 ↓
 
-Active
+Publiée
 
 ↓
 
-Désactivée
+Mise à jour
 
 ↓
 
 Archivée
 
-Une offre archivée est conservée afin de préserver l'historique des réservations.
+Une prestation archivée ne peut plus être utilisée pour créer de nouvelles Offres mais reste liée aux données historiques.
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
-- RG-OFR
-
----
-
-# Objectif Business
-
-L'offre permet au professionnel de commercialiser ses prestations de manière simple et homogène.
-
-Elle garantit :
-
-- une expérience utilisateur cohérente ;
-- une comparaison facilitée entre professionnels ;
-- une standardisation des prestations proposées sur Chaweer.
+- RG-CAT
 
 ---
 
-# Évolutions futures
+## Objectif Business
 
-## Version 2
+Le Catalogue des prestations constitue le référentiel commun des services proposés sur Chaweer.
 
-Ajout des prestations sur devis :
-
-- Analyse juridique
-- Rédaction juridique
-
-avec génération de propositions commerciales.
+Il garantit une présentation homogène des prestations, simplifie la création des Offres par les Professionnels et assure une expérience cohérente pour les Utilisateurs.
 
 ---
 
-## Version 3
+## Évolutions futures
 
-Ajout :
+### Version 2
 
-- Représentation devant les juridictions ;
-- Prestations complexes ;
-- Prestations multi-intervenants ;
-- Options complémentaires ;
-- Offres promotionnelles.
+- Paramètres spécifiques par profession.
+- Catégorisation avancée des prestations.
+- Prestations conditionnelles.
 
----
+### Version 3
 
-# Objet métier n°4 : Catalogue des prestations
+- Catalogue multilingue.
+- Versionnement des prestations.
+- Héritage entre catalogues.
+
+# 11.1 Offre
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+L'Offre représente une prestation effectivement proposée par un Professionnel sur Chaweer.
 
-Le catalogue des prestations constitue le référentiel officiel des prestations commercialisables sur Chaweer.
+Elle est créée à partir d'une prestation du Catalogue des prestations et adaptée par le Professionnel selon ses conditions d'exercice.
 
-Il définit les prestations que les professionnels sont autorisés à proposer sur la plateforme.
+L'Offre constitue le point d'entrée du parcours de réservation.
 
-Le catalogue est administré exclusivement par Chaweer.
-
----
-
-# Rôle dans l'écosystème
-
-Le catalogue garantit :
-
-- une nomenclature unique des prestations ;
-- une présentation homogène des offres ;
-- une comparaison simple entre professionnels ;
-- une évolution maîtrisée de la plateforme.
-
-Les professionnels ne créent jamais librement un type de prestation.
-
-Ils activent une prestation existante du catalogue.
+Elle décrit les conditions dans lesquelles un Utilisateur peut réserver une prestation auprès d'un Professionnel.
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-Chaweer est seul responsable du catalogue.
+L'Offre permet à un Professionnel de rendre ses services accessibles aux Utilisateurs.
 
-Le professionnel peut uniquement :
+Elle transforme une prestation de référence du Catalogue en une proposition commerciale concrète.
 
-- activer une prestation ;
-- la personnaliser dans les limites autorisées.
-
----
-
-# Données métier
-
-Chaque prestation possède notamment :
-
-## Identification
-
-- Nom
-- Description
+Chaque Offre peut être réservée plusieurs fois et constitue l'unité de base des réservations réalisées sur la plateforme.
 
 ---
 
-## Catégorie
+## Responsabilités
 
-- Consultation
-- Mission (Version 2)
+L'Offre définit notamment :
 
----
+- la prestation proposée ;
+- le Professionnel qui la propose ;
+- les modalités de réalisation ;
+- les conditions commerciales ;
+- sa disponibilité à la réservation.
 
-## Type de réservation
+Le Professionnel est responsable des informations et des conditions de son Offre.
 
-- Réservation immédiate
-- Sur devis
-
----
-
-## Paramètres autorisés
-
-- Durée configurable
-- Prix fixe
-- Fourchette tarifaire
-- Compte rendu
-- Agenda requis
+Chaweer garantit sa publication et son accessibilité conformément aux règles de la plateforme.
 
 ---
 
-## Disponibilité
+## Données métier
 
-- Active
+Une Offre comprend notamment :
+
+### Référence
+
+- Identifiant
+- Professionnel
+- Prestation du Catalogue
+
+### Informations commerciales
+
+- Titre (si personnalisable)
+- Description complémentaire
+- Prix
+- Devise
+
+### Modalités
+
+- Mode de réalisation (cabinet, visioconférence, téléphone…)
+- Durée estimée
+- Conditions particulières éventuelles
+
+### Disponibilité
+
+- Publiée
+- Temporairement indisponible
 - Archivée
 
 ---
 
-# Prestations de la Version 1
+## Capacités
 
-## Consultation vidéo
+Une Offre peut :
 
-Caractéristiques
-
-- réservation directe
-- prix fixe
-- durée configurable
-
----
-
-# Prestations prévues Version 2
-
-## Analyse juridique
-
-- sur devis
+- être créée ;
+- être publiée ;
+- être modifiée ;
+- être suspendue ;
+- être archivée ;
+- être réservée plusieurs fois.
 
 ---
 
-## Rédaction juridique
+## Relations
 
-- sur devis
+Une Offre :
 
----
+- appartient à un seul Professionnel ;
+- est basée sur une prestation du Catalogue ;
+- peut faire l'objet de plusieurs Réservations.
 
-# Prestations prévues Version 3
+### Cardinalités
 
-## Représentation
+Professionnel (1) ─────── (N) Offre
 
-- sur devis
-- mission
+Catalogue des prestations (1) ─────── (N) Offre
 
----
-
-# Capacités
-
-Chaweer peut :
-
-- créer une prestation ;
-- modifier une prestation ;
-- désactiver une prestation ;
-- archiver une prestation.
-
-Le professionnel peut :
-
-- activer une prestation ;
-- la configurer ;
-- la désactiver.
+Offre (1) ─────── (N) Réservation
 
 ---
 
-# Relations
-
-Une prestation du catalogue peut être utilisée par plusieurs professionnels.
-
-Chaque offre est obligatoirement basée sur une prestation du catalogue.
-
-Cardinalités
-
-Catalogue (1)
-
-↓
-
-(N)
-
-Offres
-
----
-
-# Cycle de vie
+## Cycle de vie
 
 Créée
 
 ↓
 
-Active
+Configurée
+
+↓
+
+Publiée
+
+↓
+
+Disponible à la réservation
+
+↓
+
+Suspendue
 
 ↓
 
 Archivée
 
+Une Offre archivée n'est plus réservable mais reste conservée pour l'historique.
+
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-OFR
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-Le catalogue garantit une plateforme homogène.
+L'Offre constitue l'élément commercial de Chaweer.
 
-Il évite :
+Elle permet à un Professionnel de proposer une prestation standardisée du Catalogue selon ses propres conditions d'exercice, tout en garantissant une expérience homogène pour les Utilisateurs.
 
-- les doublons ;
-- les intitulés incohérents ;
-- les prestations fantaisistes.
-
-Il permet également à Chaweer de faire évoluer progressivement les services proposés sans remettre en cause le modèle métier.
+Elle représente le point de départ du processus de réservation et de consultation.
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-Version 2
+### Version 2
 
-- Prestations sur devis
+- Tarification dynamique.
+- Promotions.
+- Offres saisonnières.
+- Offres limitées dans le temps.
 
-Version 3
+### Version 3
 
-- Prestations complexes
-- Missions
-- Packs de prestations
-- Options
+- Packs de prestations.
+- Abonnements.
+- Offres combinées.
+- Personnalisation avancée des conditions commerciales.
 
-# Objet métier n°5 : Offre
+# 11.2 Agenda
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+L'Agenda représente l'ensemble des disponibilités d'un Professionnel sur Chaweer.
 
-L'offre représente la déclinaison commerciale d'une prestation du catalogue officiel proposée par un professionnel.
+Il permet de définir les périodes pendant lesquelles le Professionnel est en mesure de réaliser des prestations.
 
-Elle permet au professionnel de commercialiser une prestation en définissant ses propres conditions d'exécution, dans les limites autorisées par Chaweer.
+L'Agenda constitue la base de génération et de gestion des Créneaux réservables.
 
-Une offre est toujours basée sur une prestation du catalogue officiel.
-
----
-
-# Rôle dans l'écosystème
-
-L'offre constitue le lien entre :
-
-- le professionnel ;
-- le catalogue officiel des prestations ;
-- les réservations.
-
-Elle représente l'élément visible par les utilisateurs lors de leur recherche.
-
-Une réservation est toujours réalisée sur une offre.
+Il est indépendant des Réservations, qui viennent occuper certains Créneaux disponibles.
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-Le professionnel est responsable de ses offres.
+L'Agenda permet au Professionnel d'organiser son activité.
 
-Il peut :
+Il centralise les disponibilités utilisées lors de la réservation d'une prestation.
 
-- activer une prestation du catalogue ;
-- définir son prix ;
-- définir la durée (si applicable) ;
-- personnaliser sa description ;
-- activer ou désactiver son offre.
-
-Chaweer est responsable des caractéristiques de la prestation du catalogue.
+L'Agenda garantit que seules les périodes effectivement disponibles peuvent être proposées aux Utilisateurs.
 
 ---
 
-# Données métier
+## Responsabilités
 
-## Identification
+L'Agenda définit notamment :
 
-- Titre (généré à partir de la prestation)
-- Description personnalisée
+- les horaires de disponibilité ;
+- les périodes d'indisponibilité ;
+- les règles de planification ;
+- les paramètres de réservation.
 
----
+Le Professionnel est responsable de la gestion de son Agenda.
 
-## Référence
-
-- Prestation du catalogue
-
----
-
-## Domaine(s) d'activité
-
-Une offre est rattachée à un ou plusieurs domaines d'activité du professionnel.
+Chaweer garantit son utilisation lors des processus de réservation.
 
 ---
 
-## Conditions commerciales
+## Données métier
 
-### Tarification
+Un Agenda comprend notamment :
 
-Selon la prestation :
+### Informations générales
 
-- Prix fixe
-- Fourchette tarifaire
-
----
-
-### Durée
-
-Lorsque la prestation le permet :
-
-- durée configurable
-
-Exemple :
-
-Consultation vidéo
-
-30 min
-
-45 min
-
-60 min
-
----
-
-## Disponibilité
-
-- Active
-- Désactivée
-- Archivée
-
----
-
-## Traçabilité
-
-- Date de création
-- Date de dernière modification
-- Date d'archivage
-
----
-
-# Capacités
-
-Le professionnel peut :
-
-- créer une offre ;
-- modifier son prix ;
-- modifier sa durée ;
-- modifier sa description ;
-- activer une offre ;
-- désactiver une offre ;
-- archiver une offre.
-
-Les modifications n'impactent jamais les réservations déjà effectuées.
-
----
-
-# Relations
-
-Une offre :
-
-- appartient à un professionnel ;
-- référence une prestation du catalogue ;
-- est associée à un ou plusieurs domaines d'activité ;
-- peut être réservée plusieurs fois.
-
-Cardinalités
-
-Professionnel (1)
-        │
-        ▼
-      Offre (N)
-
-Catalogue des prestations (1)
-        │
-        ▼
-      Offre (N)
-
-Offre (N)
-        │
-        ▼
-Domaine d'activité (N)
-
-Offre (1)
-        │
-        ▼
-Réservation (N)
-
----
-
-# Cycle de vie
-
-Créée
-
-↓
-
-Active
-
-↓
-
-Désactivée
-
-↓
-
-Archivée
-
-Une offre archivée reste consultable dans les historiques mais n'est plus proposée aux utilisateurs.
-
----
-
-# Règles de gestion associées
-
-- RG-OFR
-
----
-
-# Objectif Business
-
-L'offre permet à chaque professionnel de personnaliser son activité commerciale tout en respectant le cadre défini par Chaweer.
-
-Elle garantit :
-
-- une présentation homogène ;
-- une comparaison facilitée entre professionnels ;
-- une gestion autonome des prestations proposées.
-
----
-
-# Évolutions futures
-
-## Version 2
-
-Les offres pourront intégrer :
-
-- délais d'exécution ;
-- options complémentaires ;
-- pièces justificatives demandées au client.
-
-## Version 3
-
-Les offres pourront proposer :
-
-- packs de prestations ;
-- prestations composées ;
-- remises ;
-- promotions ;
-- prestations multi-intervenants.
-
-# Objet métier n°6 : Agenda
-
-> Version : V1
-
----
-
-# Définition
-
-L'agenda représente les disponibilités d'un professionnel sur la plateforme Chaweer.
-
-Il permet de définir les périodes durant lesquelles le professionnel accepte de recevoir des réservations.
-
-L'agenda constitue la source officielle des disponibilités du professionnel.
-
----
-
-# Rôle dans l'écosystème
-
-L'agenda permet :
-
-- de publier les disponibilités du professionnel ;
-- de calculer les créneaux réservables ;
-- d'éviter les doubles réservations ;
-- de gérer les indisponibilités.
-
-Toutes les réservations sont effectuées à partir des disponibilités définies dans l'agenda.
-
----
-
-# Responsable métier
-
-Le professionnel est responsable de son agenda.
-
-Il définit :
-
-- ses horaires habituels ;
-- ses périodes d'indisponibilité ;
-- ses exceptions.
-
-Chaweer calcule automatiquement les créneaux réservables.
-
----
-
-# Données métier
-
-## Planning hebdomadaire
-
-Pour chaque jour :
-
-- Heure de début
-- Heure de fin
-
-Exemple
-
-Lundi
-
-09h00 - 18h00
-
----
-
-## Exceptions
-
-Le professionnel peut définir :
-
-- Congés
-- Jours fériés
-- Formation
-- Absence exceptionnelle
-
----
-
-## Paramètres de réservation
-
-- Délai minimum avant réservation
-- Délai maximum de réservation
-- Temps de pause entre deux consultations
+- Identifiant
+- Professionnel propriétaire
 - Fuseau horaire
 
----
+### Paramètres
 
-## Statut
+- Horaires habituels
+- Jours travaillés
+- Durée des créneaux
+- Temps de pause
+- Délai minimum avant réservation
+- Délai maximum de réservation
+
+### Disponibilité
 
 - Actif
 - Suspendu
 
 ---
 
-# Capacités
+## Capacités
 
-Le professionnel peut :
+Un Agenda peut :
 
-- définir ses horaires ;
-- modifier ses horaires ;
-- bloquer une période ;
-- débloquer une période ;
-- suspendre temporairement son agenda.
-
----
-
-# Relations
-
-Un agenda appartient à un seul professionnel.
-
-Il permet de générer plusieurs créneaux.
-
-Il peut recevoir plusieurs réservations.
-
-Cardinalités
-
-Professionnel (1)
-
-↓
-
-Agenda (1)
-
-Agenda (1)
-
-↓
-
-Créneau (N)
+- être créé lors de l'onboarding du Professionnel ;
+- être configuré ;
+- être modifié ;
+- générer des Créneaux ;
+- être temporairement suspendu ;
+- être synchronisé avec des calendriers externes (versions futures).
 
 ---
 
-# Cycle de vie
+## Relations
+
+Un Agenda :
+
+- appartient à un seul Professionnel ;
+- contient plusieurs Créneaux.
+
+### Cardinalités
+
+Professionnel (1) ─────── (1) Agenda
+
+Agenda (1) ─────── (N) Créneau
+
+---
+
+## Cycle de vie
 
 Créé
 
 ↓
 
+Configuré
+
+↓
+
 Actif
+
+↓
+
+Mis à jour
 
 ↓
 
@@ -1437,128 +1559,137 @@ Archivé
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-AGD
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-L'agenda permet au professionnel de gérer simplement ses disponibilités tout en garantissant la cohérence des réservations.
+L'Agenda permet aux Professionnels de gérer leurs disponibilités de manière simple et cohérente.
+
+Il constitue la source de référence utilisée par Chaweer pour déterminer les créneaux pouvant être réservés et garantir la fiabilité du processus de planification.
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-Version 2
+### Version 2
 
-- Synchronisation Google Calendar
+- Synchronisation Google Calendar.
+- Synchronisation Outlook.
+- Exceptions ponctuelles.
+- Gestion des congés.
 
-- Synchronisation Outlook
+### Version 3
 
-- Synchronisation Apple Calendar
+- Plusieurs agendas par Professionnel.
+- Disponibilités selon le type de prestation.
+- Gestion collaborative des agendas.
+- Synchronisation en temps réel avec des systèmes externes.
 
-Version 3
-
-- Synchronisation multi-agendas
-
-- Agenda partagé Cabinet
-
-- Gestion des assistants
-
-# Objet métier n°7 : Créneau
+# 11.3 Créneau
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+Le Créneau représente une plage horaire pouvant être réservée par un Utilisateur.
 
-Le créneau représente une plage horaire réservable générée à partir des disponibilités de l'agenda.
+Il est généré à partir de l'Agenda d'un Professionnel et constitue l'unité de planification utilisée par le processus de réservation.
 
-Il constitue l'unité de réservation de Chaweer.
+Un Créneau peut être disponible, réservé, bloqué ou indisisponible selon son état.
 
----
-
-# Rôle dans l'écosystème
-
-Le créneau permet :
-
-- de proposer des horaires disponibles ;
-- de recevoir une réservation ;
-- de garantir qu'une même plage horaire ne peut être réservée qu'une seule fois.
+Chaque Créneau appartient à un unique Agenda.
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-Les créneaux sont générés automatiquement par Chaweer.
+Le Créneau matérialise les disponibilités du Professionnel.
 
-Le professionnel ne crée jamais un créneau manuellement.
+Il permet aux Utilisateurs de sélectionner une date et une heure précises lors de la réservation d'une prestation.
 
-Le professionnel agit uniquement sur son agenda.
+Le Créneau constitue le lien entre l'Agenda et la Réservation.
 
 ---
 
-# Données métier
+## Responsabilités
+
+Le Créneau définit notamment :
+
+- une date ;
+- une heure de début ;
+- une heure de fin ;
+- son état de disponibilité.
+
+Il garantit qu'une même période ne puisse pas être réservée simultanément par plusieurs Utilisateurs.
+
+---
+
+## Données métier
+
+Un Créneau comprend notamment :
+
+### Identification
+
+- Identifiant
+- Agenda associé
+
+### Planification
 
 - Date
 - Heure de début
 - Heure de fin
 - Durée
-- Disponibilité
+
+### Disponibilité
+
+- Disponible
+- Réservé
+- Bloqué
+- Indisponible
+
+### Traçabilité
+
+- Date de création
+- Dernière mise à jour
 
 ---
 
-# États
+## Capacités
 
-Disponible
+Un Créneau peut :
 
-Réservé
-
-Bloqué
-
-Expiré
-
----
-
-# Capacités
-
-Chaweer peut :
-
-- générer les créneaux ;
-- supprimer les créneaux devenus obsolètes ;
-- bloquer un créneau ;
-- réserver un créneau.
+- être généré automatiquement ;
+- être créé manuellement ;
+- être modifié ;
+- être bloqué ;
+- être libéré ;
+- être réservé ;
+- être supprimé avant toute réservation.
 
 ---
 
-# Relations
+## Relations
 
-Chaque créneau appartient à un agenda.
+Un Créneau :
 
-Un créneau peut être associé à une réservation.
+- appartient à un seul Agenda ;
+- peut être associé à une seule Réservation.
 
-Cardinalités
+### Cardinalités
 
-Agenda (1)
+Agenda (1) ─────── (N) Créneau
 
-↓
-
-Créneau (N)
-
-Créneau (1)
-
-↓
-
-Réservation (0..1)
+Créneau (1) ─────── (0..1) Réservation
 
 ---
 
-# Cycle de vie
+## Cycle de vie
 
-Généré
+Créé
 
 ↓
 
@@ -1570,216 +1701,190 @@ Réservé
 
 ↓
 
-Terminé
+Réalisé
 
 ou
 
 ↓
 
-Expiré
+Libéré
+
+ou
+
+↓
+
+Bloqué
+
+↓
+
+Archivé
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
-- RG-AGD
-- RG-RES
-
----
-
-# Objectif Business
-
-Le créneau constitue l'unité élémentaire permettant aux utilisateurs de réserver une consultation en toute sécurité.
+- RG-CRN
 
 ---
 
-# Évolutions futures
+## Objectif Business
 
-Version 2
+Le Créneau constitue l'unité de réservation de Chaweer.
 
-- Créneaux récurrents
+Il permet d'assurer une gestion fiable des disponibilités des Professionnels tout en évitant les conflits de planification.
 
-- Créneaux prioritaires
+Il garantit qu'une période donnée ne puisse être attribuée qu'à une seule Réservation à la fois.
 
-- Créneaux réservés aux clients Premium
+---
 
-# Objet métier n°8 : Réservation
+## Évolutions futures
+
+### Version 2
+
+- Créneaux récurrents.
+- Blocage automatique.
+- Surbooking contrôlé.
+- Temps tampon entre deux consultations.
+
+### Version 3
+
+- Créneaux partagés entre plusieurs Professionnels.
+- Gestion des listes d'attente.
+- Optimisation automatique des plannings.
+- Créneaux intelligents selon le type de prestation.
+
+# 11.4 Réservation
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+La Réservation représente l'engagement entre un Utilisateur et un Professionnel pour la réalisation d'une prestation à une date et une heure déterminées.
 
-La réservation représente la demande effectuée par un utilisateur afin de réserver une consultation auprès d'un professionnel.
+Elle constitue l'objet métier central du parcours client.
 
-Elle constitue le point de départ du processus de prestation.
+Une Réservation associe un Utilisateur, une Offre et un Créneau.
 
-Une réservation est toujours associée :
-
-- à un utilisateur ;
-- à un professionnel ;
-- à une offre ;
-- à un créneau.
+Sa création entraîne l'occupation du Créneau correspondant.
 
 ---
 
-# Rôle dans l'écosystème
+## Rôle dans l'écosystème
 
-La réservation coordonne l'ensemble du processus métier.
+La Réservation formalise l'accord entre le client et le Professionnel.
 
 Elle permet :
 
-- de réserver un créneau disponible ;
-- d'obtenir la confirmation du professionnel ;
-- de déclencher le paiement ;
-- de créer la consultation.
+- d'organiser les consultations ;
+- de suivre leur état d'avancement ;
+- de déclencher les processus de paiement ;
+- d'assurer la traçabilité des prestations réalisées.
 
-Elle constitue le pivot entre :
-
-- l'agenda ;
-- le paiement ;
-- la consultation.
+Elle constitue le point de convergence entre les différents objets métier transactionnels.
 
 ---
 
-# Responsable métier
+## Responsabilités
 
-La réservation est administrée par Chaweer.
+La Réservation définit notamment :
 
-Le demandeur peut :
+- le client ;
+- le Professionnel ;
+- l'Offre réservée ;
+- le Créneau retenu ;
+- le statut de la réservation.
 
-- créer une réservation ;
-- l'annuler selon les règles définies.
-
-Le professionnel peut :
-
-- confirmer ;
-- refuser ;
-- proposer un autre créneau.
+Elle est responsable de la coordination entre la planification, le paiement et la consultation.
 
 ---
 
-# Données métier
+## Données métier
 
-## Identification
+Une Réservation comprend notamment :
 
-- Numéro de réservation
+### Identification
 
----
+- Identifiant
+- Date de création
+- Référence
 
-## Acteurs
+### Participants
 
 - Utilisateur
 - Professionnel
 
----
-
-## Objet réservé
+### Prestation
 
 - Offre
-- Créneau
+- Prix au moment de la réservation
+- Devise
 
----
+### Planification
 
-## Informations commerciales
+- Créneau réservé
+- Date
+- Heure de début
+- Heure de fin
 
-- Prix
-- Durée
+### Statut
 
-Ces informations sont figées au moment de la réservation.
-
-Les modifications ultérieures de l'offre n'impactent jamais une réservation existante.
-
----
-
-## Statut
-
-- En attente de confirmation
+- En attente
 - Confirmée
 - Refusée
-- En attente de paiement
-- Payée
 - Annulée
-- Expirée
 - Terminée
+- Expirée
+
+### Traçabilité
+
+- Historique des changements de statut
+- Dates des principales étapes
 
 ---
 
-## Traçabilité
+## Capacités
 
-- Date de création
-- Date de confirmation
-- Date de paiement
-- Date de clôture
+Une Réservation peut :
 
----
-
-# Capacités
-
-Le demandeur peut :
-
-- créer une réservation ;
-- annuler une réservation selon la politique d'annulation.
-
-Le professionnel peut :
-
-- confirmer ;
-- refuser ;
-- proposer un nouveau créneau.
-
-Chaweer peut :
-
-- expirer automatiquement une réservation ;
-- notifier les parties ;
-- créer la consultation.
+- être créée ;
+- être confirmée ;
+- être refusée ;
+- être reprogrammée ;
+- être annulée ;
+- être payée ;
+- donner lieu à une Consultation ;
+- être clôturée.
 
 ---
 
-# Relations
+## Relations
 
-Une réservation est associée à :
+Une Réservation :
 
-- un utilisateur ;
-- un professionnel ;
-- une offre ;
-- un créneau ;
-- un paiement ;
-- une consultation.
+- est créée par un Utilisateur ;
+- concerne un seul Professionnel ;
+- porte sur une seule Offre ;
+- occupe un seul Créneau ;
+- peut donner lieu à un Paiement ;
+- peut donner lieu à une Consultation.
 
----
+### Cardinalités
 
-Cardinalités
+Utilisateur (1) ─────── (N) Réservation
 
-Utilisateur (1)
-        │
-        ▼
-Réservation (N)
+Professionnel (1) ─────── (N) Réservation
 
-Professionnel (1)
-        │
-        ▼
-Réservation (N)
+Offre (1) ─────── (N) Réservation
 
-Offre (1)
-        │
-        ▼
-Réservation (N)
+Créneau (1) ─────── (0..1) Réservation
 
-Créneau (1)
-        │
-        ▼
-Réservation (0..1)
+Réservation (1) ─────── (0..1) Paiement
 
-Réservation (1)
-        │
-        ├────────► Paiement (1)
-        │
-        └────────► Consultation (1)
+Réservation (1) ─────── (0..1) Consultation
 
 ---
 
-# Cycle de vie
+## Cycle de vie
 
 Créée
 
@@ -1793,29 +1898,25 @@ Confirmée
 
 ↓
 
-En attente de paiement
-
-↓
-
-Payée
-
-↓
-
-Consultation réalisée
+En attente de réalisation
 
 ↓
 
 Terminée
 
-Cas alternatifs
+ou
 
 ↓
 
 Refusée
 
+ou
+
 ↓
 
 Annulée
+
+ou
 
 ↓
 
@@ -1823,192 +1924,175 @@ Expirée
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-RES
-- RG-PAY
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-La réservation constitue le contrat de réservation entre un utilisateur et un professionnel.
+La Réservation constitue le cœur opérationnel de Chaweer.
 
-Elle garantit la disponibilité du créneau réservé et assure la coordination de l'ensemble des étapes précédant la réalisation de la consultation.
+Elle orchestre l'ensemble du parcours de prestation, depuis la sélection d'une Offre jusqu'à la réalisation de la Consultation.
+
+Elle assure la cohérence entre les disponibilités du Professionnel, les engagements du client, les paiements et le suivi des prestations.
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-## Version 2
+### Version 2
 
-- Réservation de missions sur devis
-- Réservation multi-prestations
-- Validation automatique
+- Confirmation automatique selon les paramètres du Professionnel.
+- Reprogrammation simplifiée.
+- Gestion des listes d'attente.
+- Réservations récurrentes.
 
-## Version 3
+### Version 3
 
-- Réservations récurrentes
-- Réservations pour cabinet
-- Réservations multi-professionnels
+- Réservations multi-participants.
+- Réservations de prestations groupées.
+- Orchestration de prestations impliquant plusieurs Professionnels.
 
-## Objet métier n°9 : Consultation
+# 11.5 Consultation
 
 > Version : V1
 
+## Définition
+
+La Consultation représente la réalisation effective d'une Réservation portant sur une prestation de type **Consultation**.
+
+Elle constitue l'exécution du service réservé entre un Utilisateur et un Professionnel.
+
+Une Consultation est toujours rattachée à une unique Réservation.
+
+La Consultation n'est pas un concept générique applicable à toutes les professions.
+
+Elle n'existe que lorsque le Référentiel de Profession prévoit une prestation dont l'exécution est une consultation.
+
+Dans la Version 1 de Chaweer, la Consultation est propre à la profession **Avocat** et correspond notamment aux services :
+
+- Consultation en ligne ;
+- Consultation au cabinet.
+
+Les autres professions pourront définir leurs propres objets de réalisation selon leur métier (signature d'acte, constat, expertise, traduction, etc.) sans remettre en cause le modèle général de la plateforme.
+
 ---
 
-# Définition
+## Rôle dans l'écosystème
 
-La consultation représente la prestation juridique réalisée entre un utilisateur et un professionnel à la suite d'une réservation confirmée et payée.
-
-Elle constitue l'exécution effective de la prestation.
-
-Une consultation est toujours issue d'une réservation.
-
----
-
-# Rôle dans l'écosystème
-
-La consultation matérialise l'exécution de la prestation vendue.
+La Consultation représente la réalisation effective d'une prestation réservée.
 
 Elle permet :
 
-- la réalisation de l'échange entre le client et le professionnel ;
-- la clôture de la prestation ;
-- la rédaction éventuelle d'un compte rendu ;
-- le dépôt d'un avis.
+- de tracer l'exécution du service ;
+- de conserver l'historique des consultations réalisées ;
+- de déclencher la clôture de la prestation ;
+- de permettre le dépôt d'un Avis ;
+- d'alimenter les indicateurs d'activité du Professionnel.
 
-La consultation marque la fin du processus commercial.
-
----
-
-# Responsable métier
-
-Le professionnel est responsable du bon déroulement de la consultation.
-
-Chaweer fournit les moyens techniques permettant sa réalisation.
+Elle constitue la dernière étape opérationnelle du parcours client avant la clôture de la prestation.
 
 ---
 
-# Données métier
+## Responsabilités
 
-## Identification
+La Consultation est responsable de :
 
-- Numéro de consultation
+- l'exécution de la prestation réservée ;
+- la traçabilité de son déroulement ;
+- son résultat final.
+
+Elle ne gère ni la planification, ni le paiement.
+
+Ces responsabilités appartiennent respectivement à la Réservation et au Paiement.
 
 ---
 
-## Origine
+## Données métier
 
-- Réservation
+Une Consultation comprend notamment :
 
----
+### Identification
 
-## Participants
+- Identifiant
+- Réservation associée
+
+### Participants
 
 - Utilisateur
 - Professionnel
 
----
+### Réalisation
 
-## Informations
-
-- Date
-- Heure prévue
-- Heure réelle de début
-- Heure réelle de fin
-- Durée prévue
+- Date de réalisation
+- Heure de début
+- Heure de fin
 - Durée réelle
 
----
+### Mode de réalisation
 
-## Mode de réalisation
+- En ligne
+- Au cabinet
+- Téléphone
+- Autre mode prévu par le Référentiel de Profession
 
-Dans la Version 1
+### Résultat
 
-- Consultation vidéo
+- Réalisée
+- Interrompue
+- Non réalisée
 
----
+### Informations complémentaires
 
-## Visioconférence
+- Compte rendu éventuel
+- Notes internes
+- Motif d'interruption ou d'annulation
 
-- Lien de connexion
-- Date d'activation
-- Salle d'attente
+### Traçabilité
 
----
-
-## Compte rendu
-
-Le professionnel peut publier :
-
-- un compte rendu
-- une conclusion
-
-Le compte rendu est facultatif.
-
-Une fois publié, il ne peut plus être modifié.
+- Date de création
+- Dernière mise à jour
 
 ---
 
-## Statut
+## Capacités
 
-- Planifiée
-- En attente
-- En cours
-- Terminée
-- Annulée
+Une Consultation peut :
 
----
+- être démarrée ;
+- être réalisée ;
+- être interrompue ;
+- être annulée ;
+- être clôturée.
 
-# Capacités
-
-Le professionnel peut :
-
-- démarrer la consultation ;
-- terminer la consultation ;
-- publier un compte rendu.
-
-L'utilisateur peut :
-
-- rejoindre la consultation ;
-- consulter le compte rendu.
-
-Chaweer peut :
-
-- générer le lien vidéo ;
-- activer le lien une heure avant ;
-- gérer la salle d'attente.
+Une Consultation clôturée peut donner lieu au dépôt d'un Avis.
 
 ---
 
-# Relations
+## Relations
 
-Une consultation :
+Une Consultation :
 
-- provient d'une réservation ;
-- est réalisée par un professionnel ;
-- concerne un utilisateur ;
-- peut donner lieu à un avis.
+- est issue d'une unique Réservation ;
+- est réalisée par un Professionnel ;
+- concerne un Utilisateur ;
+- peut donner lieu à un Avis.
 
-Cardinalités
+### Cardinalités
 
-Réservation (1)
+Réservation (1) ─────── (0..1) Consultation
 
-↓
+Professionnel (1) ─────── (N) Consultation
 
-Consultation (1)
+Utilisateur (1) ─────── (N) Consultation
 
-Consultation (1)
-
-↓
-
-Avis (0..1)
+Consultation (1) ─────── (0..1) Avis
 
 ---
 
-# Cycle de vie
+## Cycle de vie
 
 Créée
 
@@ -2018,17 +2102,23 @@ Planifiée
 
 ↓
 
-En attente
-
-↓
-
 En cours
 
 ↓
 
-Terminée
+Réalisée
 
-Cas alternatifs
+↓
+
+Clôturée
+
+ou
+
+↓
+
+Interrompue
+
+ou
 
 ↓
 
@@ -2036,146 +2126,187 @@ Annulée
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-CNS
-- RG-AVI
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-La consultation constitue la prestation effectivement réalisée entre un professionnel et un utilisateur.
+La Consultation permet de matérialiser l'exécution des prestations de type **Consultation** proposées par les Avocats.
 
-Elle représente la finalité de l'ensemble du processus de réservation.
+Elle assure la traçabilité des prestations réalisées, permet de mesurer l'activité des Professionnels et constitue le point de départ des processus de clôture, notamment la publication d'un Avis et la production des indicateurs de qualité.
+
+Le modèle est volontairement extensible afin de permettre à d'autres professions de définir leurs propres objets de réalisation sans modifier l'architecture globale de Chaweer.
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-Version 2
+### Version 2
 
-- Consultation téléphonique
-- Consultation présentielle
+- Compte rendu structuré.
+- Pièces jointes.
+- Signature électronique de fin de consultation.
+- Historique détaillé des échanges.
 
-Version 3
+### Version 3
 
-- Consultation collaborative
-- Partage de documents
-- Signature électronique
-- Enregistrement (si autorisé)
+- Enregistrement des consultations (si autorisé).
+- Assistance par intelligence artificielle.
+- Génération automatique de synthèses.
+- Intégration avec les outils métiers propres à chaque profession.
 
-# Objet métier n°10 : Paiement
+# 11.6 Paiement
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+Le Paiement représente la transaction financière réalisée dans le cadre d'une Réservation.
 
-Le paiement représente la transaction financière réalisée par un utilisateur afin de confirmer une réservation.
+Il permet de régler tout ou partie du montant d'une prestation proposée sur Chaweer.
 
-Il garantit la sécurisation de la prestation avant sa réalisation.
+Un Paiement est toujours rattaché à une unique Réservation.
 
----
-
-# Rôle dans l'écosystème
-
-Le paiement intervient après la confirmation de la réservation par le professionnel.
-
-Il déclenche la validation définitive de la réservation.
-
-Le paiement constitue également le point de départ du reversement au professionnel.
+Une Réservation peut donner lieu à aucun, un ou plusieurs Paiements selon les règles applicables (paiement unique, acompte, paiement fractionné, remboursement, etc.).
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-Chaweer est responsable de la gestion du paiement.
+Le Paiement assure la gestion financière des prestations proposées sur la plateforme.
 
-Le professionnel est responsable de la facturation de sa prestation.
+Il permet :
 
----
+- d'encaisser les règlements des Utilisateurs ;
+- de suivre les transactions financières ;
+- de déclencher les opérations de reversement aux Professionnels ;
+- de gérer les remboursements lorsque cela est applicable.
 
-# Données métier
-
-## Identification
-
-- Référence de paiement
-
----
-
-## Montant
-
-- Montant payé
-- Devise (MAD)
+Le Paiement garantit la traçabilité financière des prestations.
 
 ---
 
-## Moyen de paiement
+## Responsabilités
+
+Le Paiement est responsable de :
+
+- l'enregistrement de la transaction ;
+- son état d'avancement ;
+- son montant ;
+- son moyen de paiement ;
+- sa traçabilité.
+
+Il ne gère ni la planification des prestations ni leur exécution.
+
+---
+
+## Données métier
+
+Un Paiement comprend notamment :
+
+### Identification
+
+- Identifiant
+- Référence de transaction
+
+### Réservation
+
+- Réservation associée
+
+### Montant
+
+- Montant
+- Devise
+- Taxes éventuelles
+
+### Moyen de paiement
 
 - Carte bancaire
+- Wallet
+- Virement
+- Autre moyen supporté
 
-(V1)
-
----
-
-## Statut
+### Statut
 
 - En attente
-- Réussi
-- Échoué
+- Autorisé
+- Payé
+- Refusé
+- Annulé
 - Remboursé
+- Partiellement remboursé
+
+### Traçabilité
+
+- Date de création
+- Date de paiement
+- Dernière mise à jour
 
 ---
 
-## Reversement
+## Capacités
 
-- Date de reversement
-- Statut du reversement
+Un Paiement peut :
 
----
-
-# Capacités
-
-Chaweer peut :
-
-- encaisser un paiement ;
-- rembourser un paiement ;
-- reverser les fonds ;
-- générer un reçu.
-
-Le professionnel :
-
-- émet la facture.
+- être initié ;
+- être autorisé ;
+- être capturé ;
+- être refusé ;
+- être annulé ;
+- être remboursé totalement ;
+- être remboursé partiellement.
 
 ---
 
-# Relations
+## Relations
 
-Le paiement appartient à une réservation.
+Un Paiement :
 
-Cardinalités
+- est associé à une Réservation ;
+- peut déclencher un Reversement vers le Professionnel (version future).
 
-Réservation (1)
+### Cardinalités
 
-↓
+Réservation (1) ─────── (0..N) Paiement
 
-Paiement (1)
+Paiement (1) ─────── (0..N) Reversement *(Version future)*
 
 ---
 
-# Cycle de vie
+## Cycle de vie
 
 Créé
 
 ↓
 
-Réussi
+En attente
 
 ↓
 
-Reversé
+Autorisé
+
+↓
+
+Payé
+
+↓
+
+Clôturé
+
+ou
+
+↓
+
+Refusé
+
+ou
+
+↓
+
+Annulé
 
 ou
 
@@ -2185,174 +2316,234 @@ Remboursé
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
 - RG-PAY
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-Le paiement sécurise les échanges financiers entre l'utilisateur et le professionnel.
+Le Paiement garantit la gestion sécurisée des transactions financières réalisées sur Chaweer.
 
-Il garantit le respect des engagements de chaque partie.
+Il assure la traçabilité des opérations financières entre les Utilisateurs, la plateforme et les Professionnels tout en permettant l'évolution future vers des modèles de paiement plus avancés (acomptes, paiements fractionnés, reversements, remboursements).
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-Version 2
+### Version 2
 
-- Paiement en plusieurs fois
+- Paiement en plusieurs fois.
+- Gestion des acomptes.
+- Reversement automatique aux Professionnels.
+- Remboursements automatiques.
 
-- Wallet
+### Version 3
 
-Version 3
+- Wallet Chaweer.
+- Paiements internationaux.
+- Multi-devises.
+- Facturation automatisée.
+- Intégration avec plusieurs prestataires de paiement.
 
-- Paiement entreprise
-
-- Paiement international
-
-# Objet métier n°11 : Avis
+# 11.7 Avis
 
 > Version : V1
 
----
+## Définition
 
-# Définition
+L'Avis représente l'évaluation laissée par un Utilisateur à l'issue d'une Consultation réalisée avec un Professionnel.
 
-L'avis représente l'évaluation laissée par un utilisateur à l'issue d'une consultation réalisée.
+Il permet au client de partager son retour d'expérience sur la qualité de la prestation reçue.
 
-Il contribue à la réputation du professionnel.
+Un Avis est obligatoirement rattaché à une Consultation clôturée.
 
----
+Seul un Utilisateur ayant effectivement bénéficié d'une Consultation est autorisé à publier un Avis.
 
-# Rôle dans l'écosystème
+Chaque Consultation ne peut donner lieu qu'à un seul Avis.
 
-L'avis permet :
-
-- d'informer les futurs utilisateurs ;
-- d'améliorer la confiance ;
-- d'alimenter le score de réputation.
+L'Avis constitue l'une des principales sources d'alimentation du système de réputation et de classement des Professionnels sur Chaweer.
 
 ---
 
-# Responsable métier
+## Rôle dans l'écosystème
 
-L'utilisateur est responsable de son avis.
+L'Avis permet :
 
-Chaweer est responsable de sa modération.
+- de recueillir la satisfaction des Utilisateurs ;
+- d'améliorer la transparence de la plateforme ;
+- d'aider les futurs clients dans le choix d'un Professionnel ;
+- de valoriser les Professionnels offrant des prestations de qualité ;
+- d'alimenter le système de réputation et de classement.
 
-Le professionnel peut y répondre.
-
----
-
-# Données métier
-
-## Évaluation
-
-- Note (1 à 5 étoiles)
+L'Avis contribue à instaurer un climat de confiance entre les Utilisateurs et les Professionnels.
 
 ---
 
-## Commentaire
+## Responsabilités
 
-- Texte libre
+L'Avis est responsable de :
 
----
+- l'évaluation d'une Consultation réalisée ;
+- la collecte du retour d'expérience du client ;
+- l'alimentation du système de réputation des Professionnels.
 
-## Auteur
-
-Affichage :
-
-Prénom + initiale
-
-Exemple
-
-Ahmed B.
+Il ne modifie ni la Réservation, ni la Consultation.
 
 ---
 
-## Réponse du professionnel
+## Données métier
 
-Une seule réponse.
+Un Avis comprend notamment :
 
----
+### Identification
 
-## Statut
+- Identifiant
+- Consultation associée
+
+### Auteur
+
+- Utilisateur
+
+### Destinataire
+
+- Professionnel
+
+### Évaluation
+
+- Note
+- Commentaire
+- Date de publication
+
+### Modération
 
 - Publié
 - Signalé
-- Retiré
+- Masqué
+- Supprimé
+
+### Traçabilité
+
+- Date de création
+- Dernière modification
 
 ---
 
-# Capacités
+## Capacités
 
-L'utilisateur peut :
+Un Avis peut :
 
-- publier un avis.
-
-Le professionnel peut :
-
-- répondre.
-
-Chaweer peut :
-
-- retirer un avis.
+- être publié ;
+- être modifié conformément aux règles de la plateforme ;
+- être supprimé par son auteur selon les règles applicables ;
+- être signalé ;
+- être modéré ;
+- recevoir une réponse du Professionnel.
 
 ---
 
-# Relations
+## Relations
 
-Un avis est lié à :
+Un Avis :
 
-- une consultation ;
-- un utilisateur ;
-- un professionnel.
+- est publié par un Utilisateur ayant réalisé une Consultation ;
+- est rattaché à une unique Consultation ;
+- concerne un unique Professionnel ;
+- participe au calcul de la réputation du Professionnel.
 
-Une consultation ne peut avoir qu'un seul avis.
+### Cardinalités
+
+Utilisateur (1) ─────── (0..N) Avis
+
+Consultation (1) ─────── (0..1) Avis
+
+Professionnel (1) ─────── (N) Avis
 
 ---
 
-# Cycle de vie
+## Cycle de vie
+
+Créé
+
+↓
 
 Publié
 
 ↓
 
-Signalé (optionnel)
+Visible
 
 ↓
 
-Retiré (optionnel)
+Modifié
+
+ou
+
+↓
+
+Signalé
+
+↓
+
+En cours de modération
+
+↓
+
+Maintenu
+
+ou
+
+↓
+
+Masqué
+
+ou
+
+↓
+
+Supprimé
 
 ---
 
-# Règles de gestion associées
+## Règles de gestion associées
 
-- RG-AVI
+- RG-AVI-01 : Seul un Utilisateur ayant réalisé une Consultation peut publier un Avis.
+
+- RG-AVI-02 : Une Consultation ne peut donner lieu qu'à un seul Avis.
+
+- RG-AVI-03 : Un Avis concerne un unique Professionnel.
+
+- RG-AVI-04 : Un Avis est définitivement rattaché à la Consultation ayant permis sa création.
+
+- RG-AVI-05 : Seules les Consultations clôturées peuvent être évaluées.
+
+- RG-AVI-06 : Un Avis participe au calcul de la réputation et du classement du Professionnel.
 
 ---
 
-# Objectif Business
+## Objectif Business
 
-Les avis renforcent la transparence et la confiance entre les utilisateurs et les professionnels.
+L'Avis permet de mesurer la satisfaction des Utilisateurs à l'issue d'une Consultation réalisée.
 
-Ils constituent l'un des principaux facteurs de réputation.
+Il contribue à renforcer la confiance entre les Utilisateurs et les Professionnels en garantissant que seules les personnes ayant effectivement bénéficié d'une prestation peuvent partager leur expérience.
+
+Les Avis constituent un élément essentiel du système de réputation de Chaweer et participent au classement des Professionnels dans les résultats de recherche.
 
 ---
 
-# Évolutions futures
+## Évolutions futures
 
-Version 2
+### Version 2
 
-- Critères détaillés
+- Réponse publique du Professionnel.
+- Évaluation multicritère.
+- Vérification des avis.
+- Signalement par la communauté.
 
-Version 3
+### Version 3
 
-- Réputation IA
-
-- Analyse sémantique
-
-- Détection automatique des abus
+- Analyse automatique des commentaires.
+- Détection des avis frauduleux.
+- Synthèse des points forts et axes d'amélioration.
+- Recommandations personnalisées basées sur les avis.

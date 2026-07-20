@@ -51,6 +51,7 @@ model User {
 
   refreshTokens      RefreshToken[]
   externalIdentities ExternalIdentity[]
+  professionalProfile ProfessionalProfile?
 
   @@index([role])
   @@index([status])
@@ -84,4 +85,159 @@ model ExternalIdentity {
   @@unique([provider, providerUserId])
   @@index([userId])
   @@index([provider, providerUserId])
+}
+
+enum ProfessionalProfileStatus {
+  DRAFT
+  PENDING_VERIFICATION
+  PUBLISHED
+}
+
+enum ConsultationModality {
+  VIDEO
+  OFFICE
+}
+
+model BarAssociation {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profiles ProfessionalProfile[]
+}
+
+model City {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profiles ProfessionalProfile[]
+}
+
+model Language {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  professionals ProfessionalLanguage[]
+}
+
+model Specialization {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  practiceAreas PracticeArea[]
+  professionals ProfessionalSpecialization[]
+}
+
+model PracticeArea {
+  id               String   @id @default(cuid())
+  key              String   @unique
+  name             String
+  specializationId String
+  order            Int      @default(0)
+  active           Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  specialization Specialization             @relation(fields: [specializationId], references: [id], onDelete: Cascade)
+  professionals  ProfessionalPracticeArea[]
+
+  @@index([specializationId])
+}
+
+model ProfessionalProfile {
+  id                String                    @id @default(cuid())
+  userId            String                    @unique
+  status            ProfessionalProfileStatus @default(DRAFT)
+  barAssociationId  String?
+  cityId            String?
+  professionalPhone String?
+  officeAddress     String?
+  bio               String?
+  photoUrl          String?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  barAssociation BarAssociation? @relation(fields: [barAssociationId], references: [id])
+  city           City?           @relation(fields: [cityId], references: [id])
+
+  specializations ProfessionalSpecialization[]
+  practiceAreas   ProfessionalPracticeArea[]
+  languages       ProfessionalLanguage[]
+  offer           ConsultationOffer?
+
+  @@index([status])
+  @@index([barAssociationId])
+  @@index([cityId])
+}
+
+model ProfessionalSpecialization {
+  id               String @id @default(cuid())
+  profileId        String
+  specializationId String
+
+  profile        ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  specialization Specialization      @relation(fields: [specializationId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, specializationId])
+  @@index([profileId])
+  @@index([specializationId])
+}
+
+model ProfessionalPracticeArea {
+  id             String @id @default(cuid())
+  profileId      String
+  practiceAreaId String
+
+  profile      ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  practiceArea PracticeArea        @relation(fields: [practiceAreaId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, practiceAreaId])
+  @@index([profileId])
+  @@index([practiceAreaId])
+}
+
+model ProfessionalLanguage {
+  id         String @id @default(cuid())
+  profileId  String
+  languageId String
+
+  profile  ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  language Language            @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, languageId])
+  @@index([profileId])
+  @@index([languageId])
+}
+
+model ConsultationOffer {
+  id              String                 @id @default(cuid())
+  profileId       String                 @unique
+  price           Int
+  currency        String                 @default("MAD")
+  durationMinutes Int
+  modalities      ConsultationModality[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
