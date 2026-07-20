@@ -5,6 +5,7 @@ import { errorHandler } from './core/middleware/error-handler';
 import { notFoundHandler } from './core/middleware/not-found';
 import { authRoutes } from './modules/auth/auth.routes';
 import { profileRoutes } from './modules/profile/profile.routes';
+import { professionalRoutes } from './modules/professional/professional.routes';
 import { env } from './config/env';
 
 const app = express();
@@ -40,6 +41,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/professional', professionalRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

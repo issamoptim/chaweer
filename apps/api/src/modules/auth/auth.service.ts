@@ -19,9 +19,10 @@ import {
   ValidationError,
 } from '../../shared/errors/auth-errors';
 import { NotFoundError } from '../../core/errors';
-import { AuthProvider, UserStatus } from '../../generated/prisma/client';
+import { ensureDraftProfile } from '../professional/professional.service';
+import { AuthProvider, UserStatus, Role } from '../../generated/prisma/client';
 import type { AuthUser, LoginResult, RefreshResult, MeUser, ChangePasswordInput } from './auth.types';
-import type { RegisterInput, LoginInput } from './auth.schema';
+import type { RegisterInput, LoginInput, RegisterProfessionalInput } from './auth.schema';
 
 export function toAuthUser(user: {
   id: string;
@@ -68,6 +69,50 @@ export async function register(input: RegisterInput): Promise<void> {
       status: UserStatus.PENDING_EMAIL_VERIFICATION,
     },
   });
+}
+
+export async function registerProfessional(
+  input: RegisterProfessionalInput,
+): Promise<{ result: LoginResult; refreshToken: string }> {
+  const existingUser = await prisma.user.findUnique({
+    where: { email: input.email.toLowerCase() },
+    select: { id: true },
+  });
+
+  if (existingUser) {
+    throw new EmailAlreadyExistsError();
+  }
+
+  const passwordHash = await hashPassword(input.password);
+
+  const user = await prisma.$transaction(async (tx) => {
+    const createdUser = await tx.user.create({
+      data: {
+        email: input.email.toLowerCase(),
+        passwordHash,
+        firstName: '',
+        lastName: '',
+        authProvider: AuthProvider.LOCAL,
+        role: Role.PROFESSIONAL,
+        status: UserStatus.ACTIVE,
+      },
+    });
+
+    await ensureDraftProfile(createdUser.id, tx);
+
+    return createdUser;
+  });
+
+  const accessToken = await signAccessToken({ userId: user.id, role: user.role });
+  const refreshToken = await createSession(user.id);
+
+  return {
+    result: {
+      accessToken,
+      user: toAuthUser(user),
+    },
+    refreshToken,
+  };
 }
 
 export async function login(

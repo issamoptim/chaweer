@@ -15,6 +15,10 @@ vi.mock('../../../core/database/prisma', () => ({
       findUnique: vi.fn(),
       update: vi.fn(),
     },
+    professionalProfile: {
+      findUnique: vi.fn(),
+      create: vi.fn(),
+    },
     $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn({
       user: {
         create: vi.fn(),
@@ -184,6 +188,10 @@ describe('google-auth.service', () => {
           externalIdentity: { create: vi.fn().mockResolvedValue({}) },
         }) as never,
       );
+      vi.mocked(prisma.professionalProfile.findUnique).mockResolvedValue(null);
+      vi.mocked(prisma.professionalProfile.create).mockResolvedValue({
+        id: 'profile-2',
+      } as never);
 
       await googleAuthenticate('code', 'verifier', 'PROFESSIONAL');
 
@@ -191,6 +199,10 @@ describe('google-auth.service', () => {
         data: expect.objectContaining({
           role: 'PROFESSIONAL',
         }),
+      });
+      expect(prisma.professionalProfile.create).toHaveBeenCalledWith({
+        data: { userId: 'new-user-2', status: 'DRAFT' },
+        select: { id: true },
       });
     });
   });

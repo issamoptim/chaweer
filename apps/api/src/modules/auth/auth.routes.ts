@@ -2,9 +2,15 @@ import { Router } from 'express';
 import { validate } from '../../core/middleware/validate';
 import { authenticate } from '../../core/middleware/authenticate';
 import { authIpLimiter, authEmailLimiter } from '../../core/middleware/rate-limiter';
-import { registerSchema, loginSchema, changePasswordSchema } from './auth.schema';
+import {
+  registerSchema,
+  registerProfessionalSchema,
+  loginSchema,
+  changePasswordSchema,
+} from './auth.schema';
 import {
   registerController,
+  registerProfessionalController,
   loginController,
   refreshController,
   logoutController,
@@ -31,6 +37,14 @@ router.post(
   authEmailLimiter,
   validate(loginSchema),
   loginController,
+);
+
+router.post(
+  '/register/professional',
+  authIpLimiter,
+  authEmailLimiter,
+  validate(registerProfessionalSchema),
+  registerProfessionalController,
 );
 
 router.post('/refresh', authIpLimiter, refreshController);

@@ -4,6 +4,7 @@ import { signAccessToken } from '../services/jwt.service';
 import { createSession } from '../services/refresh-token.service';
 import { toAuthUser } from '../auth.service';
 import { exchangeCodeForTokens, verifyGoogleIdToken } from './google-token.service';
+import { ensureDraftProfile } from '../../professional/professional.service';
 import {
   AccountSuspendedError,
   AccountDeletedError,
@@ -29,6 +30,11 @@ export async function googleAuthenticate(
   const claims = await verifyGoogleIdToken(tokens.id_token);
 
   const user = await findOrCreateUser(claims, role, reactivate);
+
+  if (user.role === 'PROFESSIONAL') {
+    await ensureDraftProfile(user.id);
+  }
+
   const refreshToken = await createSession(user.id);
   const accessToken = await signAccessToken({ userId: user.id, role: user.role });
 

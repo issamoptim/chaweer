@@ -22,6 +22,23 @@ export async function registerController(
   }
 }
 
+export async function registerProfessionalController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const { result, refreshToken } = await authService.registerProfessional(req.body);
+    setRefreshTokenCookie(res, refreshToken);
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function loginController(
   req: Request,
   res: Response,

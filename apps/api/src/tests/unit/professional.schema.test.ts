@@ -1,0 +1,113 @@
+import { describe, it, expect } from 'vitest';
+import {
+  updateProfileSchema,
+  updateExpertiseSchema,
+  updateOfferSchema,
+} from '../../modules/professional/professional.schema';
+
+describe('updateProfileSchema', () => {
+  it('rejects an empty payload', () => {
+    expect(updateProfileSchema.safeParse({}).success).toBe(false);
+  });
+
+  it('accepts a partial payload', () => {
+    const result = updateProfileSchema.safeParse({ firstName: 'Amina' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects an empty first name', () => {
+    const result = updateProfileSchema.safeParse({ firstName: '' });
+    expect(result.success).toBe(false);
+  });
+
+  it('allows clearing optional fields with null', () => {
+    const result = updateProfileSchema.safeParse({ bio: null });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('updateExpertiseSchema', () => {
+  it('requires at least one specialization, practice area and language', () => {
+    expect(
+      updateExpertiseSchema.safeParse({
+        specializationIds: [],
+        practiceAreaIds: ['a'],
+        languageIds: ['b'],
+      }).success,
+    ).toBe(false);
+    expect(
+      updateExpertiseSchema.safeParse({
+        specializationIds: ['a'],
+        practiceAreaIds: [],
+        languageIds: ['b'],
+      }).success,
+    ).toBe(false);
+    expect(
+      updateExpertiseSchema.safeParse({
+        specializationIds: ['a'],
+        practiceAreaIds: ['b'],
+        languageIds: [],
+      }).success,
+    ).toBe(false);
+  });
+
+  it('accepts a valid selection', () => {
+    const result = updateExpertiseSchema.safeParse({
+      specializationIds: ['s1'],
+      practiceAreaIds: ['p1', 'p2'],
+      languageIds: ['l1'],
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('updateOfferSchema', () => {
+  it('rejects a non-positive price', () => {
+    expect(
+      updateOfferSchema.safeParse({
+        price: 0,
+        durationMinutes: 30,
+        modalities: ['VIDEO'],
+      }).success,
+    ).toBe(false);
+  });
+
+  it('rejects an invalid duration', () => {
+    expect(
+      updateOfferSchema.safeParse({
+        price: 300,
+        durationMinutes: 20,
+        modalities: ['VIDEO'],
+      }).success,
+    ).toBe(false);
+  });
+
+  it('rejects an empty modalities list', () => {
+    expect(
+      updateOfferSchema.safeParse({
+        price: 300,
+        durationMinutes: 30,
+        modalities: [],
+      }).success,
+    ).toBe(false);
+  });
+
+  it('rejects an unknown modality', () => {
+    expect(
+      updateOfferSchema.safeParse({
+        price: 300,
+        durationMinutes: 30,
+        modalities: ['HOME'],
+      }).success,
+    ).toBe(false);
+  });
+
+  it('accepts a valid offer', () => {
+    const result = updateOfferSchema.safeParse({
+      price: 300,
+      durationMinutes: 45,
+      modalities: ['VIDEO', 'OFFICE'],
+    });
+    expect(result.success).toBe(true);
+  });
+});
