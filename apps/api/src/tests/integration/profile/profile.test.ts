@@ -25,9 +25,7 @@ describe('GET /profile (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/profile')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/profile').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -73,9 +71,7 @@ describe('GET /profile (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/profile')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/profile').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.data.phone).toBeNull();
@@ -94,9 +90,7 @@ describe('GET /profile (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/profile')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/profile').set('Authorization', `Bearer ${token}`);
 
     expect(response.body.data.notificationEmail).toBe(true);
     expect(response.body.data.notificationPush).toBe(true);
@@ -111,9 +105,7 @@ describe('GET /profile (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/profile')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/profile').set('Authorization', `Bearer ${token}`);
 
     expect(response.body.data.passwordHash).toBeUndefined();
     expect(response.body.data.authProvider).toBeUndefined();
@@ -134,9 +126,7 @@ describe('GET /profile (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/profile')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/profile').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.data.email).toBe('google-profile@gmail.com');
@@ -517,15 +507,13 @@ describe('PATCH /profile (integration)', () => {
   });
 
   it('should return 401 without auth', async () => {
-    const response = await request(app)
-      .patch('/profile')
-      .send({
-        firstName: 'Ahmed',
-        lastName: 'Benali',
-        country: 'Maroc',
-        city: 'Casablanca',
-        nationality: 'Marocaine',
-      });
+    const response = await request(app).patch('/profile').send({
+      firstName: 'Ahmed',
+      lastName: 'Benali',
+      country: 'Maroc',
+      city: 'Casablanca',
+      nationality: 'Marocaine',
+    });
 
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe('UNAUTHORIZED');
@@ -602,21 +590,16 @@ describe('PATCH /profile (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    await request(app)
-      .patch('/profile')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        firstName: 'Ahmed',
-        lastName: 'Benali',
-        phone: '+212600000000',
-        country: 'France',
-        city: 'Paris',
-        nationality: 'Française',
-      });
+    await request(app).patch('/profile').set('Authorization', `Bearer ${token}`).send({
+      firstName: 'Ahmed',
+      lastName: 'Benali',
+      phone: '+212600000000',
+      country: 'France',
+      city: 'Paris',
+      nationality: 'Française',
+    });
 
-    const getResponse = await request(app)
-      .get('/profile')
-      .set('Authorization', `Bearer ${token}`);
+    const getResponse = await request(app).get('/profile').set('Authorization', `Bearer ${token}`);
 
     expect(getResponse.body.data.firstName).toBe('Ahmed');
     expect(getResponse.body.data.lastName).toBe('Benali');

@@ -45,7 +45,7 @@ export function SelectField({
       setOpen(false);
       setSearch("");
     },
-    [onChange],
+    [onChange]
   );
 
   useEffect(() => {
@@ -116,14 +116,14 @@ export function SelectField({
           className={cn(
             "flex h-[50px] w-full items-center justify-between rounded-[12px] border-[1.5px] border-[#E7E5E1] bg-background px-[15px] text-[15px] font-medium text-foreground transition-colors focus:border-[#0F766E] focus:outline-none focus:ring-[3px] focus:ring-[rgba(20,184,166,0.40)] disabled:cursor-not-allowed disabled:bg-[#F2F1EF] disabled:text-[#9A968E]",
             hasError ? "border-[#B4231F]" : "",
-            !value && "text-muted-foreground",
+            !value && "text-muted-foreground"
           )}
         >
           <span>{value || placeholder}</span>
           <ChevronDown
             className={cn(
               "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
-              open && "rotate-180",
+              open && "rotate-180"
             )}
           />
         </button>
@@ -163,9 +163,7 @@ export function SelectField({
                   className={cn(
                     "flex w-full items-center justify-between rounded-[9px] px-3 py-[11px] text-[14.5px] transition-colors",
                     clampedIndex === 0 && "bg-primary/5",
-                    !value
-                      ? "font-semibold text-primary"
-                      : "text-muted-foreground",
+                    !value ? "font-semibold text-primary" : "text-muted-foreground"
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -193,7 +191,7 @@ export function SelectField({
                         clampedIndex === optionIndex && "bg-primary/5",
                         value === option
                           ? "bg-[#E6F2F0] font-semibold text-primary"
-                          : "text-foreground",
+                          : "text-foreground"
                       )}
                     >
                       {option}

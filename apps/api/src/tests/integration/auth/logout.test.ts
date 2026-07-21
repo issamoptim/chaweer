@@ -28,9 +28,7 @@ describe('POST /auth/logout (integration)', () => {
 
     const cookie = await loginAndGetCookie('logout@example.com', 'SecurePass123!');
 
-    const response = await request(app)
-      .post('/auth/logout')
-      .set('Cookie', cookie);
+    const response = await request(app).post('/auth/logout').set('Cookie', cookie);
 
     expect(response.status).toBe(204);
     expect(response.headers['set-cookie']).toBeDefined();

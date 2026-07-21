@@ -79,10 +79,7 @@ export function DeleteAccountConfirmModal({ open, onClose }: DeleteAccountConfir
             <Trash2 className="h-5 w-5 text-[#B4231F]" aria-hidden="true" />
           </div>
           <div>
-            <h2
-              id="delete-account-confirm-title"
-              className="text-[19px] font-bold text-foreground"
-            >
+            <h2 id="delete-account-confirm-title" className="text-[19px] font-bold text-foreground">
               Supprimer votre compte ?
             </h2>
           </div>

@@ -29,9 +29,7 @@ export function ProfessionalOfferPage() {
 
   const [price, setPrice] = useState("");
   const [duration, setDuration] = useState<number>(30);
-  const [modalities, setModalities] = useState<Set<ConsultationModality>>(
-    new Set(["VIDEO"]),
-  );
+  const [modalities, setModalities] = useState<Set<ConsultationModality>>(new Set(["VIDEO"]));
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
@@ -52,16 +50,14 @@ export function ProfessionalOfferPage() {
   }
 
   const priceNumber = Number(price);
-  const canFinish =
-    Number.isInteger(priceNumber) && priceNumber > 0 && modalities.size > 0;
+  const canFinish = Number.isInteger(priceNumber) && priceNumber > 0 && modalities.size > 0;
 
   const previewData = useMemo(() => {
     const name =
       profile && (profile.firstName || profile.lastName)
         ? `${profile.firstName} ${profile.lastName}`.trim()
         : "";
-    const cityName =
-      referential?.cities.find((c) => c.id === profile?.cityId)?.name ?? null;
+    const cityName = referential?.cities.find((c) => c.id === profile?.cityId)?.name ?? null;
     const specialtyNames =
       referential?.specializations
         .filter((s) => profile?.specializationIds.includes(s.id))
@@ -79,7 +75,7 @@ export function ProfessionalOfferPage() {
       {
         onSuccess: () => setFinished(true),
         onError: () => toast.showError("Impossible d'enregistrer votre offre."),
-      },
+      }
     );
   }
 
@@ -93,8 +89,8 @@ export function ProfessionalOfferPage() {
           Votre profil professionnel est configuré
         </h1>
         <p className="mt-2 text-[15px] text-[#6B6862]">
-          Notre équipe vérifiera vos informations avant la publication de votre
-          profil. Vous serez notifié dès que votre espace sera actif.
+          Notre équipe vérifiera vos informations avant la publication de votre profil. Vous serez
+          notifié dès que votre espace sera actif.
         </p>
         <div className="mt-8 flex flex-col items-center gap-2">
           <button
@@ -127,14 +123,17 @@ export function ProfessionalOfferPage() {
           Offre de consultation
         </h1>
         <p className="mt-1 text-[14.5px] text-[#6B6862]">
-          Définissez les conditions de votre consultation. L'aperçu à droite reflète
-          ce que verront vos clients.
+          Définissez les conditions de votre consultation. L'aperçu à droite reflète ce que verront
+          vos clients.
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         <div className="flex flex-col gap-5">
-          <Card title="Tarif" description="Affiché avant toute prise de rendez-vous — sans surprise.">
+          <Card
+            title="Tarif"
+            description="Affiché avant toute prise de rendez-vous — sans surprise."
+          >
             <div className="relative w-full max-w-[220px]">
               <input
                 type="text"

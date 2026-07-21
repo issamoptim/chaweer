@@ -20,14 +20,16 @@ vi.mock('../../../core/database/prisma', () => ({
       findUnique: vi.fn(),
       create: vi.fn(),
     },
-    $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn({
-      user: {
-        create: vi.fn(),
-      },
-      externalIdentity: {
-        create: vi.fn(),
-      },
-    })),
+    $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) =>
+      fn({
+        user: {
+          create: vi.fn(),
+        },
+        externalIdentity: {
+          create: vi.fn(),
+        },
+      }),
+    ),
   },
 }));
 
@@ -79,12 +81,9 @@ vi.mock('../../../core/logger', () => ({
 const { prisma } = await import('../../../core/database/prisma');
 const { signAccessToken } = await import('../../../modules/auth/services/jwt.service');
 const { createSession } = await import('../../../modules/auth/services/refresh-token.service');
-const { exchangeCodeForTokens, verifyGoogleIdToken } = await import(
-  '../../../modules/auth/google/google-token.service'
-);
-const { googleAuthenticate } = await import(
-  '../../../modules/auth/google/google-auth.service'
-);
+const { exchangeCodeForTokens, verifyGoogleIdToken } =
+  await import('../../../modules/auth/google/google-token.service');
+const { googleAuthenticate } = await import('../../../modules/auth/google/google-auth.service');
 
 const mockGoogleClaims = {
   sub: 'google-sub-123',
@@ -138,10 +137,11 @@ describe('google-auth.service', () => {
       });
       const txExtIdentityCreate = vi.fn().mockResolvedValue({});
       vi.mocked(prisma.$transaction).mockImplementation(
-        async (fn) => fn({
-          user: { create: txUserCreate },
-          externalIdentity: { create: txExtIdentityCreate },
-        }) as never,
+        async (fn) =>
+          fn({
+            user: { create: txUserCreate },
+            externalIdentity: { create: txExtIdentityCreate },
+          }) as never,
       );
 
       const result = await googleAuthenticate('code', 'verifier', 'CLIENT');
@@ -184,10 +184,11 @@ describe('google-auth.service', () => {
         status: 'ACTIVE',
       });
       vi.mocked(prisma.$transaction).mockImplementation(
-        async (fn) => fn({
-          user: { create: txUserCreate },
-          externalIdentity: { create: vi.fn().mockResolvedValue({}) },
-        }) as never,
+        async (fn) =>
+          fn({
+            user: { create: txUserCreate },
+            externalIdentity: { create: vi.fn().mockResolvedValue({}) },
+          }) as never,
       );
       vi.mocked(prisma.professionalProfile.findUnique).mockResolvedValue(null);
       vi.mocked(prisma.professionalProfile.create).mockResolvedValue({
@@ -312,9 +313,7 @@ describe('google-auth.service', () => {
         authProvider: 'LOCAL',
       } as never);
 
-      await expect(
-        googleAuthenticate('code', 'verifier', 'CLIENT'),
-      ).rejects.toThrow(
+      await expect(googleAuthenticate('code', 'verifier', 'CLIENT')).rejects.toThrow(
         'Cette adresse e-mail est déjà utilisée avec une autre méthode de connexion.',
       );
     });
@@ -329,9 +328,9 @@ describe('google-auth.service', () => {
         authProvider: 'GOOGLE',
       } as never);
 
-      await expect(
-        googleAuthenticate('code', 'verifier', 'CLIENT'),
-      ).rejects.toThrow('Identité Google invalide.');
+      await expect(googleAuthenticate('code', 'verifier', 'CLIENT')).rejects.toThrow(
+        'Identité Google invalide.',
+      );
     });
   });
 
@@ -345,45 +344,43 @@ describe('google-auth.service', () => {
         user: { ...mockExistingGoogleUser, status: 'SUSPENDED' },
       } as never);
 
-      await expect(
-        googleAuthenticate('code', 'verifier', 'CLIENT'),
-      ).rejects.toThrow('Votre compte est suspendu. Veuillez contacter le support.');
+      await expect(googleAuthenticate('code', 'verifier', 'CLIENT')).rejects.toThrow(
+        'Votre compte est suspendu. Veuillez contacter le support.',
+      );
     });
   });
 
   describe('Google token exchange failure', () => {
     it('should propagate GoogleAuthFailedError', async () => {
       vi.mocked(exchangeCodeForTokens).mockRejectedValue(
-        new Error('Échec de l\'authentification Google.'),
+        new Error("Échec de l'authentification Google."),
       );
 
-      await expect(
-        googleAuthenticate('bad-code', 'verifier', 'CLIENT'),
-      ).rejects.toThrow('Échec de l\'authentification Google.');
+      await expect(googleAuthenticate('bad-code', 'verifier', 'CLIENT')).rejects.toThrow(
+        "Échec de l'authentification Google.",
+      );
     });
   });
 
   describe('Invalid Google ID token', () => {
     it('should propagate InvalidGoogleTokenError', async () => {
-      vi.mocked(verifyGoogleIdToken).mockRejectedValue(
-        new Error('Token Google invalide.'),
-      );
+      vi.mocked(verifyGoogleIdToken).mockRejectedValue(new Error('Token Google invalide.'));
 
-      await expect(
-        googleAuthenticate('code', 'verifier', 'CLIENT'),
-      ).rejects.toThrow('Token Google invalide.');
+      await expect(googleAuthenticate('code', 'verifier', 'CLIENT')).rejects.toThrow(
+        'Token Google invalide.',
+      );
     });
   });
 
   describe('email_verified = false', () => {
     it('should propagate GoogleAccountNotVerifiedError', async () => {
       vi.mocked(verifyGoogleIdToken).mockRejectedValue(
-        new Error('Votre compte Google n\'est pas vérifié.'),
+        new Error("Votre compte Google n'est pas vérifié."),
       );
 
-      await expect(
-        googleAuthenticate('code', 'verifier', 'CLIENT'),
-      ).rejects.toThrow('Votre compte Google n\'est pas vérifié.');
+      await expect(googleAuthenticate('code', 'verifier', 'CLIENT')).rejects.toThrow(
+        "Votre compte Google n'est pas vérifié.",
+      );
     });
   });
 });

@@ -72,9 +72,7 @@ export function EmailRegistration() {
               register={register("terms")}
               error={errors.terms?.message}
             />
-            <PrimaryButton loading={registerMutation.isPending}>
-              Créer mon compte
-            </PrimaryButton>
+            <PrimaryButton loading={registerMutation.isPending}>Créer mon compte</PrimaryButton>
           </form>
           <div className="flex justify-center">
             <TextLink to="/inscription">Retour</TextLink>

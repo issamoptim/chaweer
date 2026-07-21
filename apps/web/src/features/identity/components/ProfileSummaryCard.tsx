@@ -19,7 +19,7 @@ export function ProfileSummaryCard({ profile }: ProfileSummaryCardProps) {
     <div className="flex items-center gap-4 rounded-[16px] border border-[#E9E7E3] bg-card p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
       <div
         className={cn(
-          "flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0F766E] text-[22px] font-bold text-white",
+          "flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0F766E] text-[22px] font-bold text-white"
         )}
         aria-label={`Avatar: ${initials}`}
       >

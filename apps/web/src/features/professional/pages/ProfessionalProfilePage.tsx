@@ -64,12 +64,8 @@ export function ProfessionalProfilePage() {
     }
   }, [profile]);
 
-  const isDirty = useMemo(
-    () => JSON.stringify(form) !== JSON.stringify(initial),
-    [form, initial],
-  );
-  const canContinue =
-    form.firstName.trim().length > 0 && form.lastName.trim().length > 0;
+  const isDirty = useMemo(() => JSON.stringify(form) !== JSON.stringify(initial), [form, initial]);
+  const canContinue = form.firstName.trim().length > 0 && form.lastName.trim().length > 0;
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -90,21 +86,18 @@ export function ProfessionalProfilePage() {
       {
         onSuccess: () => navigate("/pro/expertise"),
         onError: () => toast.showError("Impossible d'enregistrer votre profil."),
-      },
+      }
     );
   }
 
   const barOptions =
     referential?.barAssociations.map((b) => ({ value: b.id, label: b.name })) ?? [];
-  const cityOptions =
-    referential?.cities.map((c) => ({ value: c.id, label: c.name })) ?? [];
+  const cityOptions = referential?.cities.map((c) => ({ value: c.id, label: c.name })) ?? [];
 
   return (
     <div>
       <header className="mb-6">
-        <h1 className="text-[26px] font-bold tracking-[-0.02em] text-[#1C1B1A]">
-          Mon profil
-        </h1>
+        <h1 className="text-[26px] font-bold tracking-[-0.02em] text-[#1C1B1A]">Mon profil</h1>
         <p className="mt-1 text-[14.5px] text-[#6B6862]">
           Ces informations constitueront votre présentation publique.
         </p>
@@ -205,9 +198,7 @@ export function ProfessionalProfilePage() {
       <StickyActionBar
         saved={!isDirty && !isLoading}
         status={
-          isDirty
-            ? "Modifications non enregistrées"
-            : "Toutes les modifications sont enregistrées"
+          isDirty ? "Modifications non enregistrées" : "Toutes les modifications sont enregistrées"
         }
       >
         <PrimaryButton

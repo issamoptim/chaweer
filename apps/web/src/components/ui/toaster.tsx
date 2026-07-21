@@ -28,15 +28,9 @@ export function ToastProvider({ children }: ToastProviderProps) {
     }, 3000);
   }, []);
 
-  const showSuccess = useCallback(
-    (message: string) => showToast(message, "success"),
-    [showToast],
-  );
+  const showSuccess = useCallback((message: string) => showToast(message, "success"), [showToast]);
 
-  const showError = useCallback(
-    (message: string) => showToast(message, "error"),
-    [showToast],
-  );
+  const showError = useCallback((message: string) => showToast(message, "error"), [showToast]);
 
   return (
     <ToastContext.Provider value={{ showSuccess, showError }}>

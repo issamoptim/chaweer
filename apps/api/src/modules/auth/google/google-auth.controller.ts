@@ -7,7 +7,12 @@ export function googleAuthController(role: Role) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { code, codeVerifier, reactivate } = req.body;
-      const { result, refreshToken } = await googleAuthenticate(code, codeVerifier, role, reactivate);
+      const { result, refreshToken } = await googleAuthenticate(
+        code,
+        codeVerifier,
+        role,
+        reactivate,
+      );
       setRefreshTokenCookie(res, refreshToken);
       res.status(200).json({
         success: true,

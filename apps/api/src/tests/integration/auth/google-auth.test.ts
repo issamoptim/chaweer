@@ -8,15 +8,11 @@ vi.mock('../../../modules/auth/google/google-token.service', () => ({
 
 const { app } = await import('../../../app');
 const { prisma } = await import('../../../core/database/prisma');
-const { cleanDatabase, createTestUser, createTestGoogleUser } = await import(
-  '../../helpers/db-helper'
-);
-const { exchangeCodeForTokens, verifyGoogleIdToken } = await import(
-  '../../../modules/auth/google/google-token.service'
-);
-const { GoogleAuthFailedError } = await import(
-  '../../../shared/errors/auth-errors'
-);
+const { cleanDatabase, createTestUser, createTestGoogleUser } =
+  await import('../../helpers/db-helper');
+const { exchangeCodeForTokens, verifyGoogleIdToken } =
+  await import('../../../modules/auth/google/google-token.service');
+const { GoogleAuthFailedError } = await import('../../../shared/errors/auth-errors');
 
 const mockGoogleClaims = {
   sub: 'google-sub-integration-123',
@@ -153,9 +149,7 @@ describe('POST /auth/google/* (integration)', () => {
     });
 
     it('should return 401 when Google token exchange fails', async () => {
-      vi.mocked(exchangeCodeForTokens).mockRejectedValue(
-        new GoogleAuthFailedError(),
-      );
+      vi.mocked(exchangeCodeForTokens).mockRejectedValue(new GoogleAuthFailedError());
 
       const response = await request(app)
         .post('/auth/google/client')
@@ -175,9 +169,7 @@ describe('POST /auth/google/* (integration)', () => {
     });
 
     it('should validate request body — missing codeVerifier', async () => {
-      const response = await request(app)
-        .post('/auth/google/client')
-        .send({ code: 'valid-code' });
+      const response = await request(app).post('/auth/google/client').send({ code: 'valid-code' });
 
       expect(response.status).toBe(422);
       expect(response.body.error.code).toBe('VALIDATION_ERROR');

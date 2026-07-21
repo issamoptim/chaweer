@@ -42,7 +42,7 @@ async function request<T>(
   method: "GET" | "POST" | "PATCH" | "PUT" | "DELETE",
   path: string,
   body?: unknown,
-  options?: RequestOptions,
+  options?: RequestOptions
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export const apiClient = {
     path: string,
     fieldName: string,
     file: File,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<T> {
     const formData = new FormData();
     formData.append(fieldName, file);

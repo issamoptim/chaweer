@@ -77,9 +77,7 @@ async function findOrCreateUser(
           where: { id: user.id },
           data: {
             status: 'ACTIVE',
-            ...(role === 'PROFESSIONAL' && user.role === 'CLIENT'
-              ? { role: 'PROFESSIONAL' }
-              : {}),
+            ...(role === 'PROFESSIONAL' && user.role === 'CLIENT' ? { role: 'PROFESSIONAL' } : {}),
           },
         });
         return reactivated;

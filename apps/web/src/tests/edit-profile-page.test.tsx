@@ -52,18 +52,12 @@ function createMockAuthValue(overrides?: Partial<AuthContextValue>): AuthContext
   };
 }
 
-function renderWithProviders(
-  ui: React.ReactNode,
-  authValue?: Partial<AuthContextValue>,
-) {
+function renderWithProviders(ui: React.ReactNode, authValue?: Partial<AuthContextValue>) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
 
-  const router = createMemoryRouter(
-    [{ path: "/", element: ui }],
-    { initialEntries: ["/"] },
-  );
+  const router = createMemoryRouter([{ path: "/", element: ui }], { initialEntries: ["/"] });
 
   return render(
     <QueryClientProvider client={queryClient}>
@@ -72,7 +66,7 @@ function renderWithProviders(
           <RouterProvider router={router} />
         </ToastProvider>
       </AuthContext.Provider>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 }
 
@@ -144,7 +138,9 @@ describe("EditProfilePage", () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue("Ahmed")).toBeInTheDocument();
     });
-    expect(screen.queryByText("Le numéro de téléphone est utilisé pour votre authentification.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Le numéro de téléphone est utilisé pour votre authentification.")
+    ).not.toBeInTheDocument();
   });
 
   it("disables Enregistrer button when no changes have been made", async () => {
@@ -239,7 +235,7 @@ describe("EditProfilePage", () => {
     await waitFor(() => {
       expect(updateProfileFn).toHaveBeenCalledWith(
         expect.objectContaining({ firstName: "Mohamed" }),
-        "fake-token",
+        "fake-token"
       );
     });
   });
@@ -299,9 +295,10 @@ describe("EditProfilePage", () => {
   it("prevents double submission", async () => {
     let resolveFn: (value: ProfileData) => void;
     const updateProfileFn = vi.fn().mockImplementation(
-      () => new Promise<ProfileData>((resolve) => {
-        resolveFn = resolve;
-      }),
+      () =>
+        new Promise<ProfileData>((resolve) => {
+          resolveFn = resolve;
+        })
     );
     mockIdentityService(mockProfile, updateProfileFn);
 

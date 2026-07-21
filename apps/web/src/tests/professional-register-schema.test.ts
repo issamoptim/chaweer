@@ -13,10 +13,9 @@ describe("professionalRegisterSchema", () => {
   });
 
   it("rejects an invalid email", () => {
-    expect(
-      professionalRegisterSchema.safeParse({ ...valid, email: "not-an-email" })
-        .success,
-    ).toBe(false);
+    expect(professionalRegisterSchema.safeParse({ ...valid, email: "not-an-email" }).success).toBe(
+      false
+    );
   });
 
   it("rejects a password without a digit", () => {
@@ -25,7 +24,7 @@ describe("professionalRegisterSchema", () => {
         ...valid,
         password: "Password",
         confirmPassword: "Password",
-      }).success,
+      }).success
     ).toBe(false);
   });
 
@@ -35,7 +34,7 @@ describe("professionalRegisterSchema", () => {
         ...valid,
         password: "Pass1",
         confirmPassword: "Pass1",
-      }).success,
+      }).success
     ).toBe(false);
   });
 

@@ -38,10 +38,7 @@ export async function exchangeCodeForTokens(
 
     if (!response.ok) {
       const errorBody = await response.text();
-      logger.warn(
-        { statusCode: response.status, errorBody },
-        'Google token exchange failed',
-      );
+      logger.warn({ statusCode: response.status, errorBody }, 'Google token exchange failed');
       throw new GoogleAuthFailedError();
     }
 

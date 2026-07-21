@@ -58,9 +58,7 @@ export function Connexion() {
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <EmailField register={register("email")} error={errors.email?.message} />
             <PasswordField register={register("password")} error={errors.password?.message} />
-            <PrimaryButton loading={loginMutation.isPending}>
-              Se connecter
-            </PrimaryButton>
+            <PrimaryButton loading={loginMutation.isPending}>Se connecter</PrimaryButton>
           </form>
           <div className="flex flex-col items-center gap-2">
             <TextLink to="/connexion">Mot de passe oublié</TextLink>

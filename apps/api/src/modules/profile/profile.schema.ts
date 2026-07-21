@@ -19,36 +19,27 @@ export type UpdatePreferencesInput = z.infer<typeof updatePreferencesSchema>;
 
 export const updateProfileSchema = z
   .object({
-    firstName: z
-      .string()
-      .trim()
-      .max(100, 'Le prénom est trop long')
-      .nullable()
-      .optional(),
-    lastName: z
-      .string()
-      .trim()
-      .max(100, 'Le nom est trop long')
-      .nullable()
-      .optional(),
-    phone: z
-      .string()
-      .trim()
-      .max(30, 'Le numéro de téléphone est trop long')
-      .nullable()
-      .optional(),
+    firstName: z.string().trim().max(100, 'Le prénom est trop long').nullable().optional(),
+    lastName: z.string().trim().max(100, 'Le nom est trop long').nullable().optional(),
+    phone: z.string().trim().max(30, 'Le numéro de téléphone est trop long').nullable().optional(),
     country: z.preprocess(
       (val) => (val === '' || val === null || val === undefined ? null : val),
-      z.enum(COUNTRIES, {
-        message: 'Pays invalide',
-      }).nullable().optional(),
+      z
+        .enum(COUNTRIES, {
+          message: 'Pays invalide',
+        })
+        .nullable()
+        .optional(),
     ),
     city: z.string().trim().nullable().optional(),
     nationality: z.preprocess(
       (val) => (val === '' || val === null || val === undefined ? null : val),
-      z.enum(NATIONALITIES, {
-        message: 'Nationalité invalide',
-      }).nullable().optional(),
+      z
+        .enum(NATIONALITIES, {
+          message: 'Nationalité invalide',
+        })
+        .nullable()
+        .optional(),
     ),
   })
   .superRefine((data, ctx) => {

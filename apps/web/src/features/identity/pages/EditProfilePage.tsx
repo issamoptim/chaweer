@@ -85,7 +85,9 @@ export function EditProfilePage() {
   }
 
   function handleNationalityChange(value: string) {
-    setValue("nationality", (value || null) as EditProfileFormData["nationality"], { shouldDirty: true });
+    setValue("nationality", (value || null) as EditProfileFormData["nationality"], {
+      shouldDirty: true,
+    });
   }
 
   function handleCancel() {
@@ -160,9 +162,13 @@ export function EditProfilePage() {
       <div className="min-h-screen bg-white">
         <AppHeader />
         <div className="mx-auto max-w-[760px] px-6 py-8 flex flex-col gap-[22px]">
-          <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">Modifier mon profil</h1>
+          <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
+            Modifier mon profil
+          </h1>
           <ErrorMessage message="Impossible de charger votre profil." />
-          <SecondaryButton onClick={() => refetch()} className="w-auto px-[26px]">Réessayer</SecondaryButton>
+          <SecondaryButton onClick={() => refetch()} className="w-auto px-[26px]">
+            Réessayer
+          </SecondaryButton>
         </div>
       </div>
     );
@@ -185,7 +191,9 @@ export function EditProfilePage() {
             <ArrowLeft className="h-4 w-4" strokeWidth={2.2} />
             Retour
           </button>
-          <h1 className="mt-3 text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">Modifier mon profil</h1>
+          <h1 className="mt-3 text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
+            Modifier mon profil
+          </h1>
           <p className="mt-1 text-[14.5px] text-[#6B6862]">
             Mettez à jour vos informations personnelles.
           </p>
@@ -220,10 +228,7 @@ export function EditProfilePage() {
               errorTextClass="text-[13px] text-[#B4231F] mt-[7px]"
             />
 
-            <ReadOnlyField
-              label="Email"
-              value={profile.email}
-            />
+            <ReadOnlyField label="Email" value={profile.email} />
 
             <TextField
               label="Téléphone"
@@ -280,7 +285,11 @@ export function EditProfilePage() {
           </div>
 
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-3">
-            <SecondaryButton onClick={handleCancel} disabled={isSaving} className="sm:w-auto sm:px-[26px]">
+            <SecondaryButton
+              onClick={handleCancel}
+              disabled={isSaving}
+              className="sm:w-auto sm:px-[26px]"
+            >
               Annuler
             </SecondaryButton>
             <PrimaryButton
@@ -294,11 +303,7 @@ export function EditProfilePage() {
           </div>
         </form>
 
-        <ConfirmLeaveModal
-          open={showConfirmLeave}
-          onStay={handleStay}
-          onLeave={handleLeave}
-        />
+        <ConfirmLeaveModal open={showConfirmLeave} onStay={handleStay} onLeave={handleLeave} />
       </div>
     </div>
   );

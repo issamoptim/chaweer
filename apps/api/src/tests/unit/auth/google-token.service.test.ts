@@ -14,9 +14,8 @@ vi.mock('../../../core/logger', () => ({
   },
 }));
 
-const { exchangeCodeForTokens, verifyGoogleIdToken } = await import(
-  '../../../modules/auth/google/google-token.service'
-);
+const { exchangeCodeForTokens, verifyGoogleIdToken } =
+  await import('../../../modules/auth/google/google-token.service');
 const { jwtVerify } = await import('jose');
 
 const mockGoogleTokenResponse = {
@@ -47,10 +46,13 @@ describe('google-token.service', () => {
 
   describe('exchangeCodeForTokens', () => {
     it('should return tokens on successful exchange', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => mockGoogleTokenResponse,
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => mockGoogleTokenResponse,
+        }),
+      );
 
       const result = await exchangeCodeForTokens('valid-code', 'valid-verifier');
 
@@ -59,29 +61,35 @@ describe('google-token.service', () => {
     });
 
     it('should throw GoogleAuthFailedError when Google returns 400', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: false,
-        status: 400,
-        text: async () => '{"error":"invalid_grant"}',
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          status: 400,
+          text: async () => '{"error":"invalid_grant"}',
+        }),
+      );
 
-      await expect(
-        exchangeCodeForTokens('invalid-code', 'valid-verifier'),
-      ).rejects.toThrow('Échec de l\'authentification Google.');
+      await expect(exchangeCodeForTokens('invalid-code', 'valid-verifier')).rejects.toThrow(
+        "Échec de l'authentification Google.",
+      );
     });
 
     it('should throw GoogleAuthFailedError on network error', async () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
-      await expect(
-        exchangeCodeForTokens('valid-code', 'valid-verifier'),
-      ).rejects.toThrow('Échec de l\'authentification Google.');
+      await expect(exchangeCodeForTokens('valid-code', 'valid-verifier')).rejects.toThrow(
+        "Échec de l'authentification Google.",
+      );
     });
   });
 
   describe('verifyGoogleIdToken', () => {
     it('should return parsed claims for a valid token', async () => {
-      vi.mocked(jwtVerify).mockResolvedValue({ payload: mockValidPayload, protectedHeader: {} } as never);
+      vi.mocked(jwtVerify).mockResolvedValue({
+        payload: mockValidPayload,
+        protectedHeader: {},
+      } as never);
 
       const claims = await verifyGoogleIdToken('valid-id-token');
 
@@ -112,9 +120,7 @@ describe('google-token.service', () => {
     it('should throw InvalidGoogleTokenError when jwtVerify fails (expired token)', async () => {
       vi.mocked(jwtVerify).mockRejectedValue(new Error('token expired'));
 
-      await expect(verifyGoogleIdToken('expired-token')).rejects.toThrow(
-        'Token Google invalide.',
-      );
+      await expect(verifyGoogleIdToken('expired-token')).rejects.toThrow('Token Google invalide.');
     });
 
     it('should throw GoogleAccountNotVerifiedError when email_verified is false', async () => {
@@ -124,7 +130,7 @@ describe('google-token.service', () => {
       } as never);
 
       await expect(verifyGoogleIdToken('unverified-token')).rejects.toThrow(
-        'Votre compte Google n\'est pas vérifié.',
+        "Votre compte Google n'est pas vérifié.",
       );
     });
 
@@ -134,9 +140,7 @@ describe('google-token.service', () => {
         protectedHeader: {},
       } as never);
 
-      await expect(verifyGoogleIdToken('no-sub-token')).rejects.toThrow(
-        'Token Google invalide.',
-      );
+      await expect(verifyGoogleIdToken('no-sub-token')).rejects.toThrow('Token Google invalide.');
     });
 
     it('should throw InvalidGoogleTokenError when email is missing', async () => {
@@ -145,9 +149,7 @@ describe('google-token.service', () => {
         protectedHeader: {},
       } as never);
 
-      await expect(verifyGoogleIdToken('no-email-token')).rejects.toThrow(
-        'Token Google invalide.',
-      );
+      await expect(verifyGoogleIdToken('no-email-token')).rejects.toThrow('Token Google invalide.');
     });
 
     it('should default givenName and familyName to empty strings when missing', async () => {

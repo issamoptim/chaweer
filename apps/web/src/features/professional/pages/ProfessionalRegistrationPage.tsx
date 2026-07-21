@@ -53,9 +53,7 @@ export function ProfessionalRegistrationPage() {
     <div className="flex min-h-screen items-center justify-center bg-[#F7F7F5] px-4 py-12">
       <div className="w-full max-w-[440px] rounded-[20px] border border-[#E9E7E3] bg-white p-10 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
         <div className="flex flex-col items-center gap-3 text-center">
-          <span className="text-[22px] font-bold tracking-tight text-[#0F766E]">
-            Chaweer
-          </span>
+          <span className="text-[22px] font-bold tracking-tight text-[#0F766E]">Chaweer</span>
           <ProBadge />
           <h1 className="mt-2 text-[22px] font-bold text-[#1C1B1A]">
             Créer votre compte professionnel
@@ -69,9 +67,9 @@ export function ProfessionalRegistrationPage() {
           <div className="mt-5 rounded-lg border border-[#0F766E]/20 bg-[#0F766E]/5 px-4 py-3">
             <p className="text-[13px] leading-relaxed text-[#0F766E]">
               Vous êtes actuellement connecté en tant que client
-              {user?.email ? ` (${user.email})` : ""}. En continuant, votre
-              compte sera transformé en compte professionnel. Vos données
-              existantes (rendez-vous, historique, profil) seront conservées.
+              {user?.email ? ` (${user.email})` : ""}. En continuant, votre compte sera transformé
+              en compte professionnel. Vos données existantes (rendez-vous, historique, profil)
+              seront conservées.
             </p>
           </div>
         )}
@@ -83,9 +81,7 @@ export function ProfessionalRegistrationPage() {
         )}
 
         <div className="mt-6">
-          <GoogleButton
-            onClick={() => void initiateGoogleLogin(ONBOARDING_START, false, true)}
-          />
+          <GoogleButton onClick={() => void initiateGoogleLogin(ONBOARDING_START, false, true)} />
         </div>
 
         <div className="my-5">
@@ -125,9 +121,7 @@ export function ProfessionalRegistrationPage() {
             loading={registerMutation.isPending}
             disabled={!isValid || registerMutation.isPending}
           >
-            {registerMutation.isPending
-              ? "Création du compte…"
-              : "Créer mon compte professionnel"}
+            {registerMutation.isPending ? "Création du compte…" : "Créer mon compte professionnel"}
           </PrimaryButton>
         </form>
 
@@ -143,8 +137,8 @@ export function ProfessionalRegistrationPage() {
         </div>
 
         <p className="mt-4 text-center text-[11.5px] leading-relaxed text-[#9A968E]">
-          En créant un compte, vous acceptez nos Conditions d'utilisation et notre
-          Politique de confidentialité.
+          En créant un compte, vous acceptez nos Conditions d'utilisation et notre Politique de
+          confidentialité.
         </p>
       </div>
     </div>

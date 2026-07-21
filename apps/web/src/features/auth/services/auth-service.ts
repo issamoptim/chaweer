@@ -44,7 +44,7 @@ export const authService = {
   },
   changePassword(
     input: { currentPassword: string; newPassword: string; confirmPassword: string },
-    token: string,
+    token: string
   ): Promise<{ message: string }> {
     return apiClient.patch<{ message: string }>("/auth/password", input, { token });
   },

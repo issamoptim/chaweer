@@ -21,7 +21,13 @@ import {
 import { NotFoundError } from '../../core/errors';
 import { ensureDraftProfile } from '../professional/professional.service';
 import { AuthProvider, UserStatus, Role } from '../../generated/prisma/client';
-import type { AuthUser, LoginResult, RefreshResult, MeUser, ChangePasswordInput } from './auth.types';
+import type {
+  AuthUser,
+  LoginResult,
+  RefreshResult,
+  MeUser,
+  ChangePasswordInput,
+} from './auth.types';
 import type { RegisterInput, LoginInput, RegisterProfessionalInput } from './auth.schema';
 
 export function toAuthUser(user: {
@@ -171,7 +177,9 @@ export async function login(
   };
 }
 
-export async function refresh(rawToken: string): Promise<RefreshResult & { newRefreshToken: string }> {
+export async function refresh(
+  rawToken: string,
+): Promise<RefreshResult & { newRefreshToken: string }> {
   const tokenHash = hashRefreshToken(rawToken);
 
   const storedToken = await prisma.refreshToken.findUnique({
@@ -266,10 +274,7 @@ export async function getCurrentUser(userId: string): Promise<MeUser> {
   return user;
 }
 
-export async function changePassword(
-  userId: string,
-  input: ChangePasswordInput,
-): Promise<void> {
+export async function changePassword(userId: string, input: ChangePasswordInput): Promise<void> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -280,20 +285,17 @@ export async function changePassword(
 
   if (user.authProvider !== AuthProvider.LOCAL) {
     throw new ForbiddenError(
-      'Le changement de mot de passe n\'est pas disponible pour ce type de compte.',
+      "Le changement de mot de passe n'est pas disponible pour ce type de compte.",
     );
   }
 
   if (!user.passwordHash) {
     throw new ForbiddenError(
-      'Le changement de mot de passe n\'est pas disponible pour ce type de compte.',
+      "Le changement de mot de passe n'est pas disponible pour ce type de compte.",
     );
   }
 
-  const isCurrentPasswordValid = await verifyPassword(
-    user.passwordHash,
-    input.currentPassword,
-  );
+  const isCurrentPasswordValid = await verifyPassword(user.passwordHash, input.currentPassword);
 
   if (!isCurrentPasswordValid) {
     throw new InvalidCredentialsError('Le mot de passe actuel est incorrect.');
@@ -303,7 +305,12 @@ export async function changePassword(
   if (isSamePassword) {
     throw new ValidationError(
       'Le nouveau mot de passe doit être différent du mot de passe actuel.',
-      [{ field: 'newPassword', message: 'Le nouveau mot de passe doit être différent du mot de passe actuel.' }],
+      [
+        {
+          field: 'newPassword',
+          message: 'Le nouveau mot de passe doit être différent du mot de passe actuel.',
+        },
+      ],
     );
   }
 

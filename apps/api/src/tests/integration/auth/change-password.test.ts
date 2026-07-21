@@ -47,14 +47,11 @@ describe('PATCH /auth/password (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    await request(app)
-      .patch('/auth/password')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        currentPassword: 'OldPass123!',
-        newPassword: 'NewPass456!',
-        confirmPassword: 'NewPass456!',
-      });
+    await request(app).patch('/auth/password').set('Authorization', `Bearer ${token}`).send({
+      currentPassword: 'OldPass123!',
+      newPassword: 'NewPass456!',
+      confirmPassword: 'NewPass456!',
+    });
 
     const user = await prisma.user.findUnique({ where: { id: created.id } });
     expect(user).not.toBeNull();

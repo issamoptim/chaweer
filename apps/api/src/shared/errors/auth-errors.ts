@@ -5,10 +5,7 @@ export class ValidationError extends AppError {
   public readonly errorCode: ErrorCode;
   public readonly details?: Array<{ field: string; message: string }>;
 
-  constructor(
-    message: string,
-    details?: Array<{ field: string; message: string }>,
-  ) {
+  constructor(message: string, details?: Array<{ field: string; message: string }>) {
     super(message, 422);
     this.errorCode = ErrorCodes.VALIDATION_ERROR;
     this.details = details;
@@ -49,9 +46,7 @@ export class EmailNotVerifiedError extends AppError {
 export class AccountSuspendedError extends AppError {
   public readonly errorCode: ErrorCode;
 
-  constructor(
-    message = 'Votre compte est suspendu. Veuillez contacter le support.',
-  ) {
+  constructor(message = 'Votre compte est suspendu. Veuillez contacter le support.') {
     super(message, 403);
     this.errorCode = ErrorCodes.ACCOUNT_SUSPENDED;
     Object.setPrototypeOf(this, AccountSuspendedError.prototype);
@@ -101,7 +96,7 @@ export class ForbiddenError extends AppError {
 export class GoogleAuthFailedError extends AppError {
   public readonly errorCode: ErrorCode;
 
-  constructor(message = 'Échec de l\'authentification Google.') {
+  constructor(message = "Échec de l'authentification Google.") {
     super(message, 401);
     this.errorCode = ErrorCodes.GOOGLE_AUTH_FAILED;
     Object.setPrototypeOf(this, GoogleAuthFailedError.prototype);
@@ -143,7 +138,7 @@ export class GoogleAccountAlreadyLinkedError extends AppError {
 export class GoogleAccountNotVerifiedError extends AppError {
   public readonly errorCode: ErrorCode;
 
-  constructor(message = 'Votre compte Google n\'est pas vérifié.') {
+  constructor(message = "Votre compte Google n'est pas vérifié.") {
     super(message, 403);
     this.errorCode = ErrorCodes.GOOGLE_ACCOUNT_NOT_VERIFIED;
     Object.setPrototypeOf(this, GoogleAccountNotVerifiedError.prototype);

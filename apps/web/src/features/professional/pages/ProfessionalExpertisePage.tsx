@@ -33,7 +33,7 @@ export function ProfessionalExpertisePage() {
   const specializations = referential?.specializations ?? [];
   const selectedSpecs = useMemo(
     () => specializations.filter((s) => specs.has(s.id)),
-    [specializations, specs],
+    [specializations, specs]
   );
 
   function toggleSpec(spec: SpecializationItem) {
@@ -98,30 +98,25 @@ export function ProfessionalExpertisePage() {
       },
       {
         onSuccess: () => navigate("/pro/offre"),
-        onError: () =>
-          toast.showError("Impossible d'enregistrer votre expertise."),
-      },
+        onError: () => toast.showError("Impossible d'enregistrer votre expertise."),
+      }
     );
   }
 
   return (
     <div>
       <header className="mb-6">
-        <h1 className="text-[26px] font-bold tracking-[-0.02em] text-[#1C1B1A]">
-          Mon expertise
-        </h1>
+        <h1 className="text-[26px] font-bold tracking-[-0.02em] text-[#1C1B1A]">Mon expertise</h1>
         <p className="mt-1 text-[14.5px] text-[#6B6862]">
-          Vos clients décrivent un problème concret, pas un domaine du droit.
-          Indiquez les situations que vous traitez pour être proposé au bon moment.
+          Vos clients décrivent un problème concret, pas un domaine du droit. Indiquez les
+          situations que vous traitez pour être proposé au bon moment.
         </p>
       </header>
 
       <div className="flex flex-col gap-8">
         {/* Block 1 — Specialties */}
         <section>
-          <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">
-            1. Vos spécialités
-          </h2>
+          <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">1. Vos spécialités</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {specializations.map((spec) => {
               const count = countAreasForSpec(spec);
@@ -154,8 +149,8 @@ export function ProfessionalExpertisePage() {
             <div className="flex flex-col items-center gap-2 rounded-[12px] border border-dashed border-[#D9D6D0] bg-white/60 px-6 py-10 text-center">
               <Layers className="h-7 w-7 text-[#B4AFA6]" aria-hidden="true" />
               <p className="max-w-sm text-[13.5px] text-[#6B6862]">
-                Sélectionnez au moins une spécialité ci-dessus pour configurer les
-                situations associées.
+                Sélectionnez au moins une spécialité ci-dessus pour configurer les situations
+                associées.
               </p>
             </div>
           ) : (
@@ -170,9 +165,7 @@ export function ProfessionalExpertisePage() {
                     className="rounded-[14px] border border-[#E9E7E3] bg-white p-5"
                   >
                     <div className="mb-3 flex items-center justify-between gap-3">
-                      <h3 className="text-[14.5px] font-bold text-[#1C1B1A]">
-                        {spec.name}
-                      </h3>
+                      <h3 className="text-[14.5px] font-bold text-[#1C1B1A]">{spec.name}</h3>
                       <div className="flex items-center gap-3">
                         <span className="text-[12.5px] text-[#6B6862]">
                           {count}/{total} sélectionnées
@@ -225,9 +218,7 @@ export function ProfessionalExpertisePage() {
 
         {/* Block 3 — Languages */}
         <section>
-          <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">
-            3. Langues de consultation
-          </h2>
+          <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">3. Langues de consultation</h2>
           <div className="flex flex-wrap gap-2.5">
             {(referential?.languages ?? []).map((lang) => (
               <Chip

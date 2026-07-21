@@ -98,11 +98,7 @@ export async function logoutController(
   }
 }
 
-export async function meController(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
+export async function meController(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const user = await authService.getCurrentUser(req.user!.userId);
     res.status(200).json({

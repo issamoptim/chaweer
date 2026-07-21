@@ -38,7 +38,7 @@ const googleUser: MeUser = {
 
 function createMockAuthValue(
   user: MeUser,
-  overrides?: Partial<AuthContextValue>,
+  overrides?: Partial<AuthContextValue>
 ): AuthContextValue {
   return {
     user,
@@ -56,10 +56,7 @@ function createMockAuthValue(
   };
 }
 
-function renderWithProviders(
-  ui: React.ReactNode,
-  authValue: AuthContextValue,
-) {
+function renderWithProviders(ui: React.ReactNode, authValue: AuthContextValue) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
@@ -69,7 +66,7 @@ function renderWithProviders(
       <AuthContext.Provider value={authValue}>
         <ToastProvider>{ui}</ToastProvider>
       </AuthContext.Provider>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 }
 
@@ -81,14 +78,11 @@ describe("SecurityPage", () => {
 
   describe("Email+Password variant", () => {
     it("renders page title, account card, password form, and danger zone", () => {
-      renderWithProviders(
-        <SecurityPage />,
-        createMockAuthValue(localUser),
-      );
+      renderWithProviders(<SecurityPage />, createMockAuthValue(localUser));
 
       expect(screen.getByText("Sécurité")).toBeInTheDocument();
       expect(
-        screen.getByText("Gérez les accès et la protection de votre compte."),
+        screen.getByText("Gérez les accès et la protection de votre compte.")
       ).toBeInTheDocument();
       expect(screen.getByText("Compte")).toBeInTheDocument();
       expect(screen.getByText("Adresse e-mail")).toBeInTheDocument();
@@ -98,9 +92,7 @@ describe("SecurityPage", () => {
       expect(screen.getByText("Mot de passe")).toBeInTheDocument();
       expect(screen.getByText("Mot de passe actuel")).toBeInTheDocument();
       expect(screen.getByText("Nouveau mot de passe")).toBeInTheDocument();
-      expect(
-        screen.getByText("Confirmer le nouveau mot de passe"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Confirmer le nouveau mot de passe")).toBeInTheDocument();
       expect(screen.getByText("Modifier le mot de passe")).toBeInTheDocument();
       expect(screen.getByText("Supprimer le compte")).toBeInTheDocument();
       expect(screen.getByText("Supprimer mon compte")).toBeInTheDocument();
@@ -110,9 +102,7 @@ describe("SecurityPage", () => {
       renderWithProviders(<SecurityPage />, createMockAuthValue(localUser));
 
       expect(
-        screen.getByText(
-          "8 caractères minimum, avec au moins une lettre et un chiffre.",
-        ),
+        screen.getByText("8 caractères minimum, avec au moins une lettre et un chiffre.")
       ).toBeInTheDocument();
     });
 
@@ -122,9 +112,7 @@ describe("SecurityPage", () => {
       fireEvent.click(screen.getByText("Modifier le mot de passe"));
 
       await waitFor(() => {
-        expect(
-          screen.getByText("Le mot de passe actuel est obligatoire."),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Le mot de passe actuel est obligatoire.")).toBeInTheDocument();
       });
     });
 
@@ -143,9 +131,7 @@ describe("SecurityPage", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(
-            "Le mot de passe doit contenir au moins 8 caractères.",
-          ),
+          screen.getByText("Le mot de passe doit contenir au moins 8 caractères.")
         ).toBeInTheDocument();
       });
     });
@@ -164,9 +150,7 @@ describe("SecurityPage", () => {
       fireEvent.click(screen.getByText("Modifier le mot de passe"));
 
       await waitFor(() => {
-        expect(
-          screen.getByText("Les mots de passe ne correspondent pas."),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Les mots de passe ne correspondent pas.")).toBeInTheDocument();
       });
     });
 
@@ -189,9 +173,7 @@ describe("SecurityPage", () => {
       fireEvent.click(screen.getByText("Modifier le mot de passe"));
 
       await waitFor(() => {
-        expect(
-          screen.getByText("Votre mot de passe a été modifié."),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Votre mot de passe a été modifié.")).toBeInTheDocument();
       });
     });
 
@@ -219,48 +201,31 @@ describe("SecurityPage", () => {
       fireEvent.click(screen.getByText("Modifier le mot de passe"));
 
       await waitFor(() => {
-        expect(
-          screen.getByText("Le mot de passe actuel est incorrect."),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Le mot de passe actuel est incorrect.")).toBeInTheDocument();
       });
     });
   });
 
   describe("Google variant", () => {
     it("renders account card with Google badge and Google notice", () => {
-      renderWithProviders(
-        <SecurityPage />,
-        createMockAuthValue(googleUser),
-      );
+      renderWithProviders(<SecurityPage />, createMockAuthValue(googleUser));
 
       expect(screen.getByText("Compte")).toBeInTheDocument();
       expect(screen.getByText("google@gmail.com")).toBeInTheDocument();
       expect(screen.getByText("Google")).toBeInTheDocument();
-      expect(
-        screen.getByText("Votre mot de passe est géré par Google"),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/myaccount.google.com/),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Votre mot de passe est géré par Google")).toBeInTheDocument();
+      expect(screen.getByText(/myaccount.google.com/)).toBeInTheDocument();
     });
 
     it("does not render password form for Google users", () => {
-      renderWithProviders(
-        <SecurityPage />,
-        createMockAuthValue(googleUser),
-      );
+      renderWithProviders(<SecurityPage />, createMockAuthValue(googleUser));
 
       expect(screen.queryByText("Mot de passe actuel")).not.toBeInTheDocument();
-      expect(
-        screen.queryByText("Modifier le mot de passe"),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText("Modifier le mot de passe")).not.toBeInTheDocument();
     });
 
     it("renders danger zone for Google users", () => {
-      renderWithProviders(
-        <SecurityPage />,
-        createMockAuthValue(googleUser),
-      );
+      renderWithProviders(<SecurityPage />, createMockAuthValue(googleUser));
 
       expect(screen.getByText("Supprimer le compte")).toBeInTheDocument();
       expect(screen.getByText("Supprimer mon compte")).toBeInTheDocument();
@@ -275,9 +240,7 @@ describe("SecurityPage", () => {
 
       await waitFor(() => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
-        expect(
-          screen.getByText("Supprimer votre compte ?"),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Supprimer votre compte ?")).toBeInTheDocument();
       });
     });
 
@@ -304,10 +267,7 @@ describe("SecurityPage", () => {
         deleteAccount: vi.fn().mockResolvedValue(undefined),
       });
 
-      renderWithProviders(
-        <SecurityPage />,
-        createMockAuthValue(localUser, { logout: mockLogout }),
-      );
+      renderWithProviders(<SecurityPage />, createMockAuthValue(localUser, { logout: mockLogout }));
 
       fireEvent.click(screen.getByText("Supprimer mon compte"));
 
@@ -332,7 +292,7 @@ describe("SecurityPage", () => {
           user: null,
           accessToken: null,
           status: "loading",
-        }),
+        })
       );
 
       expect(screen.getByLabelText("Chargement de la sécurité")).toBeInTheDocument();

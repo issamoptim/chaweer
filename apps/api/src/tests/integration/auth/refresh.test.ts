@@ -3,7 +3,11 @@ import request from 'supertest';
 import { app } from '../../../app';
 import { prisma } from '../../../core/database/prisma';
 import { cleanDatabase, createTestUser } from '../../helpers/db-helper';
-import { generateRefreshToken, hashRefreshToken, getRefreshTokenExpiry } from '../../../modules/auth/services/refresh-token.service';
+import {
+  generateRefreshToken,
+  hashRefreshToken,
+  getRefreshTokenExpiry,
+} from '../../../modules/auth/services/refresh-token.service';
 
 async function loginAndGetCookie(email: string, password: string): Promise<string> {
   const response = await request(app).post('/auth/login').send({ email, password });
@@ -34,9 +38,7 @@ describe('POST /auth/refresh (integration)', () => {
 
     const cookie = await loginAndGetCookie('refresh@example.com', 'SecurePass123!');
 
-    const response = await request(app)
-      .post('/auth/refresh')
-      .set('Cookie', cookie);
+    const response = await request(app).post('/auth/refresh').set('Cookie', cookie);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);

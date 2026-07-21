@@ -60,10 +60,7 @@ function createMockAuthValue(overrides?: Partial<AuthContextValue>): AuthContext
   };
 }
 
-function renderWithProviders(
-  ui: React.ReactNode,
-  authValue?: Partial<AuthContextValue>,
-) {
+function renderWithProviders(ui: React.ReactNode, authValue?: Partial<AuthContextValue>) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
@@ -75,7 +72,7 @@ function renderWithProviders(
           <MemoryRouter>{ui}</MemoryRouter>
         </ToastProvider>
       </AuthContext.Provider>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 }
 
@@ -180,10 +177,7 @@ describe("ProfilePage", () => {
     fireEvent.click(screen.getByText("Français"));
 
     await waitFor(() => {
-      expect(updatePreferences).toHaveBeenCalledWith(
-        { preferredLanguage: "fr" },
-        "fake-token",
-      );
+      expect(updatePreferences).toHaveBeenCalledWith({ preferredLanguage: "fr" }, "fake-token");
     });
   });
 
@@ -207,10 +201,7 @@ describe("ProfilePage", () => {
     fireEvent.click(screen.getByLabelText("Notifications par e-mail"));
 
     await waitFor(() => {
-      expect(updatePreferences).toHaveBeenCalledWith(
-        { notificationEmail: false },
-        "fake-token",
-      );
+      expect(updatePreferences).toHaveBeenCalledWith({ notificationEmail: false }, "fake-token");
     });
   });
 
@@ -234,10 +225,7 @@ describe("ProfilePage", () => {
     fireEvent.click(screen.getByLabelText("Notifications push"));
 
     await waitFor(() => {
-      expect(updatePreferences).toHaveBeenCalledWith(
-        { notificationPush: false },
-        "fake-token",
-      );
+      expect(updatePreferences).toHaveBeenCalledWith({ notificationPush: false }, "fake-token");
     });
   });
 

@@ -24,7 +24,7 @@ export function Toast({ toast }: ToastProps) {
         "flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg",
         isSuccess
           ? "border-primary/20 bg-card text-foreground"
-          : "border-destructive/20 bg-card text-foreground",
+          : "border-destructive/20 bg-card text-foreground"
       )}
     >
       {isSuccess ? (

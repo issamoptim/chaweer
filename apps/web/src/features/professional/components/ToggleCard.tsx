@@ -9,13 +9,7 @@ interface ToggleCardProps {
   onToggle: () => void;
 }
 
-export function ToggleCard({
-  title,
-  subtitle,
-  icon: Icon,
-  selected,
-  onToggle,
-}: ToggleCardProps) {
+export function ToggleCard({ title, subtitle, icon: Icon, selected, onToggle }: ToggleCardProps) {
   return (
     <button
       type="button"
@@ -46,9 +40,7 @@ export function ToggleCard({
           {title}
         </span>
       </span>
-      {subtitle && (
-        <span className="text-[12.5px] text-[#6B6862]">{subtitle}</span>
-      )}
+      {subtitle && <span className="text-[12.5px] text-[#6B6862]">{subtitle}</span>}
     </button>
   );
 }

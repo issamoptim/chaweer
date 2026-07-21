@@ -48,7 +48,11 @@ export function ImageUploadSlot({ value, onUpload, onChange, disabled }: ImageUp
         {uploading ? (
           <Loader2 className="h-6 w-6 animate-spin text-[#9A968E]" aria-hidden="true" />
         ) : value ? (
-          <img src={resolveMediaUrl(value) ?? undefined} alt="" className="h-full w-full object-cover" />
+          <img
+            src={resolveMediaUrl(value) ?? undefined}
+            alt=""
+            className="h-full w-full object-cover"
+          />
         ) : (
           <Camera className="h-6 w-6 text-[#9A968E]" aria-hidden="true" />
         )}
@@ -60,18 +64,10 @@ export function ImageUploadSlot({ value, onUpload, onChange, disabled }: ImageUp
           disabled={disabled || uploading}
           className="w-fit text-[13.5px] font-semibold text-[#0F766E] hover:underline disabled:cursor-not-allowed disabled:text-[#9A968E]"
         >
-          {uploading
-            ? "Upload en cours…"
-            : value
-              ? "Changer la photo"
-              : "Ajouter une photo"}
+          {uploading ? "Upload en cours…" : value ? "Changer la photo" : "Ajouter une photo"}
         </button>
-        <p className="text-[12.5px] text-[#9A968E]">
-          Format carré recommandé, 2 Mo maximum.
-        </p>
-        {error && (
-          <p className="text-[12.5px] text-red-600">{error}</p>
-        )}
+        <p className="text-[12.5px] text-[#9A968E]">Format carré recommandé, 2 Mo maximum.</p>
+        {error && <p className="text-[12.5px] text-red-600">{error}</p>}
         {value && !uploading && (
           <button
             type="button"

@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { prisma } from '../../../core/database/prisma';
-import { getProfile, updatePreferences, updateProfile } from '../../../modules/profile/profile.service';
+import {
+  getProfile,
+  updatePreferences,
+  updateProfile,
+} from '../../../modules/profile/profile.service';
 import { NotFoundError } from '../../../core/errors';
 import { cleanDatabase, createTestUser } from '../../helpers/db-helper';
 

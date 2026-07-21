@@ -25,9 +25,7 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -51,9 +49,7 @@ describe('GET /auth/me (integration)', () => {
   });
 
   it('should return 401 when Authorization header has no Bearer prefix', async () => {
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', 'some-token');
+    const response = await request(app).get('/auth/me').set('Authorization', 'some-token');
 
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe('UNAUTHORIZED');
@@ -69,9 +65,7 @@ describe('GET /auth/me (integration)', () => {
   });
 
   it('should return 401 when Bearer token is empty', async () => {
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', 'Bearer ');
+    const response = await request(app).get('/auth/me').set('Authorization', 'Bearer ');
 
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe('UNAUTHORIZED');
@@ -89,9 +83,7 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.data.email).toBe('google-me@gmail.com');
@@ -107,9 +99,7 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.body.data.passwordHash).toBeUndefined();
   });
@@ -123,9 +113,7 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.data.authProvider).toBe('LOCAL');
@@ -139,9 +127,7 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.data.authProvider).toBe('GOOGLE');
@@ -156,9 +142,7 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.body.data.status).toBeUndefined();
     expect(response.body.data.createdAt).toBeUndefined();
@@ -174,13 +158,9 @@ describe('GET /auth/me (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    const response1 = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response1 = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
-    const response2 = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response2 = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response1.status).toBe(200);
     expect(response2.status).toBe(200);
@@ -204,9 +184,7 @@ describe('GET /auth/me (integration)', () => {
       .setExpirationTime('15m')
       .sign(wrongSecret);
 
-    const response = await request(app)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).get('/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe('UNAUTHORIZED');

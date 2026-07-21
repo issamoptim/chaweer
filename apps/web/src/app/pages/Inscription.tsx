@@ -20,10 +20,7 @@ export function Inscription() {
     <AuthLayout>
       <AuthCard>
         <div className="flex flex-col gap-5">
-          <AuthHeader
-            title="Créer votre compte"
-            description="Quelques secondes suffisent."
-          />
+          <AuthHeader title="Créer votre compte" description="Quelques secondes suffisent." />
           <GoogleButton onClick={() => void initiateGoogleLogin(from)} />
           <Divider />
           <PrimaryButton onClick={() => navigate("/inscription/email")}>

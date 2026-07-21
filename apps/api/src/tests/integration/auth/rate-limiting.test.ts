@@ -65,10 +65,12 @@ describe('Rate limiting (integration)', () => {
 
     let lastStatus = 0;
     for (let i = 0; i < 5; i++) {
-      const response = await request(app).post('/auth/login').send({
-        email: `user${i}@example.com`,
-        password: 'SecurePass123!',
-      });
+      const response = await request(app)
+        .post('/auth/login')
+        .send({
+          email: `user${i}@example.com`,
+          password: 'SecurePass123!',
+        });
       lastStatus = response.status;
     }
 

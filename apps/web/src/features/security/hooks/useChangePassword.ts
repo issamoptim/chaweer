@@ -17,7 +17,7 @@ export function useChangePassword(options?: UseChangePasswordOptions) {
           newPassword: input.data.newPassword,
           confirmPassword: input.data.confirmPassword,
         },
-        input.token,
+        input.token
       ),
     onSuccess: () => {
       options?.onSuccess?.();

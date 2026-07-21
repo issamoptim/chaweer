@@ -1,12 +1,7 @@
 import { z } from 'zod';
 
 const optionalTrimmedNullable = (max: number, message: string) =>
-  z
-    .string()
-    .trim()
-    .max(max, message)
-    .nullable()
-    .optional();
+  z.string().trim().max(max, message).nullable().optional();
 
 export const updateProfileSchema = z
   .object({
@@ -37,12 +32,8 @@ export const updateExpertiseSchema = z.object({
   specializationIds: z
     .array(z.string().trim().min(1))
     .min(1, 'Sélectionnez au moins une spécialité'),
-  practiceAreaIds: z
-    .array(z.string().trim().min(1))
-    .min(1, 'Sélectionnez au moins une situation'),
-  languageIds: z
-    .array(z.string().trim().min(1))
-    .min(1, 'Sélectionnez au moins une langue'),
+  practiceAreaIds: z.array(z.string().trim().min(1)).min(1, 'Sélectionnez au moins une situation'),
+  languageIds: z.array(z.string().trim().min(1)).min(1, 'Sélectionnez au moins une langue'),
 });
 
 export const CONSULTATION_DURATIONS = [15, 30, 45, 60] as const;
@@ -57,9 +48,7 @@ export const updateOfferSchema = z.object({
     .refine((v) => (CONSULTATION_DURATIONS as readonly number[]).includes(v), {
       message: 'Durée invalide',
     }),
-  modalities: z
-    .array(z.enum(['VIDEO', 'OFFICE']))
-    .min(1, 'Sélectionnez au moins une modalité'),
+  modalities: z.array(z.enum(['VIDEO', 'OFFICE'])).min(1, 'Sélectionnez au moins une modalité'),
 });
 
 export type UpdateProfessionalProfileInput = z.infer<typeof updateProfileSchema>;

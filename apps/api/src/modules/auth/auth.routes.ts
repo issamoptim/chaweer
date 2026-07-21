@@ -31,13 +31,7 @@ router.post(
   registerController,
 );
 
-router.post(
-  '/login',
-  authIpLimiter,
-  authEmailLimiter,
-  validate(loginSchema),
-  loginController,
-);
+router.post('/login', authIpLimiter, authEmailLimiter, validate(loginSchema), loginController);
 
 router.post(
   '/register/professional',
@@ -67,7 +61,13 @@ router.post(
 
 router.get('/me', authenticate, meController);
 
-router.patch('/password', authIpLimiter, authenticate, validate(changePasswordSchema), changePasswordController);
+router.patch(
+  '/password',
+  authIpLimiter,
+  authenticate,
+  validate(changePasswordSchema),
+  changePasswordController,
+);
 
 router.delete('/account', authenticate, deleteAccountController);
 

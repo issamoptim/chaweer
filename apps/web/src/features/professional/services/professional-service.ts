@@ -21,33 +21,27 @@ export const professionalService = {
       "/professional/upload-photo",
       "photo",
       file,
-      { token },
+      { token }
     );
     return result.photoUrl;
   },
 
   updateProfile(
     input: UpdateProfessionalProfileInput,
-    token: string,
+    token: string
   ): Promise<ProfessionalProfileData> {
     return apiClient.patch<ProfessionalProfileData>("/professional/profile", input, {
       token,
     });
   },
 
-  updateExpertise(
-    input: UpdateExpertiseInput,
-    token: string,
-  ): Promise<ProfessionalProfileData> {
+  updateExpertise(input: UpdateExpertiseInput, token: string): Promise<ProfessionalProfileData> {
     return apiClient.put<ProfessionalProfileData>("/professional/expertise", input, {
       token,
     });
   },
 
-  updateOffer(
-    input: UpdateOfferInput,
-    token: string,
-  ): Promise<ProfessionalProfileData> {
+  updateOffer(input: UpdateOfferInput, token: string): Promise<ProfessionalProfileData> {
     return apiClient.put<ProfessionalProfileData>("/professional/offer", input, {
       token,
     });

@@ -37,11 +37,7 @@ export function OnboardingStepper({ current, done }: OnboardingStepperProps) {
                         : "flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#E1DFDB] text-[14px] font-bold text-[#B4AFA6]"
                   }
                 >
-                  {state === "done" ? (
-                    <Check className="h-4 w-4" strokeWidth={3} />
-                  ) : (
-                    index + 1
-                  )}
+                  {state === "done" ? <Check className="h-4 w-4" strokeWidth={3} /> : index + 1}
                 </span>
                 <span
                   className={

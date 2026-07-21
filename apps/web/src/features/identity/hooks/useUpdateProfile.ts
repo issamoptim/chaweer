@@ -9,8 +9,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: UpdateProfileInput) =>
-      identityService.updateProfile(input, accessToken!),
+    mutationFn: (input: UpdateProfileInput) => identityService.updateProfile(input, accessToken!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: identityKeys.profile });
     },

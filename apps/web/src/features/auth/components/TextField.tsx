@@ -36,7 +36,10 @@ export function TextField({
 
   return (
     <div className="flex flex-col">
-      <label htmlFor={name} className={`text-[13.5px] font-semibold text-foreground ${labelMarginBottom ?? "mb-2"}`}>
+      <label
+        htmlFor={name}
+        className={`text-[13.5px] font-semibold text-foreground ${labelMarginBottom ?? "mb-2"}`}
+      >
         {label}
       </label>
       <input

@@ -60,10 +60,7 @@ function createMockAuthValue(overrides?: Partial<AuthContextValue>): AuthContext
   };
 }
 
-function renderWithProviders(
-  ui: React.ReactNode,
-  authValue?: Partial<AuthContextValue>,
-) {
+function renderWithProviders(ui: React.ReactNode, authValue?: Partial<AuthContextValue>) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
@@ -75,7 +72,7 @@ function renderWithProviders(
           <MemoryRouter>{ui}</MemoryRouter>
         </ToastProvider>
       </AuthContext.Provider>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 }
 
@@ -173,7 +170,9 @@ describe("ProfessionalRegistrationPage", () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /Créer mon compte professionnel/i })).not.toBeDisabled();
+      expect(
+        screen.getByRole("button", { name: /Créer mon compte professionnel/i })
+      ).not.toBeDisabled();
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Créer mon compte professionnel/i }));
@@ -209,13 +208,17 @@ describe("ProfessionalRegistrationPage", () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /Créer mon compte professionnel/i })).not.toBeDisabled();
+      expect(
+        screen.getByRole("button", { name: /Créer mon compte professionnel/i })
+      ).not.toBeDisabled();
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Créer mon compte professionnel/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/Un compte existe déjà avec cette adresse e-mail/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Un compte existe déjà avec cette adresse e-mail/i)
+      ).toBeInTheDocument();
     });
   });
 

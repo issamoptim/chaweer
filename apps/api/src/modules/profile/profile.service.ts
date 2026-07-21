@@ -55,11 +55,7 @@ export async function updatePreferences(
 
     return user;
   } catch (err) {
-    if (
-      err instanceof Error &&
-      'code' in err &&
-      (err as { code: string }).code === 'P2025'
-    ) {
+    if (err instanceof Error && 'code' in err && (err as { code: string }).code === 'P2025') {
       throw new NotFoundError('Profil introuvable.');
     }
     throw err;
@@ -103,11 +99,7 @@ export async function updateProfile(
 
     return user;
   } catch (err) {
-    if (
-      err instanceof Error &&
-      'code' in err &&
-      (err as { code: string }).code === 'P2025'
-    ) {
+    if (err instanceof Error && 'code' in err && (err as { code: string }).code === 'P2025') {
       throw new NotFoundError('Profil introuvable.');
     }
     throw err;

@@ -8,7 +8,7 @@ const REDIRECT_URI = `${window.location.origin}/auth/google/callback`;
 export async function initiateGoogleLogin(
   from: string = "/",
   reactivate = false,
-  professional = false,
+  professional = false
 ): Promise<void> {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = await generateCodeChallenge(codeVerifier);

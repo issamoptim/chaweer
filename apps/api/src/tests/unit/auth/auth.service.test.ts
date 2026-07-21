@@ -11,12 +11,14 @@ vi.mock('../../../core/database/prisma', () => ({
       findUnique: vi.fn(),
       update: vi.fn(),
     },
-    $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn({
-      refreshToken: {
-        create: vi.fn().mockResolvedValue({}),
-        update: vi.fn().mockResolvedValue({}),
-      },
-    })),
+    $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) =>
+      fn({
+        refreshToken: {
+          create: vi.fn().mockResolvedValue({}),
+          update: vi.fn().mockResolvedValue({}),
+        },
+      }),
+    ),
   },
 }));
 
@@ -30,7 +32,8 @@ vi.mock('../../../modules/auth/services/jwt.service', () => ({
 }));
 
 const { prisma } = await import('../../../core/database/prisma');
-const { hashPassword, verifyPassword } = await import('../../../modules/auth/services/password.service');
+const { hashPassword, verifyPassword } =
+  await import('../../../modules/auth/services/password.service');
 const { signAccessToken } = await import('../../../modules/auth/services/jwt.service');
 const { register, login, refresh, logout } = await import('../../../modules/auth/auth.service');
 
@@ -114,9 +117,9 @@ describe('auth.service', () => {
       } as never);
       vi.mocked(verifyPassword).mockResolvedValue(false);
 
-      await expect(
-        login({ email: 'user@example.com', password: 'WrongPass123!' }),
-      ).rejects.toThrow('Email ou mot de passe incorrect.');
+      await expect(login({ email: 'user@example.com', password: 'WrongPass123!' })).rejects.toThrow(
+        'Email ou mot de passe incorrect.',
+      );
     });
 
     it('should reject pending email verification', async () => {
@@ -222,12 +225,14 @@ describe('auth.service', () => {
       } as never);
       vi.mocked(prisma.refreshToken.update).mockResolvedValue({} as never);
       vi.mocked(prisma.refreshToken.create).mockResolvedValue({} as never);
-      vi.mocked(prisma.$transaction).mockImplementation(async (fn) => fn({
-        refreshToken: {
-          create: vi.fn().mockResolvedValue({}),
-          update: vi.fn().mockResolvedValue({}),
-        },
-      } as never));
+      vi.mocked(prisma.$transaction).mockImplementation(async (fn) =>
+        fn({
+          refreshToken: {
+            create: vi.fn().mockResolvedValue({}),
+            update: vi.fn().mockResolvedValue({}),
+          },
+        } as never),
+      );
 
       const result = await refresh('valid-token');
 

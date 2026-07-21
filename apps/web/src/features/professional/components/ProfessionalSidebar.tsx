@@ -101,9 +101,7 @@ export function ProfessionalSidebar({ collapsed, onToggle }: ProfessionalSidebar
           </span>
         ) : (
           <div className="flex flex-col gap-1.5">
-            <span className="text-[18px] font-bold tracking-tight text-[#0F766E]">
-              Chaweer
-            </span>
+            <span className="text-[18px] font-bold tracking-tight text-[#0F766E]">Chaweer</span>
             <ProBadge />
           </div>
         )}

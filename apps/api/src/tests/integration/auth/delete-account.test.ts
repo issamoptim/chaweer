@@ -39,9 +39,7 @@ describe('DELETE /auth/account (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    await request(app)
-      .delete('/auth/account')
-      .set('Authorization', `Bearer ${token}`);
+    await request(app).delete('/auth/account').set('Authorization', `Bearer ${token}`);
 
     const user = await prisma.user.findUnique({ where: { id: created.id } });
     expect(user).not.toBeNull();
@@ -72,9 +70,7 @@ describe('DELETE /auth/account (integration)', () => {
 
     const token = await signAccessToken({ userId: created.id, role: 'CLIENT' });
 
-    await request(app)
-      .delete('/auth/account')
-      .set('Authorization', `Bearer ${token}`);
+    await request(app).delete('/auth/account').set('Authorization', `Bearer ${token}`);
 
     const activeTokens = await prisma.refreshToken.findMany({
       where: { userId: created.id, revokedAt: null },

@@ -1,10 +1,7 @@
 import { prisma } from '../../core/database/prisma';
 import { NotFoundError } from '../../core/errors';
 import { ValidationError } from '../../shared/errors/auth-errors';
-import type {
-  ProfessionalProfileData,
-  ProfileCompletion,
-} from './professional.types';
+import type { ProfessionalProfileData, ProfileCompletion } from './professional.types';
 import type {
   UpdateProfessionalProfileInput,
   UpdateExpertiseInput,
@@ -56,9 +53,7 @@ function computeCompletion(profile: ProfileWithRelations): ProfileCompletion {
     profile.practiceAreas.length > 0 &&
     profile.languages.length > 0;
   const hasOffer =
-    profile.offer !== null &&
-    profile.offer.price > 0 &&
-    profile.offer.modalities.length > 0;
+    profile.offer !== null && profile.offer.price > 0 && profile.offer.modalities.length > 0;
 
   return { profile: hasName, expertise: hasExpertise, offer: hasOffer };
 }
@@ -162,9 +157,7 @@ export async function updateProfile(
       : { disconnect: true };
   }
   if (input.cityId !== undefined) {
-    profileData.city = input.cityId
-      ? { connect: { id: input.cityId } }
-      : { disconnect: true };
+    profileData.city = input.cityId ? { connect: { id: input.cityId } } : { disconnect: true };
   }
 
   await prisma.$transaction(async (tx) => {
@@ -231,19 +224,14 @@ export async function setExpertise(
   }
 
   const selectedSpecSet = new Set(specializationIds);
-  const orphanArea = practiceAreas.find(
-    (area) => !selectedSpecSet.has(area.specializationId),
-  );
+  const orphanArea = practiceAreas.find((area) => !selectedSpecSet.has(area.specializationId));
   if (orphanArea) {
-    throw new ValidationError(
-      'Chaque situation doit appartenir à une spécialité sélectionnée.',
-      [
-        {
-          field: 'practiceAreaIds',
-          message: 'Situation non rattachée à une spécialité sélectionnée.',
-        },
-      ],
-    );
+    throw new ValidationError('Chaque situation doit appartenir à une spécialité sélectionnée.', [
+      {
+        field: 'practiceAreaIds',
+        message: 'Situation non rattachée à une spécialité sélectionnée.',
+      },
+    ]);
   }
 
   await prisma.$transaction(async (tx) => {

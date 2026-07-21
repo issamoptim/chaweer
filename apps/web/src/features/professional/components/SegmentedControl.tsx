@@ -10,12 +10,7 @@ interface SegmentedControlProps {
   ariaLabel?: string;
 }
 
-export function SegmentedControl({
-  options,
-  value,
-  onChange,
-  ariaLabel,
-}: SegmentedControlProps) {
+export function SegmentedControl({ options, value, onChange, ariaLabel }: SegmentedControlProps) {
   return (
     <div
       role="radiogroup"
@@ -32,9 +27,7 @@ export function SegmentedControl({
             aria-checked={selected}
             onClick={() => onChange(option.value)}
             className={`min-w-[64px] rounded-[9px] px-4 py-2 text-[14px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[rgba(20,184,166,0.40)] ${
-              selected
-                ? "bg-white text-[#0F766E] shadow-sm"
-                : "text-[#6B6862] hover:text-[#1C1B1A]"
+              selected ? "bg-white text-[#0F766E] shadow-sm" : "text-[#6B6862] hover:text-[#1C1B1A]"
             }`}
           >
             {option.label}

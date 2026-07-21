@@ -13,42 +13,31 @@ export function BrandingPanel() {
       </Link>
 
       <div className="flex flex-col gap-8">
-        <span className="text-4xl font-bold tracking-tight text-primary">
-          Chaweer
-        </span>
+        <span className="text-4xl font-bold tracking-tight text-primary">Chaweer</span>
         <h2 className="text-2xl font-bold leading-tight text-foreground">
           Votre accès au droit, simplifié.
         </h2>
         <p className="max-w-sm text-base leading-relaxed text-muted-foreground">
-          Trouvez des réponses juridiques fiables, échangez avec des
-          professionnels qualifiés, et gérez vos démarches en toute
-          confiance.
+          Trouvez des réponses juridiques fiables, échangez avec des professionnels qualifiés, et
+          gérez vos démarches en toute confiance.
         </p>
         <div className="flex flex-col gap-3 pt-2">
           <div className="flex items-center gap-3">
             <span className="h-2 w-2 rounded-full bg-primary" />
-            <span className="text-sm text-muted-foreground">
-              Conseils personnalisés
-            </span>
+            <span className="text-sm text-muted-foreground">Conseils personnalisés</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="h-2 w-2 rounded-full bg-primary" />
-            <span className="text-sm text-muted-foreground">
-              Professionnels vérifiés
-            </span>
+            <span className="text-sm text-muted-foreground">Professionnels vérifiés</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="h-2 w-2 rounded-full bg-primary" />
-            <span className="text-sm text-muted-foreground">
-              Données sécurisées
-            </span>
+            <span className="text-sm text-muted-foreground">Données sécurisées</span>
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        © 2026 Chaweer. Tous droits réservés.
-      </p>
+      <p className="text-xs text-muted-foreground">© 2026 Chaweer. Tous droits réservés.</p>
     </div>
   );
 }

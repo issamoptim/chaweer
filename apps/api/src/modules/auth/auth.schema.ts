@@ -8,8 +8,14 @@ export const registerSchema = z.object({
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one digit'),
-  firstName: z.string().min(1, 'First name is required').max(100, 'First name must be at most 100 characters'),
-  lastName: z.string().min(1, 'Last name is required').max(100, 'Last name must be at most 100 characters'),
+  firstName: z
+    .string()
+    .min(1, 'First name is required')
+    .max(100, 'First name must be at most 100 characters'),
+  lastName: z
+    .string()
+    .min(1, 'Last name is required')
+    .max(100, 'Last name must be at most 100 characters'),
 });
 
 export const registerProfessionalSchema = z.object({

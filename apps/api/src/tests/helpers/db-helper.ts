@@ -28,7 +28,8 @@ export async function createTestUser(overrides?: {
   notificationEmail?: boolean;
   notificationPush?: boolean;
 }): Promise<{ id: string; email: string; password: string }> {
-  const email = overrides?.email ?? `test-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
+  const email =
+    overrides?.email ?? `test-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
   const password = overrides?.password ?? 'TestPass123!';
   const passwordHash = await hashPassword(password);
 
@@ -40,7 +41,9 @@ export async function createTestUser(overrides?: {
       lastName: overrides?.lastName ?? 'User',
       role: (overrides?.role as 'CLIENT' | 'PROFESSIONAL' | 'ADMIN') ?? 'CLIENT',
       authProvider: (overrides?.authProvider as 'LOCAL' | 'GOOGLE') ?? 'LOCAL',
-      status: (overrides?.status as 'PENDING_EMAIL_VERIFICATION' | 'ACTIVE' | 'SUSPENDED' | 'DELETED') ?? 'ACTIVE',
+      status:
+        (overrides?.status as 'PENDING_EMAIL_VERIFICATION' | 'ACTIVE' | 'SUSPENDED' | 'DELETED') ??
+        'ACTIVE',
       phone: overrides?.phone,
       country: overrides?.country,
       city: overrides?.city,
@@ -63,8 +66,10 @@ export async function createTestGoogleUser(overrides?: {
   status?: string;
   googleSub?: string;
 }): Promise<{ id: string; email: string; googleSub: string }> {
-  const email = overrides?.email ?? `google-${Date.now()}-${Math.random().toString(36).slice(2)}@gmail.com`;
-  const googleSub = overrides?.googleSub ?? `google-sub-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const email =
+    overrides?.email ?? `google-${Date.now()}-${Math.random().toString(36).slice(2)}@gmail.com`;
+  const googleSub =
+    overrides?.googleSub ?? `google-sub-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   const user = await prisma.user.create({
     data: {

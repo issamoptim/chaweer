@@ -2,10 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth";
 import { professionalKeys } from "../api/professional-keys";
 import { professionalService } from "../services/professional-service";
-import type {
-  ProfessionalProfileData,
-  UpdateExpertiseInput,
-} from "../types/professional-types";
+import type { ProfessionalProfileData, UpdateExpertiseInput } from "../types/professional-types";
 
 export function useUpdateExpertise() {
   const { accessToken } = useAuth();

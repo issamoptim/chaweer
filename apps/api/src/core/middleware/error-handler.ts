@@ -3,12 +3,7 @@ import { AppError } from '../errors';
 import { logger } from '../logger';
 import { ErrorCodes } from '../../shared/errors/error-codes';
 
-export function errorHandler(
-  err: Error,
-  _req: Request,
-  res: Response,
-  _next: NextFunction,
-): void {
+export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof AppError) {
     logger.warn(
       { statusCode: err.statusCode, errorCode: err.errorCode, message: err.message },

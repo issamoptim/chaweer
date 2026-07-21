@@ -21,7 +21,9 @@ export function ProfilePage() {
       <div className="min-h-screen bg-white">
         <AppHeader />
         <div className="mx-auto max-w-[760px] px-6 py-10 flex flex-col gap-[22px]">
-          <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">Mon profil</h1>
+          <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
+            Mon profil
+          </h1>
           <ErrorMessage message="Impossible de charger votre profil." />
           <button
             type="button"
@@ -40,7 +42,9 @@ export function ProfilePage() {
     <div className="min-h-screen bg-white">
       <AppHeader />
       <div className="mx-auto max-w-[760px] px-6 py-10 flex flex-col gap-[22px]">
-        <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">Mon profil</h1>
+        <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
+          Mon profil
+        </h1>
         <ProfileSummaryCard profile={profile} />
         <PersonalInfoCard profile={profile} />
         <PreferencesCard profile={profile} />

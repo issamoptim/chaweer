@@ -26,15 +26,11 @@ function auth(token: string) {
 
 describe('Professional onboarding flow', () => {
   beforeAll(async () => {
-    const res = await request(app)
-      .post('/auth/register/professional')
-      .send({ email, password });
+    const res = await request(app).post('/auth/register/professional').send({ email, password });
     expect(res.status).toBe(201);
     accessToken = res.body.data.accessToken;
 
-    const ref = await request(app)
-      .get('/professional/referential')
-      .set(auth(accessToken));
+    const ref = await request(app).get('/professional/referential').set(auth(accessToken));
     referential = ref.body.data;
   });
 
@@ -55,9 +51,7 @@ describe('Professional onboarding flow', () => {
   });
 
   it('rejects a duplicate registration', async () => {
-    const res = await request(app)
-      .post('/auth/register/professional')
-      .send({ email, password });
+    const res = await request(app).post('/auth/register/professional').send({ email, password });
     expect(res.status).toBe(409);
   });
 
@@ -74,16 +68,13 @@ describe('Professional onboarding flow', () => {
   });
 
   it('updates the profile and marks it complete', async () => {
-    const res = await request(app)
-      .patch('/professional/profile')
-      .set(auth(accessToken))
-      .send({
-        firstName: 'Amina',
-        lastName: 'El Fassi',
-        barAssociationId: referential.barAssociations[0].id,
-        cityId: referential.cities[0].id,
-        bio: 'Avocate au barreau de Casablanca.',
-      });
+    const res = await request(app).patch('/professional/profile').set(auth(accessToken)).send({
+      firstName: 'Amina',
+      lastName: 'El Fassi',
+      barAssociationId: referential.barAssociations[0].id,
+      cityId: referential.cities[0].id,
+      bio: 'Avocate au barreau de Casablanca.',
+    });
     expect(res.status).toBe(200);
     expect(res.body.data.firstName).toBe('Amina');
     expect(res.body.data.completion.profile).toBe(true);

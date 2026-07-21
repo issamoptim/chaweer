@@ -25,10 +25,7 @@ export function ProfessionalLayout() {
 
   return (
     <div className="flex min-h-screen bg-[#F7F7F5]">
-      <ProfessionalSidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed((v) => !v)}
-      />
+      <ProfessionalSidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
       <main className="flex h-screen flex-1 flex-col overflow-y-auto">
         <ToastProvider>
           <div className="mx-auto w-full max-w-[860px] px-6 py-8 sm:px-8">

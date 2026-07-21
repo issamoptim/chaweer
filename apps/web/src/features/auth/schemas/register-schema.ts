@@ -15,11 +15,9 @@ export const registerSchema = z.object({
     .regex(/[A-Z]/, "Doit contenir au moins une majuscule")
     .regex(/[a-z]/, "Doit contenir au moins une minuscule")
     .regex(/[0-9]/, "Doit contenir au moins un chiffre"),
-  terms: z
-    .boolean()
-    .refine((value) => value === true, {
-      message: "Vous devez accepter les conditions",
-    }),
+  terms: z.boolean().refine((value) => value === true, {
+    message: "Vous devez accepter les conditions",
+  }),
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;

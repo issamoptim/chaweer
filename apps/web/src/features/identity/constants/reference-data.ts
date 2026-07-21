@@ -1,11 +1,6 @@
 export const COUNTRIES = ["Maroc", "France", "Belgique", "Canada"] as const;
 
-export const NATIONALITIES = [
-  "Marocaine",
-  "Française",
-  "Belge",
-  "Canadienne",
-] as const;
+export const NATIONALITIES = ["Marocaine", "Française", "Belge", "Canadienne"] as const;
 
 export const CITIES_BY_COUNTRY: Record<string, readonly string[]> = {
   Maroc: ["Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir"],

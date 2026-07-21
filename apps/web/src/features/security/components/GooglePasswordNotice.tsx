@@ -31,8 +31,8 @@ export function GooglePasswordNotice() {
             Votre mot de passe est géré par Google
           </p>
           <p className="mt-1 text-[13.5px] leading-[1.5] text-[#6B6862]">
-            Vous êtes connecté via Google. Votre mot de passe est géré par votre compte Google.
-            Vous pouvez le modifier sur{" "}
+            Vous êtes connecté via Google. Votre mot de passe est géré par votre compte Google. Vous
+            pouvez le modifier sur{" "}
             <a
               href="https://myaccount.google.com/security"
               target="_blank"

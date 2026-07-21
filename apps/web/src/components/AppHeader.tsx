@@ -13,9 +13,7 @@ function getInitials(name: string): string {
 export function AppHeader({ userName = "IM" }: AppHeaderProps) {
   return (
     <header className="flex items-center justify-between bg-white px-10 py-[15px] border-b border-[#E9E7E3]">
-      <span className="text-[19px] font-extrabold text-[#0F766E]">
-        Chaweer
-      </span>
+      <span className="text-[19px] font-extrabold text-[#0F766E]">Chaweer</span>
       <div className="flex items-center gap-6">
         <nav className="hidden sm:flex items-center gap-6">
           <span className="text-[14px] font-medium text-[#6B6862]">Avocats</span>

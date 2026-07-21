@@ -17,13 +17,9 @@ export function ReadOnlyField({ label, value, helperText }: ReadOnlyFieldProps) 
         className="flex min-h-[50px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#EAE8E3] bg-[#F2F1EF] px-[15px] py-[14px]"
         tabIndex={-1}
       >
-        <span className="text-[15px] font-medium text-[#6B6862]">
-          {value || "Non renseigné"}
-        </span>
+        <span className="text-[15px] font-medium text-[#6B6862]">{value || "Non renseigné"}</span>
       </div>
-      {helperText && (
-        <p className="text-[12.5px] text-[#9A968E] mt-[7px]">{helperText}</p>
-      )}
+      {helperText && <p className="text-[12.5px] text-[#9A968E] mt-[7px]">{helperText}</p>}
     </div>
   );
 }

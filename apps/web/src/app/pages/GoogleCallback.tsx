@@ -101,7 +101,7 @@ export function GoogleCallback() {
     void initiateGoogleLogin(
       recreateContext.current.from,
       true,
-      recreateContext.current.professional,
+      recreateContext.current.professional
     );
   };
 
@@ -112,16 +112,11 @@ export function GoogleCallback() {
           {status === "processing" ? (
             <>
               <LoadingSpinner size="lg" />
-              <p className="text-sm text-muted-foreground">
-                Connexion à Google en cours...
-              </p>
+              <p className="text-sm text-muted-foreground">Connexion à Google en cours...</p>
             </>
           ) : status === "deleted" ? (
             <>
-              <AuthHeader
-                title="Compte supprimé"
-                description={errorMessage}
-              />
+              <AuthHeader title="Compte supprimé" description={errorMessage} />
               <PrimaryButton type="button" onClick={handleRecreate} className="w-full">
                 Recréer mon compte
               </PrimaryButton>

@@ -1,5 +1,9 @@
 import { apiClient } from "@/services/api-client";
-import type { ProfileData, PreferencesInput, UpdateProfileInput } from "@/features/identity/types/identity-types";
+import type {
+  ProfileData,
+  PreferencesInput,
+  UpdateProfileInput,
+} from "@/features/identity/types/identity-types";
 
 export const identityService = {
   getProfile(token: string): Promise<ProfileData> {
