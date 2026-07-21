@@ -91,6 +91,14 @@ enum ProfessionalProfileStatus {
   DRAFT
   PENDING_VERIFICATION
   PUBLISHED
+  UNPUBLISHED
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
 }
 
 enum ConsultationModality {
@@ -119,7 +127,8 @@ model City {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profiles ProfessionalProfile[]
+  profiles    ProfessionalProfile[]
+  offices     Office[]
 }
 
 model Language {
@@ -167,12 +176,24 @@ model ProfessionalProfile {
   id                String                    @id @default(cuid())
   userId            String                    @unique
   status            ProfessionalProfileStatus @default(DRAFT)
+
+  // Identity [MVP]
+  professionalTitle String?
+
+  // Biography [MVP]
+  bio               String?
+  photoUrl          String?
+
+  // Publication [MVP]
+  publishedAt       DateTime?
+  unpublishedAt     DateTime?
+
+  // Legacy fields (kept during migration, removed in Phase C)
   barAssociationId  String?
   cityId            String?
   professionalPhone String?
   officeAddress     String?
-  bio               String?
-  photoUrl          String?
+
   createdAt         DateTime                  @default(now())
   updatedAt         DateTime                  @updatedAt
 
@@ -180,10 +201,17 @@ model ProfessionalProfile {
   barAssociation BarAssociation? @relation(fields: [barAssociationId], references: [id])
   city           City?           @relation(fields: [cityId], references: [id])
 
-  specializations ProfessionalSpecialization[]
-  practiceAreas   ProfessionalPracticeArea[]
-  languages       ProfessionalLanguage[]
-  offer           ConsultationOffer?
+  specializations   ProfessionalSpecialization[]
+  practiceAreas     ProfessionalPracticeArea[]
+  languages         ProfessionalLanguage[]
+  offer             ConsultationOffer?
+  contact           ProfessionalContact?
+  office            Office?
+  education         Education[]
+  experience        ProfessionalExperience[]
+  certifications    Certification[]
+  memberships       ProfessionalMembership[]
+  verification      Verification?
 
   @@index([status])
   @@index([barAssociationId])
@@ -232,12 +260,159 @@ model ProfessionalLanguage {
 model ConsultationOffer {
   id              String                 @id @default(cuid())
   profileId       String                 @unique
+  title           String?
+  description     String?                @db.VarChar(500)
   price           Int
   currency        String                 @default("MAD")
   durationMinutes Int
   modalities      ConsultationModality[]
+  active          Boolean?
+  order           Int?
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
 
   profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================
+// ProfessionalContact — NEW [MVP] — 1:1 with ProfessionalProfile
+// ============================================================
+
+model ProfessionalContact {
+  id          String   @id @default(cuid())
+  profileId   String   @unique
+  phone       String?  @db.VarChar(30)
+  whatsapp    String?  @db.VarChar(30)
+  publicEmail String?  @db.VarChar(255)
+  website     String?  @db.VarChar(500)
+  linkedInUrl String?  @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================
+// Office — NEW [MVP] — 1:1 with ProfessionalProfile
+// ============================================================
+
+model Office {
+  id          String   @id @default(cuid())
+  profileId   String   @unique
+  name        String?
+  address     String?
+  cityId      String?
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  city    City?               @relation(fields: [cityId], references: [id])
+
+  @@index([cityId])
+}
+
+// ============================================================
+// Education — NEW [Next] — 1:N with ProfessionalProfile
+// ============================================================
+
+model Education {
+  id          String   @id @default(cuid())
+  profileId   String
+  degree      String   @db.VarChar(200)
+  institution String   @db.VarChar(200)
+  startYear   Int
+  endYear     Int?
+  description String?  @db.VarChar(500)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+// ============================================================
+// ProfessionalExperience — NEW [Next] — 1:N with ProfessionalProfile
+// ============================================================
+
+model ProfessionalExperience {
+  id           String   @id @default(cuid())
+  profileId    String
+  position     String   @db.VarChar(200)
+  organization String   @db.VarChar(200)
+  startYear    Int
+  endYear      Int?
+  current      Boolean  @default(false)
+  description  String?  @db.VarChar(500)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+// ============================================================
+// Certification — NEW [Next] — 1:N with ProfessionalProfile
+// ============================================================
+
+model Certification {
+  id           String   @id @default(cuid())
+  profileId    String
+  title        String   @db.VarChar(200)
+  issuer       String   @db.VarChar(200)
+  issueYear    Int
+  expiryYear   Int?
+  credentialId String?  @db.VarChar(100)
+  verified     Boolean  @default(false)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+// ============================================================
+// ProfessionalMembership — NEW [Next] — 1:N with ProfessionalProfile
+// ============================================================
+
+model ProfessionalMembership {
+  id           String   @id @default(cuid())
+  profileId    String
+  organization String   @db.VarChar(200)
+  role         String?  @db.VarChar(200)
+  startYear    Int
+  endYear      Int?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+// ============================================================
+// Verification — NEW [Next] — 1:1 with ProfessionalProfile
+// ============================================================
+
+model Verification {
+  id              String             @id @default(cuid())
+  profileId       String             @unique
+  status          VerificationStatus @default(UNVERIFIED)
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  rejectionReason String?            @db.VarChar(500)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([status])
 }
