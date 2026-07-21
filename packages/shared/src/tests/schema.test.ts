@@ -136,6 +136,31 @@ describe("updateProfileSchema", () => {
     const result = updateProfileSchema.safeParse({ bio: "a".repeat(601) });
     expect(result.success).toBe(false);
   });
+
+  it("accepts firstName and lastName", () => {
+    const result = updateProfileSchema.safeParse({
+      firstName: "Amina",
+      lastName: "El Fassi",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts photoUrl as nullable", () => {
+    const result = updateProfileSchema.safeParse({ photoUrl: null });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts photoUrl as string", () => {
+    const result = updateProfileSchema.safeParse({
+      photoUrl: "https://example.com/photo.jpg",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects empty firstName", () => {
+    const result = updateProfileSchema.safeParse({ firstName: "" });
+    expect(result.success).toBe(false);
+  });
 });
 
 // ============================================================
@@ -243,6 +268,28 @@ describe("updateOfficeSchema", () => {
 
   it("rejects empty object", () => {
     const result = updateOfficeSchema.safeParse({});
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts both coordinates as null", () => {
+    const result = updateOfficeSchema.safeParse({
+      latitude: null,
+      longitude: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects latitude without longitude", () => {
+    const result = updateOfficeSchema.safeParse({
+      latitude: 33.5731,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects longitude without latitude", () => {
+    const result = updateOfficeSchema.safeParse({
+      longitude: -7.5898,
+    });
     expect(result.success).toBe(false);
   });
 });

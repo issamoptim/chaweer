@@ -12,7 +12,12 @@ const optionalTrimmed = (max: number) => z.string().trim().max(max).optional();
 
 export const updateProfileSchema = z
   .object({
+    // User aggregate fields
+    firstName: z.string().trim().min(1).max(100).optional(),
+    lastName: z.string().trim().min(1).max(100).optional(),
+    // ProfessionalProfile aggregate fields
     professionalTitle: optionalTrimmed(120),
+    photoUrl: optionalTrimmedNullable(2000),
     bio: optionalTrimmedNullable(600),
     barAssociationId: z.string().trim().min(1).nullable().optional(),
   })
@@ -61,10 +66,23 @@ export const updateOfficeSchema = z
     name: optionalTrimmedNullable(200),
     address: optionalTrimmedNullable(255),
     cityId: z.string().trim().min(1).nullable().optional(),
-    googleMapsUrl: optionalTrimmedNullable(1000),
     latitude: z.number().nullable().optional(),
     longitude: z.number().nullable().optional(),
   })
+  .refine(
+    (data) => {
+      const lat = data.latitude;
+      const lng = data.longitude;
+      const bothNull = lat === null && lng === null;
+      const bothUndefined = lat === undefined && lng === undefined;
+      const bothProvided =
+        lat !== null && lat !== undefined && lng !== null && lng !== undefined;
+      return bothNull || bothUndefined || bothProvided;
+    },
+    {
+      message: "Latitude and longitude must be both provided or both null",
+    },
+  )
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",
   });

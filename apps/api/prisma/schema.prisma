@@ -204,7 +204,7 @@ model ProfessionalProfile {
   specializations   ProfessionalSpecialization[]
   practiceAreas     ProfessionalPracticeArea[]
   languages         ProfessionalLanguage[]
-  offer             ConsultationOffer?
+  offers            ConsultationOffer[]
   contact           ProfessionalContact?
   office            Office?
   education         Education[]
@@ -259,7 +259,7 @@ model ProfessionalLanguage {
 
 model ConsultationOffer {
   id              String                 @id @default(cuid())
-  profileId       String                 @unique
+  profileId       String
   title           String?
   description     String?                @db.VarChar(500)
   price           Int
@@ -272,6 +272,8 @@ model ConsultationOffer {
   updatedAt       DateTime               @updatedAt
 
   profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
 }
 
 // ============================================================

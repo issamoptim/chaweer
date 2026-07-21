@@ -21,6 +21,38 @@ export interface Referential {
   cities: ReferentialItem[];
 }
 
+export interface ConsultationOfferData {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  currency: string;
+  durationMinutes: number;
+  modalities: string[];
+  active: boolean;
+  order: number;
+}
+
+export interface ProfileCompletionSections {
+  identity: boolean;
+  biography: boolean;
+  contact: boolean;
+  office: boolean;
+  expertise: boolean;
+  offer: boolean;
+  education: boolean;
+  experience: boolean;
+  certifications: boolean;
+  memberships: boolean;
+}
+
+export interface ProfileCompletion {
+  percentage: number;
+  completedSections: number;
+  totalSections: number;
+  sections: ProfileCompletionSections;
+}
+
 export interface ProfessionalProfileData {
   id: string;
   status: string;
@@ -36,19 +68,6 @@ export interface ProfessionalProfileData {
   specializationIds: string[];
   practiceAreaIds: string[];
   languageIds: string[];
-  offer: ConsultationOfferData | null;
+  offers: ConsultationOfferData[];
   completion: ProfileCompletion;
-}
-
-export interface ConsultationOfferData {
-  price: number;
-  currency: string;
-  durationMinutes: number;
-  modalities: string[];
-}
-
-export interface ProfileCompletion {
-  profile: boolean;
-  expertise: boolean;
-  offer: boolean;
 }

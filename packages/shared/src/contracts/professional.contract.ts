@@ -30,7 +30,6 @@ export interface OfficeResponse {
   name: string | null;
   address: string | null;
   cityId: string | null;
-  googleMapsUrl: string | null;
   latitude: number | null;
   longitude: number | null;
 }
@@ -99,7 +98,7 @@ export interface VerificationResponse {
   rejectionReason: string | null;
 }
 
-export interface ProfileCompletion {
+export interface ProfileCompletionSections {
   identity: boolean;
   biography: boolean;
   contact: boolean;
@@ -110,6 +109,13 @@ export interface ProfileCompletion {
   experience: boolean;
   certifications: boolean;
   memberships: boolean;
+}
+
+export interface ProfileCompletion {
+  percentage: number;
+  completedSections: number;
+  totalSections: number;
+  sections: ProfileCompletionSections;
 }
 
 export interface ProfessionalProfileResponse {

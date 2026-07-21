@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expertise — Chaweer Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <div class="sidebar__brand">
+        <span class="sidebar__brand-name">Chaweer</span>
+        <span class="sidebar__brand-badge">Professionnel</span>
+      </div>
+      <span class="sidebar__brand-icon" style="display:none">C</span>
+      <button class="sidebar__toggle" id="sidebarToggle" aria-label="Replier le menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html" class="nav-item">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span class="nav-item__label">Tableau de bord</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        <span class="nav-item__label">Profil professionnel</span>
+      </a>
+      <a href="expertise.html" class="nav-item nav-item--active">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 7h18M3 17h18"/></svg>
+        <span class="nav-item__label">Expertise</span>
+      </a>
+      <a href="offers.html" class="nav-item">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <span class="nav-item__label">Offres de consultation</span>
+      </a>
+      <div class="sidebar__divider"></div>
+      <div class="nav-item nav-item--soon">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="nav-item__label">Disponibilités <span class="nav-item__soon-badge">Bientôt</span></span>
+      </div>
+      <div class="nav-item nav-item--soon">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="nav-item__label">Paramètres <span class="nav-item__soon-badge">Bientôt</span></span>
+      </div>
+    </nav>
+    <div class="sidebar__footer">
+      <div class="sidebar__user">
+        <span class="sidebar__user-avatar">A</span>
+        <span class="sidebar__user-name">Amina El Fassi</span>
+      </div>
+      <a href="../" class="nav-item">
+        <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="nav-item__label">Retour au site</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer__header"><span class="sidebar__brand-name">Chaweer Pro</span></div>
+    <nav class="drawer__nav">
+      <a href="dashboard.html" class="nav-item">Tableau de bord</a>
+      <a href="profile.html" class="nav-item">Profil professionnel</a>
+      <a href="expertise.html" class="nav-item nav-item--active">Expertise</a>
+      <a href="offers.html" class="nav-item">Offres de consultation</a>
+      <div class="sidebar__divider"></div>
+      <div class="nav-item nav-item--soon">Disponibilités <span class="nav-item__soon-badge">Bientôt</span></div>
+      <div class="nav-item nav-item--soon">Paramètres <span class="nav-item__soon-badge">Bientôt</span></div>
+    </nav>
+  </aside>
+
+  <!-- ============ Main Content ============ -->
+  <div style="flex:1;min-width:0;">
+    <div class="topbar">
+      <button class="topbar__hamburger" id="hamburger" aria-label="Ouvrir le menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <span class="topbar__title">Expertise</span>
+    </div>
+
+    <main class="main-content" style="padding-bottom:100px;">
+      <div class="main-content__inner">
+
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1 class="page-header__title">Mon expertise</h1>
+          <p class="page-header__subtitle">Vos clients décrivent un problème concret, pas un domaine du droit. Indiquez les situations que vous traitez pour être proposé au bon moment.</p>
+        </div>
+
+        <!-- Section 1: Specializations -->
+        <div class="section">
+          <h2 class="section__title">1. Vos spécialités</h2>
+          <div class="responsive-grid responsive-grid--3">
+            <button class="toggle-card toggle-card--selected" data-toggle-card>
+              <div class="toggle-card__content">
+                <span class="toggle-card__title">Droit des affaires</span>
+                <span class="toggle-card__subtitle">3 situations sélectionnées</span>
+              </div>
+              <div class="toggle-card__check">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </div>
+            </button>
+            <button class="toggle-card toggle-card--selected" data-toggle-card>
+              <div class="toggle-card__content">
+                <span class="toggle-card__title">Droit fiscal</span>
+                <span class="toggle-card__subtitle">1 situation sélectionnée</span>
+              </div>
+              <div class="toggle-card__check">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </div>
+            </button>
+            <button class="toggle-card" data-toggle-card>
+              <div class="toggle-card__content">
+                <span class="toggle-card__title">Droit pénal</span>
+                <span class="toggle-card__subtitle">Sélectionner</span>
+              </div>
+              <div class="toggle-card__check"></div>
+            </button>
+            <button class="toggle-card" data-toggle-card>
+              <div class="toggle-card__content">
+                <span class="toggle-card__title">Droit du travail</span>
+                <span class="toggle-card__subtitle">Sélectionner</span>
+              </div>
+              <div class="toggle-card__check"></div>
+            </button>
+            <button class="toggle-card" data-toggle-card>
+              <div class="toggle-card__content">
+                <span class="toggle-card__title">Droit de la famille</span>
+                <span class="toggle-card__subtitle">Sélectionner</span>
+              </div>
+              <div class="toggle-card__check"></div>
+            </button>
+            <button class="toggle-card" data-toggle-card>
+              <div class="toggle-card__content">
+                <span class="toggle-card__title">Droit immobilier</span>
+                <span class="toggle-card__subtitle">Sélectionner</span>
+              </div>
+              <div class="toggle-card__check"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 2: Practice Areas -->
+        <div class="section">
+          <h2 class="section__title">2. Situations que vous traitez</h2>
+
+          <!-- Group: Droit des affaires -->
+          <div class="card" style="margin-bottom:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <span style="font-size:15px;font-weight:700;color:var(--c-text);">Droit des affaires</span>
+              <span style="font-size:13px;color:var(--c-text-muted);">3/5 · <a href="#" style="color:var(--c-text-secondary);font-weight:500;">Tout sélectionner</a></span>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="chip chip--selected" data-chip>
+                Création d'entreprise
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+              <button class="chip chip--selected" data-chip>
+                Fusions et acquisitions
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+              <button class="chip chip--selected" data-chip>
+                Contrats commerciaux
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+              <button class="chip" data-chip>
+                Propriété intellectuelle
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+              <button class="chip" data-chip>
+                Litiges commerciaux
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Group: Droit fiscal -->
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <span style="font-size:15px;font-weight:700;color:var(--c-text);">Droit fiscal</span>
+              <span style="font-size:13px;color:var(--c-text-muted);">1/3 · <a href="#" style="color:var(--c-text-secondary);font-weight:500;">Tout sélectionner</a></span>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="chip chip--selected" data-chip>
+                Optimisation fiscale
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+              <button class="chip" data-chip>
+                Contrôle fiscal
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+              <button class="chip" data-chip>
+                Contentieux fiscal
+                <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Languages -->
+        <div class="section">
+          <h2 class="section__title">3. Langues de consultation</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="chip chip--selected" data-chip>
+              Français
+              <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+            <button class="chip chip--selected" data-chip>
+              Arabe
+              <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+            <button class="chip chip--selected" data-chip>
+              Anglais
+              <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+            <button class="chip" data-chip>
+              Espagnol
+              <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+            <button class="chip" data-chip>
+              Allemand
+              <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+            <button class="chip" data-chip>
+              Berbère
+              <svg class="chip__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Sticky Action Bar -->
+<div class="sticky-bar">
+  <span class="sticky-bar__status">2 spécialités · 4 situations · 3 langues</span>
+  <div class="sticky-bar__actions">
+    <a href="offers.html" class="btn btn--ghost btn--sm">Enregistrer et continuer</a>
+    <button class="btn btn--primary btn--sm">Enregistrer</button>
+  </div>
+</div>
+
+<!-- Bottom Tab Bar -->
+<nav class="bottom-tabs">
+  <div class="bottom-tabs__list">
+    <a href="dashboard.html" class="bottom-tab">
+      <svg class="bottom-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Accueil
+    </a>
+    <a href="profile.html" class="bottom-tab">
+      <svg class="bottom-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+      Profil
+    </a>
+    <a href="expertise.html" class="bottom-tab bottom-tab--active">
+      <svg class="bottom-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 7h18M3 17h18"/></svg>
+      Expertise
+    </a>
+    <a href="offers.html" class="bottom-tab">
+      <svg class="bottom-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Offres
+    </a>
+    <a href="account-settings.html" class="bottom-tab">
+      <svg class="bottom-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      Plus
+    </a>
+  </div>
+</nav>
+
+<script src="js/app.js"></script>
+</body>
+</html>

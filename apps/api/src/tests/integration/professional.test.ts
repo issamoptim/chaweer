@@ -44,9 +44,21 @@ describe('Professional onboarding flow', () => {
     expect(res.status).toBe(200);
     expect(res.body.data.status).toBe('DRAFT');
     expect(res.body.data.completion).toEqual({
-      profile: false,
-      expertise: false,
-      offer: false,
+      percentage: 0,
+      completedSections: 0,
+      totalSections: 10,
+      sections: {
+        identity: false,
+        biography: false,
+        contact: false,
+        office: false,
+        expertise: false,
+        offer: false,
+        education: false,
+        experience: false,
+        certifications: false,
+        memberships: false,
+      },
     });
   });
 
@@ -67,17 +79,18 @@ describe('Professional onboarding flow', () => {
     expect(referential.cities.length).toBeGreaterThan(0);
   });
 
-  it('updates the profile and marks it complete', async () => {
+  it('updates the profile and marks identity complete', async () => {
     const res = await request(app).patch('/professional/profile').set(auth(accessToken)).send({
       firstName: 'Amina',
       lastName: 'El Fassi',
+      professionalTitle: 'Avocate',
       barAssociationId: referential.barAssociations[0].id,
-      cityId: referential.cities[0].id,
       bio: 'Avocate au barreau de Casablanca.',
     });
     expect(res.status).toBe(200);
     expect(res.body.data.firstName).toBe('Amina');
-    expect(res.body.data.completion.profile).toBe(true);
+    expect(res.body.data.completion.sections.identity).toBe(true);
+    expect(res.body.data.completion.sections.biography).toBe(true);
   });
 
   it('rejects a practice area that does not belong to a selected specialization', async () => {
@@ -105,7 +118,7 @@ describe('Professional onboarding flow', () => {
         languageIds: [referential.languages[0].id],
       });
     expect(res.status).toBe(200);
-    expect(res.body.data.completion.expertise).toBe(true);
+    expect(res.body.data.completion.sections.expertise).toBe(true);
   });
 
   it('saves a valid consultation offer', async () => {
@@ -114,12 +127,13 @@ describe('Professional onboarding flow', () => {
       .set(auth(accessToken))
       .send({ price: 400, durationMinutes: 30, modalities: ['VIDEO'] });
     expect(res.status).toBe(200);
-    expect(res.body.data.offer).toMatchObject({
+    expect(res.body.data.offers).toHaveLength(1);
+    expect(res.body.data.offers[0]).toMatchObject({
       price: 400,
       durationMinutes: 30,
       currency: 'MAD',
     });
-    expect(res.body.data.completion.offer).toBe(true);
+    expect(res.body.data.completion.sections.offer).toBe(true);
   });
 
   it('rejects an invalid offer', async () => {

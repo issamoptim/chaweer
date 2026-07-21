@@ -1,9 +1,9 @@
 import { prisma } from '../../core/database/prisma';
 import { NotFoundError } from '../../core/errors';
 import { ValidationError } from '../../shared/errors/auth-errors';
-import type { ProfessionalProfileData, ProfileCompletion } from './professional.types';
+import type { ProfessionalProfileData, ProfileCompletion, ProfileCompletionSections } from './professional.types';
 import type {
-  UpdateProfessionalProfileInput,
+  UpdateProfileInput,
   UpdateExpertiseInput,
   UpdateOfferInput,
 } from './professional.schema';
@@ -18,7 +18,14 @@ const profileInclude = {
   specializations: { select: { specializationId: true } },
   practiceAreas: { select: { practiceAreaId: true } },
   languages: { select: { languageId: true } },
-  offer: true,
+  offers: { orderBy: { order: 'asc' } },
+  contact: true,
+  office: { include: { city: { select: { id: true, name: true } } } },
+  education: { orderBy: { order: 'asc' } },
+  experience: { orderBy: { order: 'asc' } },
+  certifications: { orderBy: { order: 'asc' } },
+  memberships: { orderBy: { order: 'asc' } },
+  verification: true,
 } as const;
 
 type ProfileWithRelations = Prisma.ProfessionalProfileGetPayload<{
@@ -47,15 +54,33 @@ export async function ensureDraftProfile(
 }
 
 function computeCompletion(profile: ProfileWithRelations): ProfileCompletion {
-  const hasName = Boolean(profile.user.firstName) && Boolean(profile.user.lastName);
-  const hasExpertise =
-    profile.specializations.length > 0 &&
-    profile.practiceAreas.length > 0 &&
-    profile.languages.length > 0;
-  const hasOffer =
-    profile.offer !== null && profile.offer.price > 0 && profile.offer.modalities.length > 0;
+  const sections: ProfileCompletionSections = {
+    identity:
+      Boolean(profile.user.firstName) &&
+      Boolean(profile.user.lastName) &&
+      profile.professionalTitle !== null &&
+      profile.professionalTitle !== '',
+    biography: profile.bio !== null && profile.bio !== '',
+    contact: profile.contact !== null && profile.contact.phone !== null,
+    office: profile.office !== null && profile.office.address !== null,
+    expertise:
+      profile.specializations.length > 0 &&
+      profile.practiceAreas.length > 0 &&
+      profile.languages.length > 0,
+    offer:
+      profile.offers.length > 0 &&
+      profile.offers.some((o) => o.active === true && o.price > 0),
+    education: profile.education.length > 0,
+    experience: profile.experience.length > 0,
+    certifications: profile.certifications.length > 0,
+    memberships: profile.memberships.length > 0,
+  };
 
-  return { profile: hasName, expertise: hasExpertise, offer: hasOffer };
+  const totalSections = 10;
+  const completedSections = Object.values(sections).filter(Boolean).length;
+  const percentage = Math.round((completedSections / totalSections) * 100);
+
+  return { percentage, completedSections, totalSections, sections };
 }
 
 function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
@@ -74,14 +99,17 @@ function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
     specializationIds: profile.specializations.map((s) => s.specializationId),
     practiceAreaIds: profile.practiceAreas.map((p) => p.practiceAreaId),
     languageIds: profile.languages.map((l) => l.languageId),
-    offer: profile.offer
-      ? {
-          price: profile.offer.price,
-          currency: profile.offer.currency,
-          durationMinutes: profile.offer.durationMinutes,
-          modalities: profile.offer.modalities,
-        }
-      : null,
+    offers: profile.offers.map((o) => ({
+      id: o.id,
+      title: o.title ?? '',
+      description: o.description,
+      price: o.price,
+      currency: o.currency,
+      durationMinutes: o.durationMinutes,
+      modalities: o.modalities,
+      active: o.active ?? false,
+      order: o.order ?? 0,
+    })),
     completion: computeCompletion(profile),
   };
 }
@@ -106,7 +134,7 @@ export async function getMyProfile(userId: string): Promise<ProfessionalProfileD
 
 export async function updateProfile(
   userId: string,
-  input: UpdateProfessionalProfileInput,
+  input: UpdateProfileInput,
 ): Promise<ProfessionalProfileData> {
   const profile = await prisma.professionalProfile.findUnique({
     where: { userId },
@@ -129,35 +157,18 @@ export async function updateProfile(
     }
   }
 
-  if (input.cityId) {
-    const city = await prisma.city.findFirst({
-      where: { id: input.cityId, active: true },
-      select: { id: true },
-    });
-    if (!city) {
-      throw new ValidationError('Ville invalide.', [
-        { field: 'cityId', message: 'Ville invalide.' },
-      ]);
-    }
-  }
-
   const userData: { firstName?: string; lastName?: string } = {};
   if (input.firstName !== undefined) userData.firstName = input.firstName;
   if (input.lastName !== undefined) userData.lastName = input.lastName;
 
   const profileData: Prisma.ProfessionalProfileUpdateInput = {};
+  if (input.professionalTitle !== undefined) profileData.professionalTitle = input.professionalTitle;
   if (input.photoUrl !== undefined) profileData.photoUrl = input.photoUrl;
-  if (input.professionalPhone !== undefined)
-    profileData.professionalPhone = input.professionalPhone;
-  if (input.officeAddress !== undefined) profileData.officeAddress = input.officeAddress;
   if (input.bio !== undefined) profileData.bio = input.bio;
   if (input.barAssociationId !== undefined) {
     profileData.barAssociation = input.barAssociationId
       ? { connect: { id: input.barAssociationId } }
       : { disconnect: true };
-  }
-  if (input.cityId !== undefined) {
-    profileData.city = input.cityId ? { connect: { id: input.cityId } } : { disconnect: true };
   }
 
   await prisma.$transaction(async (tx) => {
@@ -277,20 +288,33 @@ export async function setOffer(
 
   const modalities = [...new Set(input.modalities)] as ConsultationModality[];
 
-  await prisma.consultationOffer.upsert({
+  const existingOffer = await prisma.consultationOffer.findFirst({
     where: { profileId: profile.id },
-    update: {
-      price: input.price,
-      durationMinutes: input.durationMinutes,
-      modalities,
-    },
-    create: {
-      profileId: profile.id,
-      price: input.price,
-      durationMinutes: input.durationMinutes,
-      modalities,
-    },
+    orderBy: { order: 'asc' },
   });
+
+  if (existingOffer) {
+    await prisma.consultationOffer.update({
+      where: { id: existingOffer.id },
+      data: {
+        price: input.price,
+        durationMinutes: input.durationMinutes,
+        modalities,
+      },
+    });
+  } else {
+    await prisma.consultationOffer.create({
+      data: {
+        profileId: profile.id,
+        title: 'Consultation',
+        price: input.price,
+        durationMinutes: input.durationMinutes,
+        modalities,
+        active: true,
+        order: 0,
+      },
+    });
+  }
 
   return getMyProfile(userId);
 }

@@ -29,11 +29,9 @@ describe('updateProfileSchema', () => {
     const result = updateProfileSchema.safeParse({
       firstName: 'John',
       lastName: 'Doe',
+      professionalTitle: 'Avocate',
       photoUrl: null,
       barAssociationId: null,
-      cityId: null,
-      professionalPhone: null,
-      officeAddress: null,
       bio: null,
     });
     expect(result.success).toBe(true);
@@ -46,11 +44,9 @@ describe('updateProfileSchema', () => {
     const result = updateProfileSchema.safeParse({
       firstName: 'Amina',
       lastName: 'El Fassi',
+      professionalTitle: 'Avocate',
       photoUrl: 'https://example.com/photo.jpg',
       barAssociationId: 'bar-1',
-      cityId: 'city-1',
-      professionalPhone: '+212 6 00 00 00 00',
-      officeAddress: '12 rue de la Liberté, Casablanca',
       bio: 'Avocate expérimentée',
     });
     expect(result.success).toBe(true);
