@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { Shield, Briefcase } from "lucide-react";
 import { useProfile } from "../hooks/useProfile";
 import { ErrorMessage, LoadingSpinner } from "@/features/auth";
 import { AppHeader } from "@/components/AppHeader";
@@ -44,6 +44,24 @@ export function ProfilePage() {
         <ProfileSummaryCard profile={profile} />
         <PersonalInfoCard profile={profile} />
         <PreferencesCard profile={profile} />
+        {profile.role === "PROFESSIONAL" && (
+          <button
+            type="button"
+            onClick={() => navigate("/pro/profil")}
+            className="flex items-center justify-between rounded-[16px] border border-[#E9E7E3] bg-card p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)] transition-colors hover:bg-[#F7F7F5] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[rgba(20,184,166,0.40)]"
+          >
+            <div className="flex items-center gap-3">
+              <Briefcase className="h-5 w-5 text-[#0F766E]" aria-hidden="true" />
+              <div className="text-left">
+                <p className="text-[15px] font-semibold text-foreground">Profil professionnel</p>
+                <p className="text-[13px] text-[#6B6862]">
+                  Photo, barreau, téléphone professionnel, cabinet, biographie
+                </p>
+              </div>
+            </div>
+            <span className="text-[14px] font-semibold text-[#0F766E]">Gérer</span>
+          </button>
+        )}
         <button
           type="button"
           onClick={() => navigate("/mon-compte/securite")}

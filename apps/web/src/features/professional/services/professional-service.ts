@@ -16,6 +16,16 @@ export const professionalService = {
     return apiClient.get<ProfessionalProfileData>("/professional/me", { token });
   },
 
+  async uploadPhoto(file: File, token: string): Promise<string> {
+    const result = await apiClient.uploadFile<{ photoUrl: string }>(
+      "/professional/upload-photo",
+      "photo",
+      file,
+      { token },
+    );
+    return result.photoUrl;
+  },
+
   updateProfile(
     input: UpdateProfessionalProfileInput,
     token: string,

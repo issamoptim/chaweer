@@ -1,4 +1,5 @@
 import { BadgeCheck, Video, MapPin, Clock } from "lucide-react";
+import { resolveMediaUrl } from "@/utils/media-url";
 import type { ConsultationModality } from "../types/professional-types";
 
 interface OfferPreviewCardProps {
@@ -28,7 +29,7 @@ export function OfferPreviewCard({
       <div className="flex items-start gap-3">
         <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#E6F2F0] text-[18px] font-bold text-[#0F766E]">
           {photoUrl ? (
-            <img src={photoUrl} alt="" className="h-full w-full object-cover" />
+            <img src={resolveMediaUrl(photoUrl) ?? undefined} alt="" className="h-full w-full object-cover" />
           ) : (
             (name || "?").charAt(0).toUpperCase()
           )}

@@ -3,3 +3,6 @@ dist/
 .env
 *.log
 src/generated/
+
+# Uploaded files
+uploads/

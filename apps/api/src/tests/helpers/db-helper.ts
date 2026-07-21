@@ -2,6 +2,11 @@ import { prisma } from '../../core/database/prisma';
 import { hashPassword } from '../../modules/auth/services/password.service';
 
 export async function cleanDatabase(): Promise<void> {
+  await prisma.consultationOffer.deleteMany();
+  await prisma.professionalLanguage.deleteMany();
+  await prisma.professionalPracticeArea.deleteMany();
+  await prisma.professionalSpecialization.deleteMany();
+  await prisma.professionalProfile.deleteMany();
   await prisma.refreshToken.deleteMany();
   await prisma.externalIdentity.deleteMany();
   await prisma.user.deleteMany();

@@ -24,6 +24,37 @@ describe('updateProfileSchema', () => {
     const result = updateProfileSchema.safeParse({ bio: null });
     expect(result.success).toBe(true);
   });
+
+  it('accepts the full payload sent by ProfessionalProfilePage form', () => {
+    const result = updateProfileSchema.safeParse({
+      firstName: 'John',
+      lastName: 'Doe',
+      photoUrl: null,
+      barAssociationId: null,
+      cityId: null,
+      professionalPhone: null,
+      officeAddress: null,
+      bio: null,
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) {
+      console.log('Schema errors:', JSON.stringify(result.error.issues, null, 2));
+    }
+  });
+
+  it('accepts the full payload with non-empty optional fields', () => {
+    const result = updateProfileSchema.safeParse({
+      firstName: 'Amina',
+      lastName: 'El Fassi',
+      photoUrl: 'https://example.com/photo.jpg',
+      barAssociationId: 'bar-1',
+      cityId: 'city-1',
+      professionalPhone: '+212 6 00 00 00 00',
+      officeAddress: '12 rue de la Liberté, Casablanca',
+      bio: 'Avocate expérimentée',
+    });
+    expect(result.success).toBe(true);
+  });
 });
 
 describe('updateExpertiseSchema', () => {

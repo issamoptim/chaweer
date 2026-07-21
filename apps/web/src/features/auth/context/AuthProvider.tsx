@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { AuthContext, type AuthContextValue } from "./auth-context";
 import { authService } from "../services/auth-service";
+import { setTokenRefreshedCallback } from "@/services/api-client";
 import type { AuthStatus, MeUser } from "../types/auth-types";
 
 interface AuthProviderProps {
@@ -11,7 +12,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<MeUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [apiUnavailable, setApiUnavailable] = useState(false);
-  const tokenRef = useRef<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTokenRefreshedCallback((token: string) => {
+      setAccessToken(token);
+    });
+  }, []);
 
   const restoreSession = useCallback(async () => {
     setStatus("loading");
@@ -19,13 +26,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const { accessToken } = await authService.refresh();
-      tokenRef.current = accessToken;
+      setAccessToken(accessToken);
 
       const me = await authService.getMe(accessToken);
       setUser(me);
       setStatus("authenticated");
     } catch {
-      tokenRef.current = null;
+      setAccessToken(null);
       setUser(null);
       setStatus("anonymous");
       setApiUnavailable(true);
@@ -37,13 +44,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [restoreSession]);
 
   const login = useCallback((accessToken: string, meUser: MeUser) => {
-    tokenRef.current = accessToken;
+    setAccessToken(accessToken);
     setUser(meUser);
     setStatus("authenticated");
   }, []);
 
   const logout = useCallback(() => {
-    tokenRef.current = null;
+    setAccessToken(null);
     setUser(null);
     setStatus("anonymous");
   }, []);
@@ -51,28 +58,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const refresh = useCallback(async () => {
     try {
       const { accessToken } = await authService.refresh();
-      tokenRef.current = accessToken;
+      setAccessToken(accessToken);
     } catch {
-      tokenRef.current = null;
+      setAccessToken(null);
       setUser(null);
       setStatus("anonymous");
     }
   }, []);
 
   const refetchUser = useCallback(async () => {
-    if (!tokenRef.current) return;
+    if (!accessToken) return;
 
     try {
-      const me = await authService.getMe(tokenRef.current);
+      const me = await authService.getMe(accessToken);
       setUser(me);
     } catch {
       // keep current state on refetch failure
     }
-  }, []);
+  }, [accessToken]);
 
   const value: AuthContextValue = {
     user,
-    accessToken: tokenRef.current,
+    accessToken,
     status,
     apiUnavailable,
     isAuthenticated: status === "authenticated",

@@ -27,6 +27,7 @@ export function GoogleCallback() {
   const [status, setStatus] = useState<CallbackStatus>("processing");
   const [errorMessage, setErrorMessage] = useState("");
   const hasStarted = useRef(false);
+  const recreateContext = useRef({ from: "/", professional: false });
 
   const googleLogin = useGoogleLogin({
     onSuccess: () => {
@@ -36,6 +37,11 @@ export function GoogleCallback() {
       navigate(from, { replace: true });
     },
     onError: (message, error) => {
+      const stored = getOAuthState();
+      recreateContext.current = {
+        from: stored?.from ?? "/",
+        professional: stored?.professional ?? false,
+      };
       clearOAuthState();
       if (error?.code === "ACCOUNT_DELETED") {
         setErrorMessage(message);
@@ -92,7 +98,11 @@ export function GoogleCallback() {
   };
 
   const handleRecreate = () => {
-    void initiateGoogleLogin("/", true);
+    void initiateGoogleLogin(
+      recreateContext.current.from,
+      true,
+      recreateContext.current.professional,
+    );
   };
 
   return (

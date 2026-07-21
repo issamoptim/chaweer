@@ -75,11 +75,24 @@ async function findOrCreateUser(
       if (reactivate) {
         const reactivated = await prisma.user.update({
           where: { id: user.id },
-          data: { status: 'ACTIVE' },
+          data: {
+            status: 'ACTIVE',
+            ...(role === 'PROFESSIONAL' && user.role === 'CLIENT'
+              ? { role: 'PROFESSIONAL' }
+              : {}),
+          },
         });
         return reactivated;
       }
       throw new AccountDeletedError();
+    }
+
+    if (role === 'PROFESSIONAL' && user.role === 'CLIENT') {
+      const upgraded = await prisma.user.update({
+        where: { id: user.id },
+        data: { role: 'PROFESSIONAL' },
+      });
+      return upgraded;
     }
 
     return user;

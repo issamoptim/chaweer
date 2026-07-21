@@ -11,6 +11,7 @@ import {
   ErrorMessage,
   TextLink,
   initiateGoogleLogin,
+  useAuth,
 } from "@/features/auth";
 import { ProBadge } from "../components/ProBadge";
 import { useProfessionalRegister } from "../hooks/useProfessionalRegister";
@@ -23,7 +24,10 @@ const ONBOARDING_START = "/pro/profil";
 
 export function ProfessionalRegistrationPage() {
   const navigate = useNavigate();
+  const { user, status } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const isExistingClient = status === "authenticated" && user?.role === "CLIENT";
 
   const {
     register,
@@ -60,6 +64,17 @@ export function ProfessionalRegistrationPage() {
             Rejoignez Chaweer et proposez vos consultations juridiques.
           </p>
         </div>
+
+        {isExistingClient && (
+          <div className="mt-5 rounded-lg border border-[#0F766E]/20 bg-[#0F766E]/5 px-4 py-3">
+            <p className="text-[13px] leading-relaxed text-[#0F766E]">
+              Vous êtes actuellement connecté en tant que client
+              {user?.email ? ` (${user.email})` : ""}. En continuant, votre
+              compte sera transformé en compte professionnel. Vos données
+              existantes (rendez-vous, historique, profil) seront conservées.
+            </p>
+          </div>
+        )}
 
         {serverError && (
           <div className="mt-5">

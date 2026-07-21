@@ -100,6 +100,43 @@ describe('POST /auth/google/* (integration)', () => {
       expect(users).toHaveLength(1);
     });
 
+    it('should upgrade existing CLIENT to PROFESSIONAL via /google/professional', async () => {
+      await createTestGoogleUser({
+        email: 'google-integration@gmail.com',
+        googleSub: 'google-sub-integration-123',
+      });
+
+      const response = await request(app)
+        .post('/auth/google/professional')
+        .send({ code: 'valid-code', codeVerifier: 'valid-verifier' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.user.role).toBe('PROFESSIONAL');
+
+      const dbUser = await prisma.user.findUnique({
+        where: { email: 'google-integration@gmail.com' },
+        include: { professionalProfile: true },
+      });
+      expect(dbUser!.role).toBe('PROFESSIONAL');
+      expect(dbUser!.professionalProfile).not.toBeNull();
+      expect(dbUser!.professionalProfile!.status).toBe('DRAFT');
+    });
+
+    it('should not downgrade PROFESSIONAL to CLIENT via /google/client', async () => {
+      await createTestGoogleUser({
+        email: 'google-integration@gmail.com',
+        googleSub: 'google-sub-integration-123',
+        role: 'PROFESSIONAL',
+      });
+
+      const response = await request(app)
+        .post('/auth/google/client')
+        .send({ code: 'valid-code', codeVerifier: 'valid-verifier' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.user.role).toBe('PROFESSIONAL');
+    });
+
     it('should reject when email already used by LOCAL account', async () => {
       await createTestUser({
         email: 'google-integration@gmail.com',

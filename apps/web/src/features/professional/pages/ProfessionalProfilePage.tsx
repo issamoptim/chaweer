@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { PrimaryButton } from "@/features/auth";
+import { PrimaryButton, useAuth } from "@/features/auth";
 import { useToast } from "@/hooks/useToast";
 import { Card } from "../components/Card";
 import { ProInput } from "../components/ProInput";
@@ -12,6 +12,7 @@ import { StickyActionBar } from "../components/StickyActionBar";
 import { useProfessionalProfile } from "../hooks/useProfessionalProfile";
 import { useReferential } from "../hooks/useReferential";
 import { useUpdateProfessionalProfile } from "../hooks/useUpdateProfessionalProfile";
+import { professionalService } from "../services/professional-service";
 
 interface FormState {
   firstName: string;
@@ -38,6 +39,7 @@ const EMPTY: FormState = {
 export function ProfessionalProfilePage() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { accessToken } = useAuth();
   const { data: profile, isLoading } = useProfessionalProfile();
   const { data: referential } = useReferential();
   const mutation = useUpdateProfessionalProfile();
@@ -113,6 +115,7 @@ export function ProfessionalProfilePage() {
           <div className="flex flex-col gap-5">
             <ImageUploadSlot
               value={form.photoUrl}
+              onUpload={(file) => professionalService.uploadPhoto(file, accessToken!)}
               onChange={(v) => update("photoUrl", v)}
               disabled={mutation.isPending}
             />

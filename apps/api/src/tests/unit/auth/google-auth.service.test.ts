@@ -5,6 +5,7 @@ vi.mock('../../../core/database/prisma', () => ({
     user: {
       findUnique: vi.fn(),
       create: vi.fn(),
+      update: vi.fn(),
     },
     externalIdentity: {
       findUnique: vi.fn(),
@@ -221,8 +222,84 @@ describe('google-auth.service', () => {
 
       expect(prisma.user.findUnique).not.toHaveBeenCalled();
       expect(prisma.$transaction).not.toHaveBeenCalled();
+      expect(prisma.user.update).not.toHaveBeenCalled();
       expect(result.result.accessToken).toBe('mocked-chaweer-jwt');
       expect(result.result.user.email).toBe('user@gmail.com');
+    });
+
+    it('should upgrade CLIENT to PROFESSIONAL when professional flow is used', async () => {
+      vi.mocked(prisma.externalIdentity.findUnique).mockResolvedValue({
+        id: 'ext-1',
+        userId: 'user-1',
+        provider: 'GOOGLE',
+        providerUserId: 'google-sub-123',
+        user: mockExistingGoogleUser,
+      } as never);
+      vi.mocked(prisma.user.update).mockResolvedValue({
+        ...mockExistingGoogleUser,
+        role: 'PROFESSIONAL',
+      } as never);
+      vi.mocked(prisma.professionalProfile.findUnique).mockResolvedValue(null);
+      vi.mocked(prisma.professionalProfile.create).mockResolvedValue({
+        id: 'profile-1',
+      } as never);
+
+      const result = await googleAuthenticate('code', 'verifier', 'PROFESSIONAL');
+
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-1' },
+        data: { role: 'PROFESSIONAL' },
+      });
+      expect(prisma.professionalProfile.create).toHaveBeenCalledWith({
+        data: { userId: 'user-1', status: 'DRAFT' },
+        select: { id: true },
+      });
+      expect(result.result.user.role).toBe('PROFESSIONAL');
+    });
+
+    it('should not downgrade PROFESSIONAL to CLIENT when public flow is used', async () => {
+      vi.mocked(prisma.externalIdentity.findUnique).mockResolvedValue({
+        id: 'ext-1',
+        userId: 'user-1',
+        provider: 'GOOGLE',
+        providerUserId: 'google-sub-123',
+        user: { ...mockExistingGoogleUser, role: 'PROFESSIONAL' },
+      } as never);
+
+      const result = await googleAuthenticate('code', 'verifier', 'CLIENT');
+
+      expect(prisma.user.update).not.toHaveBeenCalled();
+      expect(result.result.user.role).toBe('PROFESSIONAL');
+    });
+  });
+
+  describe('Reactivate deleted account with professional upgrade', () => {
+    it('should reactivate and upgrade CLIENT to PROFESSIONAL when professional flow is used', async () => {
+      vi.mocked(prisma.externalIdentity.findUnique).mockResolvedValue({
+        id: 'ext-1',
+        userId: 'user-1',
+        provider: 'GOOGLE',
+        providerUserId: 'google-sub-123',
+        user: { ...mockExistingGoogleUser, status: 'DELETED' },
+      } as never);
+      vi.mocked(prisma.user.update).mockResolvedValue({
+        ...mockExistingGoogleUser,
+        status: 'ACTIVE',
+        role: 'PROFESSIONAL',
+      } as never);
+      vi.mocked(prisma.professionalProfile.findUnique).mockResolvedValue(null);
+      vi.mocked(prisma.professionalProfile.create).mockResolvedValue({
+        id: 'profile-1',
+      } as never);
+
+      const result = await googleAuthenticate('code', 'verifier', 'PROFESSIONAL', true);
+
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-1' },
+        data: { status: 'ACTIVE', role: 'PROFESSIONAL' },
+      });
+      expect(result.result.user.role).toBe('PROFESSIONAL');
+      expect(result.result.user.status).toBe('ACTIVE');
     });
   });
 
