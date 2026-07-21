@@ -1,7 +1,24 @@
 import { prisma } from '../../core/database/prisma';
 import { NotFoundError } from '../../core/errors';
 import { ValidationError } from '../../shared/errors/auth-errors';
-import type { ProfessionalProfileData, ProfileCompletion, ProfileCompletionSections } from './professional.types';
+import { updateIdentity } from '../auth/user.service';
+import type {
+  ProfessionalProfileData,
+  UpdateProfileResponseData,
+  ProfileCompletion,
+  ProfileCompletionSections,
+  ExpertiseData,
+  IdentityData,
+  BiographyData,
+  ContactData,
+  OfficeData,
+  ConsultationOfferData,
+  EducationData,
+  ExperienceData,
+  CertificationData,
+  MembershipData,
+  VerificationData,
+} from './professional.types';
 import type {
   UpdateProfileInput,
   UpdateExpertiseInput,
@@ -84,32 +101,120 @@ function computeCompletion(profile: ProfileWithRelations): ProfileCompletion {
 }
 
 function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
-  return {
-    id: profile.id,
-    status: profile.status,
+  const identity: IdentityData = {
     firstName: profile.user.firstName,
     lastName: profile.user.lastName,
-    email: profile.user.email,
+    professionalTitle: profile.professionalTitle,
     photoUrl: profile.photoUrl,
     barAssociationId: profile.barAssociationId,
-    cityId: profile.cityId,
-    professionalPhone: profile.professionalPhone,
-    officeAddress: profile.officeAddress,
+  };
+
+  const biography: BiographyData = {
     bio: profile.bio,
+  };
+
+  const contact: ContactData | null = profile.contact
+    ? {
+        phone: profile.contact.phone,
+        whatsapp: profile.contact.whatsapp,
+        publicEmail: profile.contact.publicEmail,
+        website: profile.contact.website,
+        linkedInUrl: profile.contact.linkedInUrl,
+      }
+    : null;
+
+  const office: OfficeData | null = profile.office
+    ? {
+        name: profile.office.name,
+        address: profile.office.address,
+        cityId: profile.office.cityId,
+        latitude: profile.office.latitude,
+        longitude: profile.office.longitude,
+      }
+    : null;
+
+  const expertise: ExpertiseData = {
     specializationIds: profile.specializations.map((s) => s.specializationId),
     practiceAreaIds: profile.practiceAreas.map((p) => p.practiceAreaId),
     languageIds: profile.languages.map((l) => l.languageId),
-    offers: profile.offers.map((o) => ({
-      id: o.id,
-      title: o.title ?? '',
-      description: o.description,
-      price: o.price,
-      currency: o.currency,
-      durationMinutes: o.durationMinutes,
-      modalities: o.modalities,
-      active: o.active ?? false,
-      order: o.order ?? 0,
-    })),
+  };
+
+  const offers: ConsultationOfferData[] = profile.offers.map((o) => ({
+    id: o.id,
+    title: o.title ?? '',
+    description: o.description,
+    price: o.price,
+    currency: o.currency,
+    durationMinutes: o.durationMinutes,
+    modalities: o.modalities,
+    active: o.active ?? false,
+    order: o.order ?? 0,
+  }));
+
+  const education: EducationData[] = profile.education.map((e) => ({
+    id: e.id,
+    degree: e.degree,
+    institution: e.institution,
+    startYear: e.startYear,
+    endYear: e.endYear,
+    description: e.description,
+    order: e.order,
+  }));
+
+  const experience: ExperienceData[] = profile.experience.map((e) => ({
+    id: e.id,
+    position: e.position,
+    organization: e.organization,
+    startYear: e.startYear,
+    endYear: e.endYear,
+    current: e.current,
+    description: e.description,
+    order: e.order,
+  }));
+
+  const certifications: CertificationData[] = profile.certifications.map((c) => ({
+    id: c.id,
+    title: c.title,
+    issuer: c.issuer,
+    issueYear: c.issueYear,
+    expiryYear: c.expiryYear,
+    credentialId: c.credentialId,
+    order: c.order,
+  }));
+
+  const memberships: MembershipData[] = profile.memberships.map((m) => ({
+    id: m.id,
+    organization: m.organization,
+    role: m.role,
+    startYear: m.startYear,
+    endYear: m.endYear,
+    order: m.order,
+  }));
+
+  const verification: VerificationData | null = profile.verification
+    ? {
+        status: profile.verification.status,
+        verifiedAt: profile.verification.verifiedAt?.toISOString() ?? null,
+        rejectionReason: profile.verification.rejectionReason,
+      }
+    : null;
+
+  return {
+    id: profile.id,
+    status: profile.status,
+    publishedAt: profile.publishedAt?.toISOString() ?? null,
+    unpublishedAt: profile.unpublishedAt?.toISOString() ?? null,
+    identity,
+    biography,
+    contact,
+    office,
+    expertise,
+    offers,
+    education,
+    experience,
+    certifications,
+    memberships,
+    verification,
     completion: computeCompletion(profile),
   };
 }
@@ -135,7 +240,7 @@ export async function getMyProfile(userId: string): Promise<ProfessionalProfileD
 export async function updateProfile(
   userId: string,
   input: UpdateProfileInput,
-): Promise<ProfessionalProfileData> {
+): Promise<UpdateProfileResponseData> {
   const profile = await prisma.professionalProfile.findUnique({
     where: { userId },
     select: { id: true },
@@ -157,10 +262,6 @@ export async function updateProfile(
     }
   }
 
-  const userData: { firstName?: string; lastName?: string } = {};
-  if (input.firstName !== undefined) userData.firstName = input.firstName;
-  if (input.lastName !== undefined) userData.lastName = input.lastName;
-
   const profileData: Prisma.ProfessionalProfileUpdateInput = {};
   if (input.professionalTitle !== undefined) profileData.professionalTitle = input.professionalTitle;
   if (input.photoUrl !== undefined) profileData.photoUrl = input.photoUrl;
@@ -172,9 +273,10 @@ export async function updateProfile(
   }
 
   await prisma.$transaction(async (tx) => {
-    if (Object.keys(userData).length > 0) {
-      await tx.user.update({ where: { id: userId }, data: userData });
-    }
+    await updateIdentity(userId, {
+      firstName: input.firstName,
+      lastName: input.lastName,
+    }, tx);
     if (Object.keys(profileData).length > 0) {
       await tx.professionalProfile.update({
         where: { id: profile.id },
@@ -183,13 +285,38 @@ export async function updateProfile(
     }
   });
 
-  return getMyProfile(userId);
+  const updated = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    include: {
+      user: { select: { firstName: true, lastName: true } },
+    },
+  });
+
+  if (!updated) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  return {
+    id: updated.id,
+    status: updated.status,
+    publishedAt: updated.publishedAt?.toISOString() ?? null,
+    identity: {
+      firstName: updated.user.firstName,
+      lastName: updated.user.lastName,
+      professionalTitle: updated.professionalTitle,
+      photoUrl: updated.photoUrl,
+      barAssociationId: updated.barAssociationId,
+    },
+    biography: {
+      bio: updated.bio,
+    },
+  };
 }
 
 export async function setExpertise(
   userId: string,
   input: UpdateExpertiseInput,
-): Promise<ProfessionalProfileData> {
+): Promise<ExpertiseData> {
   const profile = await prisma.professionalProfile.findUnique({
     where: { userId },
     select: { id: true },
@@ -270,7 +397,11 @@ export async function setExpertise(
     });
   });
 
-  return getMyProfile(userId);
+  return {
+    specializationIds: specializationIds,
+    practiceAreaIds: practiceAreaIds,
+    languageIds: languageIds,
+  };
 }
 
 export async function setOffer(

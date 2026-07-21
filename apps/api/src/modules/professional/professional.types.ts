@@ -21,6 +21,40 @@ export interface Referential {
   cities: ReferentialItem[];
 }
 
+export interface IdentityData {
+  firstName: string;
+  lastName: string;
+  professionalTitle: string | null;
+  photoUrl: string | null;
+  barAssociationId: string | null;
+}
+
+export interface BiographyData {
+  bio: string | null;
+}
+
+export interface ContactData {
+  phone: string | null;
+  whatsapp: string | null;
+  publicEmail: string | null;
+  website: string | null;
+  linkedInUrl: string | null;
+}
+
+export interface OfficeData {
+  name: string | null;
+  address: string | null;
+  cityId: string | null;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+export interface ExpertiseData {
+  specializationIds: string[];
+  practiceAreaIds: string[];
+  languageIds: string[];
+}
+
 export interface ConsultationOfferData {
   id: string;
   title: string;
@@ -31,6 +65,52 @@ export interface ConsultationOfferData {
   modalities: string[];
   active: boolean;
   order: number;
+}
+
+export interface EducationData {
+  id: string;
+  degree: string;
+  institution: string;
+  startYear: number;
+  endYear: number | null;
+  description: string | null;
+  order: number;
+}
+
+export interface ExperienceData {
+  id: string;
+  position: string;
+  organization: string;
+  startYear: number;
+  endYear: number | null;
+  current: boolean;
+  description: string | null;
+  order: number;
+}
+
+export interface CertificationData {
+  id: string;
+  title: string;
+  issuer: string;
+  issueYear: number;
+  expiryYear: number | null;
+  credentialId: string | null;
+  order: number;
+}
+
+export interface MembershipData {
+  id: string;
+  organization: string;
+  role: string | null;
+  startYear: number;
+  endYear: number | null;
+  order: number;
+}
+
+export interface VerificationData {
+  status: string;
+  verifiedAt: string | null;
+  rejectionReason: string | null;
 }
 
 export interface ProfileCompletionSections {
@@ -56,18 +136,26 @@ export interface ProfileCompletion {
 export interface ProfessionalProfileData {
   id: string;
   status: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  photoUrl: string | null;
-  barAssociationId: string | null;
-  cityId: string | null;
-  professionalPhone: string | null;
-  officeAddress: string | null;
-  bio: string | null;
-  specializationIds: string[];
-  practiceAreaIds: string[];
-  languageIds: string[];
+  publishedAt: string | null;
+  unpublishedAt: string | null;
+  identity: IdentityData;
+  biography: BiographyData;
+  contact: ContactData | null;
+  office: OfficeData | null;
+  expertise: ExpertiseData;
   offers: ConsultationOfferData[];
+  education: EducationData[];
+  experience: ExperienceData[];
+  certifications: CertificationData[];
+  memberships: MembershipData[];
+  verification: VerificationData | null;
   completion: ProfileCompletion;
+}
+
+export interface UpdateProfileResponseData {
+  id: string;
+  status: string;
+  publishedAt: string | null;
+  identity: IdentityData;
+  biography: BiographyData;
 }

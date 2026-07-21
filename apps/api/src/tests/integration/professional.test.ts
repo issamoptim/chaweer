@@ -88,9 +88,10 @@ describe('Professional onboarding flow', () => {
       bio: 'Avocate au barreau de Casablanca.',
     });
     expect(res.status).toBe(200);
-    expect(res.body.data.firstName).toBe('Amina');
-    expect(res.body.data.completion.sections.identity).toBe(true);
-    expect(res.body.data.completion.sections.biography).toBe(true);
+    expect(res.body.data.identity.firstName).toBe('Amina');
+    expect(res.body.data.identity.lastName).toBe('El Fassi');
+    expect(res.body.data.identity.professionalTitle).toBe('Avocate');
+    expect(res.body.data.biography.bio).toBe('Avocate au barreau de Casablanca.');
   });
 
   it('rejects a practice area that does not belong to a selected specialization', async () => {
@@ -118,7 +119,9 @@ describe('Professional onboarding flow', () => {
         languageIds: [referential.languages[0].id],
       });
     expect(res.status).toBe(200);
-    expect(res.body.data.completion.sections.expertise).toBe(true);
+    expect(res.body.data.specializationIds).toEqual([spec.id]);
+    expect(res.body.data.practiceAreaIds).toEqual([spec.practiceAreas[0].id]);
+    expect(res.body.data.languageIds).toEqual([referential.languages[0].id]);
   });
 
   it('saves a valid consultation offer', async () => {
