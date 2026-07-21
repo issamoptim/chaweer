@@ -33,10 +33,11 @@ export function ProfessionalOfferPage() {
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    if (profile?.offer) {
-      setPrice(String(profile.offer.price));
-      setDuration(profile.offer.durationMinutes);
-      setModalities(new Set(profile.offer.modalities));
+    if (profile?.offers?.length > 0) {
+      const offer = profile.offers[0];
+      setPrice(String(offer.price));
+      setDuration(offer.durationMinutes);
+      setModalities(new Set(offer.modalities));
     }
   }, [profile]);
 
@@ -54,13 +55,13 @@ export function ProfessionalOfferPage() {
 
   const previewData = useMemo(() => {
     const name =
-      profile && (profile.firstName || profile.lastName)
-        ? `${profile.firstName} ${profile.lastName}`.trim()
+      profile && (profile.identity.firstName || profile.identity.lastName)
+        ? `${profile.identity.firstName} ${profile.identity.lastName}`.trim()
         : "";
-    const cityName = referential?.cities.find((c) => c.id === profile?.cityId)?.name ?? null;
+    const cityName = referential?.cities.find((c) => c.id === profile?.office?.cityId)?.name ?? null;
     const specialtyNames =
       referential?.specializations
-        .filter((s) => profile?.specializationIds.includes(s.id))
+        .filter((s) => profile?.expertise.specializationIds.includes(s.id))
         .map((s) => s.name) ?? [];
     return { name, cityName, specialtyNames };
   }, [profile, referential]);
@@ -185,7 +186,7 @@ export function ProfessionalOfferPage() {
             price={priceNumber > 0 ? priceNumber : null}
             durationMinutes={duration}
             modalities={[...modalities]}
-            photoUrl={profile?.photoUrl ?? null}
+            photoUrl={profile?.identity.photoUrl ?? null}
           />
         </div>
       </div>

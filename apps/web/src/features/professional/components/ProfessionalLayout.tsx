@@ -17,10 +17,17 @@ export function ProfessionalLayout() {
   const { data: profile } = useProfessionalProfile();
 
   const current = stepFromPath(location.pathname);
-  const done = profile?.completion ?? {
-    profile: false,
+  const done = profile?.completion?.sections ?? {
+    identity: false,
+    biography: false,
+    contact: false,
+    office: false,
     expertise: false,
     offer: false,
+    education: false,
+    experience: false,
+    certifications: false,
+    memberships: false,
   };
 
   return (

@@ -24,9 +24,9 @@ export function ProfessionalExpertisePage() {
 
   useEffect(() => {
     if (profile) {
-      setSpecs(new Set(profile.specializationIds));
-      setAreas(new Set(profile.practiceAreaIds));
-      setLanguages(new Set(profile.languageIds));
+      setSpecs(new Set(profile.expertise.specializationIds));
+      setAreas(new Set(profile.expertise.practiceAreaIds));
+      setLanguages(new Set(profile.expertise.languageIds));
     }
   }, [profile]);
 

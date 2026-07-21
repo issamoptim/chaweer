@@ -1,6 +1,8 @@
 import { apiClient } from "@/services/api-client";
 import type {
   ProfessionalProfileData,
+  UpdateProfileResponseData,
+  ExpertiseData,
   Referential,
   UpdateExpertiseInput,
   UpdateOfferInput,
@@ -29,14 +31,14 @@ export const professionalService = {
   updateProfile(
     input: UpdateProfessionalProfileInput,
     token: string
-  ): Promise<ProfessionalProfileData> {
-    return apiClient.patch<ProfessionalProfileData>("/professional/profile", input, {
+  ): Promise<UpdateProfileResponseData> {
+    return apiClient.patch<UpdateProfileResponseData>("/professional/profile", input, {
       token,
     });
   },
 
-  updateExpertise(input: UpdateExpertiseInput, token: string): Promise<ProfessionalProfileData> {
-    return apiClient.put<ProfessionalProfileData>("/professional/expertise", input, {
+  updateExpertise(input: UpdateExpertiseInput, token: string): Promise<ExpertiseData> {
+    return apiClient.put<ExpertiseData>("/professional/expertise", input, {
       token,
     });
   },

@@ -17,22 +17,18 @@ import { professionalService } from "../services/professional-service";
 interface FormState {
   firstName: string;
   lastName: string;
+  professionalTitle: string;
   photoUrl: string | null;
   barAssociationId: string;
-  cityId: string;
-  professionalPhone: string;
-  officeAddress: string;
   bio: string;
 }
 
 const EMPTY: FormState = {
   firstName: "",
   lastName: "",
+  professionalTitle: "",
   photoUrl: null,
   barAssociationId: "",
-  cityId: "",
-  professionalPhone: "",
-  officeAddress: "",
   bio: "",
 };
 
@@ -50,14 +46,12 @@ export function ProfessionalProfilePage() {
   useEffect(() => {
     if (profile) {
       const next: FormState = {
-        firstName: profile.firstName ?? "",
-        lastName: profile.lastName ?? "",
-        photoUrl: profile.photoUrl,
-        barAssociationId: profile.barAssociationId ?? "",
-        cityId: profile.cityId ?? "",
-        professionalPhone: profile.professionalPhone ?? "",
-        officeAddress: profile.officeAddress ?? "",
-        bio: profile.bio ?? "",
+        firstName: profile.identity.firstName ?? "",
+        lastName: profile.identity.lastName ?? "",
+        professionalTitle: profile.identity.professionalTitle ?? "",
+        photoUrl: profile.identity.photoUrl,
+        barAssociationId: profile.identity.barAssociationId ?? "",
+        bio: profile.biography.bio ?? "",
       };
       setForm(next);
       setInitial(next);
@@ -76,11 +70,9 @@ export function ProfessionalProfilePage() {
       {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
+        professionalTitle: form.professionalTitle.trim() || null,
         photoUrl: form.photoUrl,
         barAssociationId: form.barAssociationId || null,
-        cityId: form.cityId || null,
-        professionalPhone: form.professionalPhone.trim() || null,
-        officeAddress: form.officeAddress.trim() || null,
         bio: form.bio.trim() || null,
       },
       {
@@ -92,7 +84,6 @@ export function ProfessionalProfilePage() {
 
   const barOptions =
     referential?.barAssociations.map((b) => ({ value: b.id, label: b.name })) ?? [];
-  const cityOptions = referential?.cities.map((c) => ({ value: c.id, label: c.name })) ?? [];
 
   return (
     <div>
@@ -139,46 +130,23 @@ export function ProfessionalProfilePage() {
 
         <Card title="Informations professionnelles">
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <ProSelect
-                label="Barreau"
-                name="barAssociationId"
-                value={form.barAssociationId}
-                options={barOptions}
-                onChange={(v) => update("barAssociationId", v)}
-                placeholder="Sélectionner un barreau"
-                disabled={mutation.isPending}
-              />
-              <ProSelect
-                label="Ville"
-                name="cityId"
-                value={form.cityId}
-                options={cityOptions}
-                onChange={(v) => update("cityId", v)}
-                placeholder="Sélectionner une ville"
-                disabled={mutation.isPending}
-              />
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <ProInput
-                label="Téléphone professionnel"
-                name="professionalPhone"
-                type="tel"
-                value={form.professionalPhone}
-                onChange={(v) => update("professionalPhone", v)}
-                placeholder="+212 6 00 00 00 00"
-                autoComplete="tel"
-                disabled={mutation.isPending}
-              />
-              <ProInput
-                label="Adresse du cabinet"
-                name="officeAddress"
-                value={form.officeAddress}
-                onChange={(v) => update("officeAddress", v)}
-                placeholder="12 rue de la Liberté, Casablanca"
-                disabled={mutation.isPending}
-              />
-            </div>
+            <ProInput
+              label="Titre professionnel"
+              name="professionalTitle"
+              value={form.professionalTitle}
+              onChange={(v) => update("professionalTitle", v)}
+              placeholder="Avocate"
+              disabled={mutation.isPending}
+            />
+            <ProSelect
+              label="Barreau"
+              name="barAssociationId"
+              value={form.barAssociationId}
+              options={barOptions}
+              onChange={(v) => update("barAssociationId", v)}
+              placeholder="Sélectionner un barreau"
+              disabled={mutation.isPending}
+            />
           </div>
         </Card>
 

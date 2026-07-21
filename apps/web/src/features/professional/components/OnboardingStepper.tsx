@@ -1,16 +1,17 @@
 import { Check } from "lucide-react";
+import type { ProfileCompletionSections } from "../types/professional-types";
 
 export type StepKey = "profile" | "expertise" | "offer";
 
 interface OnboardingStepperProps {
   current: StepKey;
-  done: { profile: boolean; expertise: boolean; offer: boolean };
+  done: ProfileCompletionSections;
 }
 
-const STEPS: Array<{ key: StepKey; label: string }> = [
-  { key: "profile", label: "Profil" },
-  { key: "expertise", label: "Expertise" },
-  { key: "offer", label: "Offre" },
+const STEPS: Array<{ key: StepKey; label: string; sectionKey: keyof ProfileCompletionSections }> = [
+  { key: "profile", label: "Profil", sectionKey: "identity" },
+  { key: "expertise", label: "Expertise", sectionKey: "expertise" },
+  { key: "offer", label: "Offre", sectionKey: "offer" },
 ];
 
 export function OnboardingStepper({ current, done }: OnboardingStepperProps) {
@@ -20,7 +21,7 @@ export function OnboardingStepper({ current, done }: OnboardingStepperProps) {
     <div>
       <ol className="flex items-center gap-2" aria-label="Progression de l'onboarding">
         {STEPS.map((step, index) => {
-          const isDone = done[step.key];
+          const isDone = done[step.sectionKey];
           const isCurrent = step.key === current;
           const state = isCurrent ? "current" : isDone ? "done" : "todo";
 
