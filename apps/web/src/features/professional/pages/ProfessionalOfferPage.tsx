@@ -1,24 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Video, MapPin } from "lucide-react";
+import { Check, Video, Phone, MessageCircle, ArrowRight } from "lucide-react";
 import { PrimaryButton } from "@/features/auth";
 import { useToast } from "@/hooks/useToast";
 import { Card } from "../components/Card";
+import { ProInput } from "../components/ProInput";
+import { ProTextarea } from "../components/ProTextarea";
 import { ToggleCard } from "../components/ToggleCard";
-import { SegmentedControl } from "../components/SegmentedControl";
 import { OfferPreviewCard } from "../components/OfferPreviewCard";
 import { StickyActionBar } from "../components/StickyActionBar";
 import { useProfessionalProfile } from "../hooks/useProfessionalProfile";
 import { useReferential } from "../hooks/useReferential";
 import { useUpdateOffer } from "../hooks/useUpdateOffer";
 import type { ConsultationModality } from "../types/professional-types";
-
-const DURATIONS = [
-  { value: 15, label: "15 min" },
-  { value: 30, label: "30 min" },
-  { value: 45, label: "45 min" },
-  { value: 60, label: "60 min" },
-];
 
 export function ProfessionalOfferPage() {
   const navigate = useNavigate();
@@ -27,16 +21,19 @@ export function ProfessionalOfferPage() {
   const { data: referential } = useReferential();
   const mutation = useUpdateOffer();
 
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [duration, setDuration] = useState<number>(30);
   const [modalities, setModalities] = useState<Set<ConsultationModality>>(new Set(["VIDEO"]));
   const [finished, setFinished] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (profile?.offers?.length > 0) {
       const offer = profile.offers[0];
+      setTitle(offer.title ?? "");
+      setDescription(offer.description ?? "");
       setPrice(String(offer.price));
-      setDuration(offer.durationMinutes);
       setModalities(new Set(offer.modalities));
     }
   }, [profile]);
@@ -51,7 +48,15 @@ export function ProfessionalOfferPage() {
   }
 
   const priceNumber = Number(price);
-  const canFinish = Number.isInteger(priceNumber) && priceNumber > 0 && modalities.size > 0;
+  const canFinish =
+    title.trim().length > 0 &&
+    description.trim().length > 0 &&
+    Number.isInteger(priceNumber) &&
+    priceNumber > 0 &&
+    modalities.size > 0;
+
+  const titleError = touched.title && !title.trim() ? "Le titre est obligatoire" : null;
+  const descriptionError = touched.description && !description.trim() ? "La description est obligatoire" : null;
 
   const previewData = useMemo(() => {
     const name =
@@ -69,8 +74,9 @@ export function ProfessionalOfferPage() {
   function handleSubmit() {
     mutation.mutate(
       {
+        title: title.trim(),
+        description: description.trim(),
         price: priceNumber,
-        durationMinutes: duration,
         modalities: [...modalities],
       },
       {
@@ -87,23 +93,27 @@ export function ProfessionalOfferPage() {
           <Check className="h-8 w-8 text-white" strokeWidth={3} />
         </div>
         <h1 className="mt-6 text-[22px] font-bold text-[#1C1B1A]">
-          Votre profil professionnel est configuré
+          Votre offre de consultation est configurée
         </h1>
         <p className="mt-2 text-[15px] text-[#6B6862]">
-          Notre équipe vérifiera vos informations avant la publication de votre profil. Vous serez
-          notifié dès que votre espace sera actif.
+          Vous pouvez maintenant enrichir votre profil pour augmenter votre visibilité sur la
+          plateforme.
         </p>
-        <div className="mt-8 flex flex-col items-center gap-2">
+        <div className="mt-8 flex flex-col items-center gap-3">
           <button
             type="button"
-            disabled
-            aria-disabled="true"
-            className="inline-flex cursor-not-allowed items-center gap-2 rounded-[12px] bg-[#CFD8D6] px-6 py-3 text-[15px] font-semibold text-[#8A9997]"
+            onClick={() => navigate("/pro/profil")}
+            className="inline-flex items-center gap-2 rounded-[12px] bg-[#0F766E] px-6 py-3 text-[15px] font-semibold text-white hover:bg-[#0C625B]"
           >
-            Accéder à mon tableau de bord
-            <span className="rounded-full bg-[#EEECE8] px-2 py-0.5 text-[10.5px] font-semibold text-[#8A8681]">
-              Bientôt
-            </span>
+            Ajouter une photo de profil
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/pro/expertise")}
+            className="text-[13.5px] font-medium text-[#0F766E] hover:underline"
+          >
+            Compléter mes domaines et situations
           </button>
           <button
             type="button"
@@ -131,6 +141,37 @@ export function ProfessionalOfferPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         <div className="flex flex-col gap-5">
+          <Card title="Titre de la consultation" description="Le titre apparaît sur votre profil public et lors de la recherche.">
+            <ProInput
+              label="Titre"
+              name="title"
+              value={title}
+              onChange={setTitle}
+              placeholder="Consultation juridique en droit du travail"
+              disabled={mutation.isPending}
+              required
+              error={titleError}
+              hint="Soyez clair et descriptif. Évitez les titres génériques."
+              onBlur={() => setTouched((t) => ({ ...t, title: true }))}
+            />
+          </Card>
+
+          <Card title="Description" description="Expliquez ce que inclut la consultation et ce que le client doit préparer.">
+            <ProTextarea
+              label="Description"
+              name="description"
+              value={description}
+              onChange={setDescription}
+              placeholder="Cette consultation inclut l'analyse de votre situation, des conseils juridiques adaptés et un plan d'action…"
+              maxLength={500}
+              disabled={mutation.isPending}
+              required
+              error={descriptionError}
+              hint="Maximum 500 caractères. Décrivez ce que le client obtiendra."
+              onBlur={() => setTouched((t) => ({ ...t, description: true }))}
+            />
+          </Card>
+
           <Card
             title="Tarif"
             description="Affiché avant toute prise de rendez-vous — sans surprise."
@@ -151,28 +192,25 @@ export function ProfessionalOfferPage() {
             </div>
           </Card>
 
-          <Card title="Durée">
-            <SegmentedControl
-              options={DURATIONS}
-              value={duration}
-              onChange={setDuration}
-              ariaLabel="Durée de la consultation"
-            />
-          </Card>
-
           <Card title="Modalités" description="Sélectionnez au moins une modalité de consultation.">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <ToggleCard
-                title="Vidéoconférence"
+                title="Vidéo"
                 icon={Video}
                 selected={modalities.has("VIDEO")}
                 onToggle={() => toggleModality("VIDEO")}
               />
               <ToggleCard
-                title="Cabinet"
-                icon={MapPin}
-                selected={modalities.has("OFFICE")}
-                onToggle={() => toggleModality("OFFICE")}
+                title="Audio"
+                icon={Phone}
+                selected={modalities.has("AUDIO")}
+                onToggle={() => toggleModality("AUDIO")}
+              />
+              <ToggleCard
+                title="Chat"
+                icon={MessageCircle}
+                selected={modalities.has("CHAT")}
+                onToggle={() => toggleModality("CHAT")}
               />
             </div>
           </Card>
@@ -183,8 +221,9 @@ export function ProfessionalOfferPage() {
             name={previewData.name}
             city={previewData.cityName}
             specialties={previewData.specialtyNames}
+            title={title.trim() || null}
+            description={description.trim() || null}
             price={priceNumber > 0 ? priceNumber : null}
-            durationMinutes={duration}
             modalities={[...modalities]}
             photoUrl={profile?.identity.photoUrl ?? null}
           />
@@ -195,7 +234,7 @@ export function ProfessionalOfferPage() {
         status={
           canFinish
             ? "Prêt à finaliser votre configuration."
-            : "Renseignez un tarif et au moins une modalité."
+            : "Renseignez un titre, une description, un tarif et au moins une modalité."
         }
       >
         <PrimaryButton

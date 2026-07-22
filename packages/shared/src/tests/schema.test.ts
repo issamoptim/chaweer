@@ -52,10 +52,11 @@ describe("Enums", () => {
     expect(VERIFICATION_STATUS.VERIFIED).toBe("VERIFIED");
   });
 
-  it("CONSULTATION_MODALITY has 2 values", () => {
-    expect(Object.keys(CONSULTATION_MODALITY)).toHaveLength(2);
+  it("CONSULTATION_MODALITY has 3 values", () => {
+    expect(Object.keys(CONSULTATION_MODALITY)).toHaveLength(3);
     expect(CONSULTATION_MODALITY.VIDEO).toBe("VIDEO");
-    expect(CONSULTATION_MODALITY.OFFICE).toBe("OFFICE");
+    expect(CONSULTATION_MODALITY.AUDIO).toBe("AUDIO");
+    expect(CONSULTATION_MODALITY.CHAT).toBe("CHAT");
   });
 
   it("VERIFIED_DOCUMENT_TYPE has 5 values", () => {
@@ -186,22 +187,31 @@ describe("updateExpertiseSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects empty practiceAreaIds", () => {
+  it("accepts empty practiceAreaIds (optional)", () => {
     const result = updateExpertiseSchema.safeParse({
       specializationIds: ["spec-1"],
       practiceAreaIds: [],
       languageIds: ["lang-1"],
     });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
   });
 
-  it("rejects empty languageIds", () => {
+  it("accepts empty languageIds (optional)", () => {
     const result = updateExpertiseSchema.safeParse({
       specializationIds: ["spec-1"],
       practiceAreaIds: ["pa-1"],
       languageIds: [],
     });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts empty practiceAreaIds and languageIds together", () => {
+    const result = updateExpertiseSchema.safeParse({
+      specializationIds: ["spec-1"],
+      practiceAreaIds: [],
+      languageIds: [],
+    });
+    expect(result.success).toBe(true);
   });
 });
 
@@ -302,8 +312,8 @@ describe("createOfferSchema", () => {
   it("accepts valid offer", () => {
     const result = createOfferSchema.safeParse({
       title: "Consultation juridique",
+      description: "Analyse de votre situation et conseils juridiques",
       price: 300,
-      durationMinutes: 30,
       modalities: ["VIDEO"],
     });
     expect(result.success).toBe(true);
@@ -312,18 +322,8 @@ describe("createOfferSchema", () => {
   it("rejects price <= 0", () => {
     const result = createOfferSchema.safeParse({
       title: "Test",
+      description: "Description",
       price: 0,
-      durationMinutes: 30,
-      modalities: ["VIDEO"],
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects invalid durationMinutes", () => {
-    const result = createOfferSchema.safeParse({
-      title: "Test",
-      price: 300,
-      durationMinutes: 20,
       modalities: ["VIDEO"],
     });
     expect(result.success).toBe(false);
@@ -332,8 +332,8 @@ describe("createOfferSchema", () => {
   it("rejects empty modalities", () => {
     const result = createOfferSchema.safeParse({
       title: "Test",
+      description: "Description",
       price: 300,
-      durationMinutes: 30,
       modalities: [],
     });
     expect(result.success).toBe(false);
@@ -342,17 +342,46 @@ describe("createOfferSchema", () => {
   it("rejects invalid modality value", () => {
     const result = createOfferSchema.safeParse({
       title: "Test",
+      description: "Description",
       price: 300,
-      durationMinutes: 30,
-      modalities: ["PHONE"],
+      modalities: ["OFFICE"],
     });
     expect(result.success).toBe(false);
   });
 
+  it("accepts AUDIO and CHAT modalities", () => {
+    const result = createOfferSchema.safeParse({
+      title: "Test",
+      description: "Description",
+      price: 300,
+      modalities: ["AUDIO", "CHAT"],
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("rejects missing title", () => {
     const result = createOfferSchema.safeParse({
+      description: "Description",
       price: 300,
-      durationMinutes: 30,
+      modalities: ["VIDEO"],
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects missing description", () => {
+    const result = createOfferSchema.safeParse({
+      title: "Test",
+      price: 300,
+      modalities: ["VIDEO"],
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects empty description", () => {
+    const result = createOfferSchema.safeParse({
+      title: "Test",
+      description: "",
+      price: 300,
       modalities: ["VIDEO"],
     });
     expect(result.success).toBe(false);
@@ -361,8 +390,8 @@ describe("createOfferSchema", () => {
   it("defaults active to true and order to 0", () => {
     const result = createOfferSchema.safeParse({
       title: "Test",
+      description: "Description",
       price: 300,
-      durationMinutes: 30,
       modalities: ["VIDEO"],
     });
     expect(result.success).toBe(true);
@@ -381,9 +410,9 @@ describe("updateOfferSchema", () => {
   it("accepts full replacement with all fields", () => {
     const result = updateOfferSchema.safeParse({
       title: "Consultation",
+      description: "Description de la consultation",
       price: 350,
-      durationMinutes: 45,
-      modalities: ["VIDEO", "OFFICE"],
+      modalities: ["VIDEO", "AUDIO"],
       active: true,
       order: 0,
     });
@@ -393,9 +422,32 @@ describe("updateOfferSchema", () => {
   it("rejects missing active (required for PUT)", () => {
     const result = updateOfferSchema.safeParse({
       title: "Consultation",
+      description: "Description",
       price: 350,
-      durationMinutes: 45,
       modalities: ["VIDEO"],
+      order: 0,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects missing description", () => {
+    const result = updateOfferSchema.safeParse({
+      title: "Consultation",
+      price: 350,
+      modalities: ["VIDEO"],
+      active: true,
+      order: 0,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects OFFICE modality", () => {
+    const result = updateOfferSchema.safeParse({
+      title: "Consultation",
+      description: "Description",
+      price: 350,
+      modalities: ["OFFICE"],
+      active: true,
       order: 0,
     });
     expect(result.success).toBe(false);

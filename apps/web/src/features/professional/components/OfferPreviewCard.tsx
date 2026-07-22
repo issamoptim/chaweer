@@ -1,4 +1,4 @@
-import { BadgeCheck, Video, MapPin, Clock } from "lucide-react";
+import { BadgeCheck, Video, Phone, MessageCircle, MapPin } from "lucide-react";
 import { resolveMediaUrl } from "@/utils/media-url";
 import type { ConsultationModality } from "../types/professional-types";
 
@@ -6,8 +6,9 @@ interface OfferPreviewCardProps {
   name: string;
   city: string | null;
   specialties: string[];
+  title: string | null;
+  description: string | null;
   price: number | null;
-  durationMinutes: number | null;
   modalities: ConsultationModality[];
   photoUrl: string | null;
 }
@@ -16,8 +17,9 @@ export function OfferPreviewCard({
   name,
   city,
   specialties,
+  title,
+  description,
   price,
-  durationMinutes,
   modalities,
   photoUrl,
 }: OfferPreviewCardProps) {
@@ -67,17 +69,18 @@ export function OfferPreviewCard({
         </div>
       )}
 
+      {title && (
+        <p className="mt-3 text-[14px] font-semibold text-[#1C1B1A]">{title}</p>
+      )}
+      {description && (
+        <p className="mt-1 text-[13px] text-[#6B6862]">{description}</p>
+      )}
+
       <div className="mt-4 flex items-end justify-between border-t border-[#EFEDE9] pt-4">
         <div>
           <p className="text-[22px] font-bold text-[#1C1B1A]">
             {price && price > 0 ? `${price} DH` : "— DH"}
           </p>
-          {durationMinutes && (
-            <p className="mt-0.5 flex items-center gap-1 text-[12.5px] text-[#6B6862]">
-              <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-              {durationMinutes} min
-            </p>
-          )}
         </div>
         <div className="flex items-center gap-2 text-[#6B6862]">
           {modalities.includes("VIDEO") && (
@@ -86,10 +89,16 @@ export function OfferPreviewCard({
               Vidéo
             </span>
           )}
-          {modalities.includes("OFFICE") && (
+          {modalities.includes("AUDIO") && (
             <span className="flex items-center gap-1 text-[12px]">
-              <MapPin className="h-4 w-4" aria-hidden="true" />
-              Cabinet
+              <Phone className="h-4 w-4" aria-hidden="true" />
+              Audio
+            </span>
+          )}
+          {modalities.includes("CHAT") && (
+            <span className="flex items-center gap-1 text-[12px]">
+              <MessageCircle className="h-4 w-4" aria-hidden="true" />
+              Chat
             </span>
           )}
         </div>

@@ -74,42 +74,40 @@ const SPECIALIZATIONS: Array<{
     ],
   },
   {
-    key: 'droit-des-affaires',
-    name: 'Droit des affaires',
+    key: 'droit-penal',
+    name: 'Droit pénal',
+    practiceAreas: [
+      { key: 'garde-a-vue-audition-libre', name: 'Garde à vue / audition libre' },
+      { key: 'plainte-penale', name: 'Plainte pénale' },
+      { key: 'defense-penale', name: 'Défense pénale' },
+      { key: 'violences-et-agressions', name: 'Violences et agressions' },
+      { key: 'vol-escroquerie-abus-de-confiance', name: 'Vol / escroquerie / abus de confiance' },
+      { key: 'infractions-routieres-delictuelles', name: 'Infractions routières délictuelles' },
+    ],
+  },
+  {
+    key: 'droit-des-affaires-commercial',
+    name: 'Droit des affaires / commercial',
     practiceAreas: [
       { key: 'creation-dentreprise', name: "Création d'entreprise" },
       { key: 'contrats-commerciaux', name: 'Contrats commerciaux' },
       { key: 'recouvrement-de-creances', name: 'Recouvrement de créances' },
       { key: 'litige-entre-associes', name: 'Litige entre associés' },
+      { key: 'procedures-collectives', name: 'Procédures collectives' },
+      { key: 'concurrence-deloyale', name: 'Concurrence déloyale' },
+      { key: 'baux-commerciaux', name: 'Baux commerciaux' },
     ],
   },
   {
     key: 'droit-immobilier',
     name: 'Droit immobilier',
     practiceAreas: [
-      { key: 'achat-immobilier', name: 'Achat immobilier' },
-      { key: 'litige-locatif', name: 'Litige locatif' },
+      { key: 'vente-immobiliere', name: 'Vente immobilière' },
+      { key: 'bail-dhabitation', name: "Bail d'habitation" },
       { key: 'copropriete', name: 'Copropriété' },
-      { key: 'permis-de-construire', name: 'Permis de construire' },
-    ],
-  },
-  {
-    key: 'droit-penal',
-    name: 'Droit pénal',
-    practiceAreas: [
-      { key: 'contravention-amende', name: 'Contravention / amende' },
-      { key: 'garde-a-vue', name: 'Garde à vue' },
-      { key: 'plainte-penale', name: 'Plainte pénale' },
-      { key: 'defense-penale', name: 'Défense pénale' },
-    ],
-  },
-  {
-    key: 'droit-des-etrangers',
-    name: 'Droit des étrangers',
-    practiceAreas: [
-      { key: 'titre-de-sejour', name: 'Titre de séjour' },
-      { key: 'regroupement-familial', name: 'Regroupement familial' },
-      { key: 'naturalisation', name: 'Naturalisation' },
+      { key: 'construction-et-malfacons', name: 'Construction et malfaçons' },
+      { key: 'expropriation', name: 'Expropriation' },
+      { key: 'troubles-de-voisinage', name: 'Troubles de voisinage' },
     ],
   },
   {
@@ -118,16 +116,130 @@ const SPECIALIZATIONS: Array<{
     practiceAreas: [
       { key: 'controle-fiscal', name: 'Contrôle fiscal' },
       { key: 'contentieux-fiscal', name: 'Contentieux fiscal' },
-      { key: 'optimisation-fiscale', name: 'Optimisation fiscale' },
+      { key: 'fiscalite-des-particuliers', name: 'Fiscalité des particuliers' },
+      { key: 'fiscalite-des-entreprises', name: 'Fiscalité des entreprises' },
+      { key: 'redressement-fiscal', name: 'Redressement fiscal' },
+    ],
+  },
+  {
+    key: 'droit-administratif',
+    name: 'Droit administratif',
+    practiceAreas: [
+      { key: 'recours-contre-decision-administrative', name: 'Recours contre une décision administrative' },
+      { key: 'marches-publics', name: 'Marchés publics' },
+      { key: 'urbanisme', name: 'Urbanisme' },
+      { key: 'fonction-publique', name: 'Fonction publique' },
+      { key: 'contentieux-avec-collectivite', name: 'Contentieux avec une collectivité' },
     ],
   },
   {
     key: 'droit-de-la-consommation',
     name: 'Droit de la consommation',
     practiceAreas: [
-      { key: 'litige-avec-un-commercant', name: 'Litige avec un commerçant' },
-      { key: 'garantie-produit', name: 'Garantie produit' },
+      { key: 'litige-avec-un-vendeur', name: 'Litige avec un vendeur' },
       { key: 'credit-a-la-consommation', name: 'Crédit à la consommation' },
+      { key: 'vices-caches', name: 'Vices cachés' },
+      { key: 'demarchage-et-vente-a-distance', name: 'Démarchage et vente à distance' },
+      { key: 'litiges-e-commerce', name: 'Litiges e-commerce' },
+    ],
+  },
+  {
+    key: 'droit-des-etrangers-immigration',
+    name: 'Droit des étrangers / immigration',
+    practiceAreas: [
+      { key: 'titre-de-sejour', name: 'Titre de séjour' },
+      { key: 'naturalisation', name: 'Naturalisation' },
+      { key: 'regroupement-familial', name: 'Regroupement familial' },
+      { key: 'recours-contre-oqtf', name: 'Recours contre une OQTF' },
+      { key: 'demande-dasile', name: "Demande d'asile" },
+    ],
+  },
+  {
+    key: 'droit-de-la-sante',
+    name: 'Droit de la santé',
+    practiceAreas: [
+      { key: 'erreur-medicale', name: 'Erreur médicale' },
+      { key: 'litige-avec-etablissement-de-sante', name: 'Litige avec un établissement de santé' },
+      { key: 'droits-des-patients', name: 'Droits des patients' },
+      { key: 'responsabilite-professionnels-de-sante', name: 'Responsabilité des professionnels de santé' },
+    ],
+  },
+  {
+    key: 'propriete-intellectuelle',
+    name: 'Propriété intellectuelle',
+    practiceAreas: [
+      { key: 'depot-de-marque-ou-brevet', name: 'Dépôt de marque ou brevet' },
+      { key: 'contrefacon', name: 'Contrefaçon' },
+      { key: 'droits-dauteur', name: "Droits d'auteur" },
+      { key: 'contrats-de-licence', name: 'Contrats de licence' },
+    ],
+  },
+  {
+    key: 'droit-des-assurances',
+    name: 'Droit des assurances',
+    practiceAreas: [
+      { key: 'refus-dindemnisation', name: "Refus d'indemnisation" },
+      { key: 'sinistre-auto-ou-habitation', name: 'Sinistre auto ou habitation' },
+      { key: 'assurance-vie-et-prevoyance', name: 'Assurance vie et prévoyance' },
+      { key: 'responsabilite-civile', name: 'Responsabilité civile' },
+    ],
+  },
+  {
+    key: 'droit-routier',
+    name: 'Droit routier',
+    practiceAreas: [
+      { key: 'retrait-ou-suspension-de-permis', name: 'Retrait ou suspension de permis' },
+      { key: 'contestation-damende', name: "Contestation d'amende" },
+      { key: 'accident-de-la-route', name: 'Accident de la route' },
+      { key: 'conduite-sous-emprise-alcool-ou-stupefiants', name: "Conduite sous l'emprise d'alcool ou de stupéfiants" },
+    ],
+  },
+  {
+    key: 'droit-des-societes',
+    name: 'Droit des sociétés',
+    practiceAreas: [
+      { key: 'constitution-de-societe', name: 'Constitution de société' },
+      { key: 'pacte-dassocies', name: "Pacte d'associés" },
+      { key: 'cession-de-parts-ou-dactions', name: 'Cession de parts ou d\'actions' },
+      { key: 'gouvernance-et-direction', name: 'Gouvernance et direction' },
+    ],
+  },
+  {
+    key: 'droit-bancaire-et-financier',
+    name: 'Droit bancaire et financier',
+    practiceAreas: [
+      { key: 'litige-bancaire', name: 'Litige bancaire' },
+      { key: 'credit-immobilier', name: 'Crédit immobilier' },
+      { key: 'surendettement', name: 'Surendettement' },
+      { key: 'fraude-bancaire', name: 'Fraude bancaire' },
+    ],
+  },
+  {
+    key: 'droit-du-numerique-et-donnees-personnelles',
+    name: 'Droit du numérique et des données personnelles',
+    practiceAreas: [
+      { key: 'rgpd-et-protection-des-donnees', name: 'RGPD et protection des données' },
+      { key: 'cybercriminalite', name: 'Cybercriminalité' },
+      { key: 'litiges-e-commerce-et-plateformes', name: 'Litiges e-commerce et plateformes' },
+      { key: 'diffamation-et-injure-en-ligne', name: 'Diffamation et injure en ligne' },
+    ],
+  },
+  {
+    key: 'droit-de-lenvironnement',
+    name: "Droit de l'environnement",
+    practiceAreas: [
+      { key: 'pollution-et-nuisances', name: 'Pollution et nuisances' },
+      { key: 'installations-classees-icpe', name: 'Installations classées (ICPE)' },
+      { key: 'droit-rural-et-agricole', name: 'Droit rural et agricole' },
+    ],
+  },
+  {
+    key: 'droit-des-transports',
+    name: 'Droit des transports',
+    practiceAreas: [
+      { key: 'litige-de-transport-de-marchandises', name: 'Litige de transport de marchandises' },
+      { key: 'accident-de-transport', name: 'Accident de transport' },
+      { key: 'contentieux-avec-un-transporteur', name: 'Contentieux avec un transporteur' },
     ],
   },
 ];

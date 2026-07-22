@@ -15,6 +15,7 @@ import {
   uploadPhotoController,
   updateExpertiseController,
   updateOfferController,
+  publishProfileController,
 } from './professional.controller';
 
 const router = Router();
@@ -53,6 +54,13 @@ router.put(
   authorize('PROFESSIONAL'),
   validate(updateOfferSchema),
   updateOfferController,
+);
+
+router.post(
+  '/profile/publish',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  publishProfileController,
 );
 
 export { router as professionalRoutes };

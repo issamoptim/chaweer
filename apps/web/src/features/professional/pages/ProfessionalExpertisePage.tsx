@@ -87,7 +87,7 @@ export function ProfessionalExpertisePage() {
     return spec.practiceAreas.filter((a) => areas.has(a.id)).length;
   }
 
-  const canContinue = specs.size > 0 && areas.size > 0 && languages.size > 0;
+  const canContinue = specs.size > 0;
 
   function handleSubmit() {
     mutation.mutate(
@@ -144,6 +144,7 @@ export function ProfessionalExpertisePage() {
         <section>
           <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">
             2. Situations que vous traitez
+            <span className="ml-2 text-[12px] font-medium text-[#9A968E]">Optionnel</span>
           </h2>
           {selectedSpecs.length === 0 ? (
             <div className="flex flex-col items-center gap-2 rounded-[12px] border border-dashed border-[#D9D6D0] bg-white/60 px-6 py-10 text-center">
@@ -217,8 +218,12 @@ export function ProfessionalExpertisePage() {
         </section>
 
         {/* Block 3 — Languages */}
+        {specs.size > 0 && (
         <section>
-          <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">3. Langues de consultation</h2>
+          <h2 className="mb-3 text-[16px] font-bold text-[#1C1B1A]">
+            3. Langues de consultation
+            <span className="ml-2 text-[12px] font-medium text-[#9A968E]">Optionnel</span>
+          </h2>
           <div className="flex flex-wrap gap-2.5">
             {(referential?.languages ?? []).map((lang) => (
               <Chip
@@ -230,13 +235,14 @@ export function ProfessionalExpertisePage() {
             ))}
           </div>
         </section>
+        )}
       </div>
 
       <StickyActionBar
         status={
           canContinue
-            ? `${specs.size} spécialité${specs.size > 1 ? "s" : ""} · ${areas.size} situation${areas.size > 1 ? "s" : ""} · ${languages.size} langue${languages.size > 1 ? "s" : ""}`
-            : "Sélectionnez au moins une spécialité, une situation et une langue."
+            ? `${specs.size} spécialité${specs.size > 1 ? "s" : ""} sélectionnée${specs.size > 1 ? "s" : ""}`
+            : "Sélectionnez au moins une spécialité."
         }
       >
         <PrimaryButton

@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../../app';
 import { prisma } from '../../core/database/prisma';
+import { signAccessToken } from '../../modules/auth/services/jwt.service';
 
 const email = `pro-${Date.now()}@example.com`;
 const password = 'Password1';
@@ -95,8 +96,9 @@ describe('Professional onboarding flow', () => {
   });
 
   it('rejects a practice area that does not belong to a selected specialization', async () => {
-    const specA = referential.specializations[0];
-    const specB = referential.specializations[1];
+    const specs = referential.specializations.filter((s) => s.practiceAreas.length > 0);
+    const specA = specs[0];
+    const specB = specs[1];
     const res = await request(app)
       .put('/professional/expertise')
       .set(auth(accessToken))
@@ -109,7 +111,7 @@ describe('Professional onboarding flow', () => {
   });
 
   it('saves a valid expertise selection', async () => {
-    const spec = referential.specializations[0];
+    const spec = referential.specializations.find((s) => s.practiceAreas.length > 0)!;
     const res = await request(app)
       .put('/professional/expertise')
       .set(auth(accessToken))
@@ -128,12 +130,17 @@ describe('Professional onboarding flow', () => {
     const res = await request(app)
       .put('/professional/offer')
       .set(auth(accessToken))
-      .send({ price: 400, durationMinutes: 30, modalities: ['VIDEO'] });
+      .send({
+        title: 'Consultation juridique',
+        description: 'Un accompagnement personnalisé pour votre dossier.',
+        price: 400,
+        modalities: ['VIDEO'],
+      });
     expect(res.status).toBe(200);
     expect(res.body.data.offers).toHaveLength(1);
     expect(res.body.data.offers[0]).toMatchObject({
+      title: 'Consultation juridique',
       price: 400,
-      durationMinutes: 30,
       currency: 'MAD',
     });
     expect(res.body.data.completion.sections.offer).toBe(true);
@@ -143,7 +150,55 @@ describe('Professional onboarding flow', () => {
     const res = await request(app)
       .put('/professional/offer')
       .set(auth(accessToken))
-      .send({ price: 0, durationMinutes: 30, modalities: ['VIDEO'] });
+      .send({
+        title: 'Consultation juridique',
+        description: 'Description valide.',
+        price: 0,
+        modalities: ['VIDEO'],
+      });
     expect(res.status).toBe(422);
+  });
+
+  it('rejects publication when requirements are missing (422)', async () => {
+    const res = await request(app)
+      .post('/professional/profile/publish')
+      .set(auth(accessToken));
+    expect(res.status).toBe(422);
+    expect(res.body.success).toBe(false);
+    expect(res.body.error.code).toBe('PUBLICATION_REQUIREMENTS_MISSING');
+    expect(res.body.error.missingRequirements).toBeDefined();
+    expect(Array.isArray(res.body.error.missingRequirements)).toBe(true);
+    expect(res.body.error.missingRequirements.length).toBeGreaterThan(0);
+  });
+
+  it('rejects publication without authentication', async () => {
+    const res = await request(app).post('/professional/profile/publish');
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects publication with a non-PROFESSIONAL user (403)', async () => {
+    const clientEmail = `client-${Date.now()}@example.com`;
+    const clientUser = await prisma.user.create({
+      data: {
+        email: clientEmail,
+        passwordHash: 'hashed',
+        firstName: 'Client',
+        lastName: 'Test',
+        role: 'CLIENT',
+        authProvider: 'LOCAL',
+        status: 'ACTIVE',
+      },
+    });
+    const clientToken = await signAccessToken({
+      userId: clientUser.id,
+      role: 'CLIENT',
+    });
+
+    const res = await request(app)
+      .post('/professional/profile/publish')
+      .set(auth(clientToken));
+    expect(res.status).toBe(403);
+
+    await prisma.user.deleteMany({ where: { email: clientEmail } });
   });
 });

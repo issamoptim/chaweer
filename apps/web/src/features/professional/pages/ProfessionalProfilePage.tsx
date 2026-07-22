@@ -59,7 +59,16 @@ export function ProfessionalProfilePage() {
   }, [profile]);
 
   const isDirty = useMemo(() => JSON.stringify(form) !== JSON.stringify(initial), [form, initial]);
-  const canContinue = form.firstName.trim().length > 0 && form.lastName.trim().length > 0;
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const canContinue =
+    form.firstName.trim().length > 0 &&
+    form.lastName.trim().length > 0 &&
+    form.barAssociationId.length > 0 &&
+    form.bio.trim().length >= 200;
+
+  const barError = touched.barAssociationId && !form.barAssociationId ? "Sélectionnez votre barreau" : null;
+  const bioError = touched.bio && form.bio.trim().length < 200 ? "Minimum 200 caractères" : null;
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -97,12 +106,6 @@ export function ProfessionalProfilePage() {
       <div className="flex flex-col gap-5">
         <Card title="Informations personnelles">
           <div className="flex flex-col gap-5">
-            <ImageUploadSlot
-              value={form.photoUrl}
-              onUpload={(file) => professionalService.uploadPhoto(file, accessToken!)}
-              onChange={(v) => update("photoUrl", v)}
-              disabled={mutation.isPending}
-            />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <ProInput
                 label="Prénom"
@@ -125,19 +128,17 @@ export function ProfessionalProfilePage() {
                 required
               />
             </div>
+            <ImageUploadSlot
+              value={form.photoUrl}
+              onUpload={(file) => professionalService.uploadPhoto(file, accessToken!)}
+              onChange={(v) => update("photoUrl", v)}
+              disabled={mutation.isPending}
+            />
           </div>
         </Card>
 
         <Card title="Informations professionnelles">
           <div className="flex flex-col gap-4">
-            <ProInput
-              label="Titre professionnel"
-              name="professionalTitle"
-              value={form.professionalTitle}
-              onChange={(v) => update("professionalTitle", v)}
-              placeholder="Avocate"
-              disabled={mutation.isPending}
-            />
             <ProSelect
               label="Barreau"
               name="barAssociationId"
@@ -146,6 +147,19 @@ export function ProfessionalProfilePage() {
               onChange={(v) => update("barAssociationId", v)}
               placeholder="Sélectionner un barreau"
               disabled={mutation.isPending}
+              required
+              error={barError}
+              hint="Obligatoire pour la publication. Indique aux visiteurs que vous êtes un avocat inscrit en ordre."
+              onBlur={() => setTouched((t) => ({ ...t, barAssociationId: true }))}
+            />
+            <ProInput
+              label="Titre professionnel"
+              name="professionalTitle"
+              value={form.professionalTitle}
+              onChange={(v) => update("professionalTitle", v)}
+              placeholder="Avocate"
+              disabled={mutation.isPending}
+              hint="Optionnel. Affiché sous votre nom sur votre profil public."
             />
           </div>
         </Card>
@@ -156,9 +170,14 @@ export function ProfessionalProfilePage() {
             name="bio"
             value={form.bio}
             onChange={(v) => update("bio", v)}
-            placeholder="Décrivez votre expérience, vos domaines de prédilection…"
+            placeholder="Présentez votre approche, vos succès notables, ce qui vous distingue…"
             maxLength={600}
+            minLength={200}
             disabled={mutation.isPending}
+            required
+            error={bioError}
+            hint="200 caractères minimum. Décrivez votre approche et ce qui vous distingue."
+            onBlur={() => setTouched((t) => ({ ...t, bio: true }))}
           />
         </Card>
       </div>

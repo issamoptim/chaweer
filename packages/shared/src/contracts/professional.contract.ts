@@ -164,6 +164,44 @@ export interface UnpublishResponse {
 }
 
 // ============================================================
+// Publication requirements
+// ============================================================
+
+/**
+ * Mandatory requirements a profile must satisfy to be published.
+ * Publication is fully independent from administrative verification.
+ */
+export const PUBLICATION_REQUIREMENTS = {
+  FIRST_NAME: "firstName",
+  LAST_NAME: "lastName",
+  BAR_ASSOCIATION: "barAssociation",
+  BIOGRAPHY: "biography",
+  SPECIALIZATION: "specialization",
+  OFFER_TITLE: "offerTitle",
+  OFFER_DESCRIPTION: "offerDescription",
+  OFFER_PRICE: "offerPrice",
+  OFFER_MODALITY: "offerModality",
+} as const;
+
+export type PublicationRequirement =
+  (typeof PUBLICATION_REQUIREMENTS)[keyof typeof PUBLICATION_REQUIREMENTS];
+
+/**
+ * Minimum biography length (in characters) required for publication.
+ */
+export const PUBLICATION_MIN_BIO_LENGTH = 200;
+
+/**
+ * Error payload returned (HTTP 422) when a publish attempt fails because
+ * one or more mandatory requirements are not met.
+ */
+export interface PublicationRequirementsMissingError {
+  code: "PUBLICATION_REQUIREMENTS_MISSING";
+  message: string;
+  missingRequirements: PublicationRequirement[];
+}
+
+// ============================================================
 // Toggle offer response
 // ============================================================
 

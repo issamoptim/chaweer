@@ -1,6 +1,7 @@
 export const CONSULTATION_MODALITY = {
   VIDEO: "VIDEO",
-  OFFICE: "OFFICE",
+  AUDIO: "AUDIO",
+  CHAT: "CHAT",
 } as const;
 
 export type ConsultationModality =

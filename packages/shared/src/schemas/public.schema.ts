@@ -49,7 +49,7 @@ export const publicProfileResponseSchema = z.object({
       price: z.number(),
       currency: z.string(),
       durationMinutes: z.number(),
-      modalities: z.array(z.enum(["VIDEO", "OFFICE"])),
+      modalities: z.array(z.enum(["VIDEO", "AUDIO", "CHAT"])),
     }),
   ),
   education: z.array(
@@ -102,7 +102,7 @@ export const publicOfferResponseSchema = z.object({
   price: z.number(),
   currency: z.string(),
   durationMinutes: z.number(),
-  modalities: z.array(z.enum(["VIDEO", "OFFICE"])),
+  modalities: z.array(z.enum(["VIDEO", "AUDIO", "CHAT"])),
 });
 
 // Response type is defined in contracts/public.contract.ts (canonical)

@@ -92,3 +92,16 @@ export async function updateOfferController(
     next(err);
   }
 }
+
+export async function publishProfileController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const result = await professionalService.publishProfile(req.user!.userId);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+}

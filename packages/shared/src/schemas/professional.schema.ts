@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { CONSULTATION_DURATIONS } from "../constants/consultation-durations";
 
 const optionalTrimmedNullable = (max: number) =>
   z.string().trim().max(max).nullable().optional();
@@ -33,8 +32,8 @@ export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
 export const updateExpertiseSchema = z.object({
   specializationIds: z.array(z.string().trim().min(1)).min(1),
-  practiceAreaIds: z.array(z.string().trim().min(1)).min(1),
-  languageIds: z.array(z.string().trim().min(1)).min(1),
+  practiceAreaIds: z.array(z.string().trim().min(1)).min(0),
+  languageIds: z.array(z.string().trim().min(1)).min(0),
 });
 
 export type UpdateExpertiseInput = z.infer<typeof updateExpertiseSchema>;
@@ -95,14 +94,9 @@ export type UpdateOfficeInput = z.infer<typeof updateOfficeSchema>;
 
 export const createOfferSchema = z.object({
   title: z.string().trim().min(1).max(200),
-  description: z.string().trim().max(500).nullable().optional(),
+  description: z.string().trim().min(1).max(500),
   price: z.number().int().positive(),
-  durationMinutes: z
-    .number()
-    .refine((v) => (CONSULTATION_DURATIONS as readonly number[]).includes(v), {
-      message: "Invalid duration",
-    }),
-  modalities: z.array(z.enum(["VIDEO", "OFFICE"])).min(1),
+  modalities: z.array(z.enum(["VIDEO", "AUDIO", "CHAT"])).min(1),
   active: z.boolean().optional().default(true),
   order: z.number().int().optional().default(0),
 });
@@ -115,14 +109,9 @@ export type CreateOfferInput = z.infer<typeof createOfferSchema>;
 
 export const updateOfferSchema = z.object({
   title: z.string().trim().min(1).max(200),
-  description: z.string().trim().max(500).nullable().optional(),
+  description: z.string().trim().min(1).max(500),
   price: z.number().int().positive(),
-  durationMinutes: z
-    .number()
-    .refine((v) => (CONSULTATION_DURATIONS as readonly number[]).includes(v), {
-      message: "Invalid duration",
-    }),
-  modalities: z.array(z.enum(["VIDEO", "OFFICE"])).min(1),
+  modalities: z.array(z.enum(["VIDEO", "AUDIO", "CHAT"])).min(1),
   active: z.boolean(),
   order: z.number().int(),
 });

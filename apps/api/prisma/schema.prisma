@@ -103,7 +103,8 @@ enum VerificationStatus {
 
 enum ConsultationModality {
   VIDEO
-  OFFICE
+  AUDIO
+  CHAT
 }
 
 model BarAssociation {
@@ -264,7 +265,7 @@ model ConsultationOffer {
   description     String?                @db.VarChar(500)
   price           Int
   currency        String                 @default("MAD")
-  durationMinutes Int
+  durationMinutes Int                    @default(0)
   modalities      ConsultationModality[]
   active          Boolean?
   order           Int?

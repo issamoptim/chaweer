@@ -1,4 +1,4 @@
-export type ConsultationModality = "VIDEO" | "OFFICE";
+export type ConsultationModality = "VIDEO" | "AUDIO" | "CHAT";
 
 export interface ReferentialItem {
   id: string;
@@ -132,7 +132,8 @@ export interface UpdateExpertiseInput {
 }
 
 export interface UpdateOfferInput {
+  title: string;
+  description: string;
   price: number;
-  durationMinutes: number;
   modalities: ConsultationModality[];
 }

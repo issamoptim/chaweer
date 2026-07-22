@@ -1,7 +1,13 @@
 import { prisma } from '../../core/database/prisma';
-import { NotFoundError } from '../../core/errors';
+import { NotFoundError, PublicationRequirementsError } from '../../core/errors';
 import { ValidationError } from '../../shared/errors/auth-errors';
 import { updateIdentity } from '../auth/user.service';
+import {
+  PUBLICATION_REQUIREMENTS,
+  PUBLICATION_MIN_BIO_LENGTH,
+  type PublicationRequirement,
+} from '@chaweer/shared';
+import type { PublishResponse } from '@chaweer/shared';
 import type {
   ProfessionalProfileData,
   UpdateProfileResponseData,
@@ -98,6 +104,77 @@ function computeCompletion(profile: ProfileWithRelations): ProfileCompletion {
   const percentage = Math.round((completedSections / totalSections) * 100);
 
   return { percentage, completedSections, totalSections, sections };
+}
+
+/**
+ * Evaluates the mandatory publication requirements against a profile.
+ * Returns the ordered list of requirements that are NOT satisfied.
+ * Publication is fully independent from administrative verification, so
+ * verification status is never taken into account here.
+ */
+export function evaluatePublicationRequirements(
+  profile: ProfileWithRelations,
+): PublicationRequirement[] {
+  const missing: PublicationRequirement[] = [];
+
+  if (!profile.user.firstName || profile.user.firstName.trim() === '') {
+    missing.push(PUBLICATION_REQUIREMENTS.FIRST_NAME);
+  }
+  if (!profile.user.lastName || profile.user.lastName.trim() === '') {
+    missing.push(PUBLICATION_REQUIREMENTS.LAST_NAME);
+  }
+  if (!profile.barAssociationId) {
+    missing.push(PUBLICATION_REQUIREMENTS.BAR_ASSOCIATION);
+  }
+  if (!profile.bio || profile.bio.trim().length < PUBLICATION_MIN_BIO_LENGTH) {
+    missing.push(PUBLICATION_REQUIREMENTS.BIOGRAPHY);
+  }
+  if (profile.specializations.length === 0) {
+    missing.push(PUBLICATION_REQUIREMENTS.SPECIALIZATION);
+  }
+
+  const offer = profile.offers[0] ?? null;
+  if (!offer || !offer.title || offer.title.trim() === '') {
+    missing.push(PUBLICATION_REQUIREMENTS.OFFER_TITLE);
+  }
+  if (!offer || !offer.description || offer.description.trim() === '') {
+    missing.push(PUBLICATION_REQUIREMENTS.OFFER_DESCRIPTION);
+  }
+  if (!offer || offer.price <= 0) {
+    missing.push(PUBLICATION_REQUIREMENTS.OFFER_PRICE);
+  }
+  if (!offer || offer.modalities.length === 0) {
+    missing.push(PUBLICATION_REQUIREMENTS.OFFER_MODALITY);
+  }
+
+  return missing;
+}
+
+/**
+ * Re-evaluates publication requirements for an already PUBLISHED profile and
+ * automatically unpublishes it (status -> DRAFT) if any mandatory requirement
+ * is no longer satisfied. This enforces business rule 4: a modification that
+ * invalidates a mandatory requirement removes the profile from the marketplace.
+ *
+ * No-op for profiles that are not currently PUBLISHED.
+ */
+export async function syncPublicationStatus(userId: string): Promise<void> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    include: profileInclude,
+  });
+
+  if (!profile || profile.status !== 'PUBLISHED') {
+    return;
+  }
+
+  const missing = evaluatePublicationRequirements(profile);
+  if (missing.length > 0) {
+    await prisma.professionalProfile.update({
+      where: { id: profile.id },
+      data: { status: 'DRAFT', unpublishedAt: new Date() },
+    });
+  }
 }
 
 function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
@@ -285,6 +362,8 @@ export async function updateProfile(
     }
   });
 
+  await syncPublicationStatus(userId);
+
   const updated = await prisma.professionalProfile.findUnique({
     where: { userId },
     include: {
@@ -397,6 +476,8 @@ export async function setExpertise(
     });
   });
 
+  await syncPublicationStatus(userId);
+
   return {
     specializationIds: specializationIds,
     practiceAreaIds: practiceAreaIds,
@@ -428,8 +509,9 @@ export async function setOffer(
     await prisma.consultationOffer.update({
       where: { id: existingOffer.id },
       data: {
+        title: input.title,
+        description: input.description,
         price: input.price,
-        durationMinutes: input.durationMinutes,
         modalities,
       },
     });
@@ -437,9 +519,9 @@ export async function setOffer(
     await prisma.consultationOffer.create({
       data: {
         profileId: profile.id,
-        title: 'Consultation',
+        title: input.title,
+        description: input.description,
         price: input.price,
-        durationMinutes: input.durationMinutes,
         modalities,
         active: true,
         order: 0,
@@ -447,5 +529,52 @@ export async function setOffer(
     });
   }
 
+  await syncPublicationStatus(userId);
+
   return getMyProfile(userId);
+}
+
+/**
+ * Publishes a professional profile (business rule 1: publication is the
+ * professional's own decision). Validates all mandatory requirements
+ * server-side. If any requirement is missing, throws a
+ * PublicationRequirementsError (HTTP 422) with the structured list.
+ *
+ * On success, transitions the status to PUBLISHED and stamps publishedAt.
+ * The operation is idempotent: re-publishing an already PUBLISHED profile
+ * that still meets all requirements simply returns the current state.
+ * Publication is fully independent from administrative verification.
+ */
+export async function publishProfile(userId: string): Promise<PublishResponse> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    include: profileInclude,
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  const missing = evaluatePublicationRequirements(profile);
+  if (missing.length > 0) {
+    throw new PublicationRequirementsError(missing);
+  }
+
+  if (profile.status === 'PUBLISHED') {
+    return {
+      status: profile.status,
+      publishedAt: profile.publishedAt?.toISOString() ?? null,
+    };
+  }
+
+  const updated = await prisma.professionalProfile.update({
+    where: { id: profile.id },
+    data: { status: 'PUBLISHED', publishedAt: new Date() },
+    select: { status: true, publishedAt: true },
+  });
+
+  return {
+    status: updated.status,
+    publishedAt: updated.publishedAt?.toISOString() ?? null,
+  };
 }

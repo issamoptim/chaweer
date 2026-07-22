@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AppError } from '../errors';
+import { AppError, PublicationRequirementsError } from '../errors';
 import { logger } from '../logger';
 import { ErrorCodes } from '../../shared/errors/error-codes';
 
@@ -15,6 +15,9 @@ export function errorHandler(err: Error, _req: Request, res: Response, _next: Ne
         code: err.errorCode ?? ErrorCodes.INTERNAL_ERROR,
         message: err.message,
         ...(err.details ? { details: err.details } : {}),
+        ...(err instanceof PublicationRequirementsError
+          ? { missingRequirements: err.missingRequirements }
+          : {}),
       },
     });
     return;

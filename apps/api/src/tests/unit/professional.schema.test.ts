@@ -36,7 +36,7 @@ describe('updateProfileSchema', () => {
     });
     expect(result.success).toBe(true);
     if (!result.success) {
-      console.log('Schema errors:', JSON.stringify(result.error.issues, null, 2));
+      expect(result.error.issues).toBeDefined();
     }
   });
 
@@ -54,7 +54,7 @@ describe('updateProfileSchema', () => {
 });
 
 describe('updateExpertiseSchema', () => {
-  it('requires at least one specialization, practice area and language', () => {
+  it('requires at least one specialization (PD-06)', () => {
     expect(
       updateExpertiseSchema.safeParse({
         specializationIds: [],
@@ -62,20 +62,16 @@ describe('updateExpertiseSchema', () => {
         languageIds: ['b'],
       }).success,
     ).toBe(false);
+  });
+
+  it('accepts empty practice areas and languages (PD-06 — optional)', () => {
     expect(
       updateExpertiseSchema.safeParse({
         specializationIds: ['a'],
         practiceAreaIds: [],
-        languageIds: ['b'],
-      }).success,
-    ).toBe(false);
-    expect(
-      updateExpertiseSchema.safeParse({
-        specializationIds: ['a'],
-        practiceAreaIds: ['b'],
         languageIds: [],
       }).success,
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('accepts a valid selection', () => {
@@ -89,51 +85,43 @@ describe('updateExpertiseSchema', () => {
 });
 
 describe('updateOfferSchema', () => {
+  const validOffer = {
+    title: 'Consultation juridique',
+    description: 'Un accompagnement personnalisé.',
+    price: 300,
+    modalities: ['VIDEO'],
+  };
+
   it('rejects a non-positive price', () => {
-    expect(
-      updateOfferSchema.safeParse({
-        price: 0,
-        durationMinutes: 30,
-        modalities: ['VIDEO'],
-      }).success,
-    ).toBe(false);
+    expect(updateOfferSchema.safeParse({ ...validOffer, price: 0 }).success).toBe(false);
   });
 
-  it('rejects an invalid duration', () => {
-    expect(
-      updateOfferSchema.safeParse({
-        price: 300,
-        durationMinutes: 20,
-        modalities: ['VIDEO'],
-      }).success,
-    ).toBe(false);
+  it('rejects a missing title (PD-01)', () => {
+    const { title: _omit, ...rest } = validOffer;
+    void _omit;
+    expect(updateOfferSchema.safeParse(rest).success).toBe(false);
+  });
+
+  it('rejects a missing description (PD-01)', () => {
+    const { description: _omit, ...rest } = validOffer;
+    void _omit;
+    expect(updateOfferSchema.safeParse(rest).success).toBe(false);
   });
 
   it('rejects an empty modalities list', () => {
-    expect(
-      updateOfferSchema.safeParse({
-        price: 300,
-        durationMinutes: 30,
-        modalities: [],
-      }).success,
-    ).toBe(false);
+    expect(updateOfferSchema.safeParse({ ...validOffer, modalities: [] }).success).toBe(false);
   });
 
-  it('rejects an unknown modality', () => {
-    expect(
-      updateOfferSchema.safeParse({
-        price: 300,
-        durationMinutes: 30,
-        modalities: ['HOME'],
-      }).success,
-    ).toBe(false);
+  it('rejects an unknown modality (OFFICE removed — PD-03)', () => {
+    expect(updateOfferSchema.safeParse({ ...validOffer, modalities: ['OFFICE'] }).success).toBe(
+      false,
+    );
   });
 
-  it('accepts a valid offer', () => {
+  it('accepts a valid offer with VIDEO/AUDIO/CHAT modalities (PD-03)', () => {
     const result = updateOfferSchema.safeParse({
-      price: 300,
-      durationMinutes: 45,
-      modalities: ['VIDEO', 'OFFICE'],
+      ...validOffer,
+      modalities: ['VIDEO', 'AUDIO', 'CHAT'],
     });
     expect(result.success).toBe(true);
   });
