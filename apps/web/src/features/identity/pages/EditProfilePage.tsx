@@ -161,7 +161,7 @@ export function EditProfilePage() {
     return (
       <div className="min-h-screen bg-white">
         <AppHeader />
-        <div className="mx-auto max-w-[760px] px-6 py-8 flex flex-col gap-[22px]">
+        <div className="mx-auto max-w-[760px] px-6 pt-8 pb-16 flex flex-col gap-[22px]">
           <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
             Modifier mon profil
           </h1>
@@ -181,7 +181,7 @@ export function EditProfilePage() {
   return (
     <div className="min-h-screen bg-white">
       <AppHeader />
-      <div className="mx-auto max-w-[760px] px-6 py-8 flex flex-col gap-[22px]">
+      <div className="mx-auto max-w-[760px] px-6 pt-8 pb-16 flex flex-col gap-[22px]">
         <div>
           <button
             type="button"
