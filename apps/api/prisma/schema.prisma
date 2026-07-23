@@ -180,6 +180,8 @@ model ProfessionalProfile {
 
   // Identity [MVP]
   professionalTitle String?
+  registrationNumber String?
+  yearsOfExperience Int?
 
   // Biography [MVP]
   bio               String?

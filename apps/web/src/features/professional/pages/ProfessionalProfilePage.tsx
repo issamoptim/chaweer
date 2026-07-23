@@ -22,6 +22,8 @@ interface IdentityFormState {
   firstName: string;
   lastName: string;
   professionalTitle: string;
+  registrationNumber: string;
+  yearsOfExperience: string;
   photoUrl: string | null;
   barAssociationId: string;
   bio: string;
@@ -31,6 +33,8 @@ const EMPTY_IDENTITY: IdentityFormState = {
   firstName: "",
   lastName: "",
   professionalTitle: "",
+  registrationNumber: "",
+  yearsOfExperience: "",
   photoUrl: null,
   barAssociationId: "",
   bio: "",
@@ -57,6 +61,8 @@ export function ProfessionalProfilePage() {
         firstName: profile.identity.firstName ?? "",
         lastName: profile.identity.lastName ?? "",
         professionalTitle: profile.identity.professionalTitle ?? "",
+        registrationNumber: profile.identity.registrationNumber ?? "",
+        yearsOfExperience: profile.identity.yearsOfExperience != null ? String(profile.identity.yearsOfExperience) : "",
         photoUrl: profile.identity.photoUrl,
         barAssociationId: profile.identity.barAssociationId ?? "",
         bio: profile.biography.bio ?? "",
@@ -129,6 +135,8 @@ export function ProfessionalProfilePage() {
               firstName: identityForm.firstName.trim(),
               lastName: identityForm.lastName.trim(),
               professionalTitle: identityForm.professionalTitle.trim() || null,
+              registrationNumber: identityForm.registrationNumber.trim() || null,
+              yearsOfExperience: identityForm.yearsOfExperience.trim() ? Number(identityForm.yearsOfExperience) : null,
               photoUrl: identityForm.photoUrl,
               barAssociationId: identityForm.barAssociationId || null,
               bio: identityForm.bio.trim() || null,
@@ -245,6 +253,23 @@ export function ProfessionalProfilePage() {
                   hint="Obligatoire pour la publication."
                   onBlur={() => setTouched((t) => ({ ...t, barAssociationId: true }))}
                 />
+                <ProInput
+                  label="N° d'inscription"
+                  name="registrationNumber"
+                  value={identityForm.registrationNumber}
+                  onChange={(v) => updateIdentity("registrationNumber", v)}
+                  placeholder="N° d'inscription au barreau"
+                  disabled={isSaving}
+                />
+                <ProInput
+                  label="Années d'expérience"
+                  name="yearsOfExperience"
+                  type="number"
+                  value={identityForm.yearsOfExperience}
+                  onChange={(v) => updateIdentity("yearsOfExperience", v)}
+                  placeholder="8"
+                  disabled={isSaving}
+                />
               </div>
             </div>
           ) : (
@@ -277,6 +302,15 @@ export function ProfessionalProfilePage() {
                 <ReadField label="Nom" value={profile?.identity.lastName} />
                 <ReadField label="Titre professionnel" value={profile?.identity.professionalTitle} />
                 <ReadField label="Barreau" value={barName} />
+                <ReadField label="N° d'inscription" value={profile?.identity.registrationNumber} />
+                <ReadField
+                  label="Années d'expérience"
+                  value={
+                    profile?.identity.yearsOfExperience != null
+                      ? `${profile.identity.yearsOfExperience} ans`
+                      : undefined
+                  }
+                />
               </div>
             </div>
           )}

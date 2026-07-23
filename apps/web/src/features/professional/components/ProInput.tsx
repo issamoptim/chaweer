@@ -4,7 +4,7 @@ interface ProInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  type?: "text" | "tel" | "email";
+  type?: "text" | "tel" | "email" | "number";
   autoComplete?: string;
   disabled?: boolean;
   required?: boolean;

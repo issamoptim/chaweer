@@ -184,6 +184,8 @@ function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
     firstName: profile.user.firstName,
     lastName: profile.user.lastName,
     professionalTitle: profile.professionalTitle,
+    registrationNumber: profile.registrationNumber,
+    yearsOfExperience: profile.yearsOfExperience,
     photoUrl: profile.photoUrl,
     barAssociationId: profile.barAssociationId,
   };
@@ -343,6 +345,8 @@ export async function updateProfile(
 
   const profileData: Prisma.ProfessionalProfileUpdateInput = {};
   if (input.professionalTitle !== undefined) profileData.professionalTitle = input.professionalTitle;
+  if (input.registrationNumber !== undefined) profileData.registrationNumber = input.registrationNumber;
+  if (input.yearsOfExperience !== undefined) profileData.yearsOfExperience = input.yearsOfExperience;
   if (input.photoUrl !== undefined) profileData.photoUrl = input.photoUrl;
   if (input.bio !== undefined) profileData.bio = input.bio;
   if (input.barAssociationId !== undefined) {
@@ -385,6 +389,8 @@ export async function updateProfile(
       firstName: updated.user.firstName,
       lastName: updated.user.lastName,
       professionalTitle: updated.professionalTitle,
+      registrationNumber: updated.registrationNumber,
+      yearsOfExperience: updated.yearsOfExperience,
       photoUrl: updated.photoUrl,
       barAssociationId: updated.barAssociationId,
     },

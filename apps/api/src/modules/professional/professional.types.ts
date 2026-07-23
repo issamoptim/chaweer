@@ -25,6 +25,8 @@ export interface IdentityData {
   firstName: string;
   lastName: string;
   professionalTitle: string | null;
+  registrationNumber: string | null;
+  yearsOfExperience: number | null;
   photoUrl: string | null;
   barAssociationId: string | null;
 }
