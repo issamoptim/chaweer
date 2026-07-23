@@ -232,7 +232,7 @@ export function ProfessionalDashboardPage() {
           <div className="flex shrink-0 flex-col gap-2.5">
             <button
               type="button"
-              onClick={() => navigate("/")}
+              onClick={() => navigate(`/avocat/${profile?.id}`)}
               className="flex h-[42px] items-center justify-center gap-2 rounded-[10px] bg-white px-4 text-[13.5px] font-semibold text-[#0F766E] shadow-sm transition-colors hover:bg-[#F0FAF8]"
             >
               <Eye className="h-4 w-4" />

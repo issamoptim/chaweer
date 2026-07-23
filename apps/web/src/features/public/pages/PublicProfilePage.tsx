@@ -16,10 +16,12 @@ import {
   Users,
   Scale,
   Languages,
+  Pencil,
 } from "lucide-react";
 import { usePublicProfile } from "../hooks/usePublicProfile";
 import { resolveMediaUrl } from "@/utils/media-url";
 import { ChaweerLogo } from "@/components/ChaweerLogo";
+import { useProfessionalProfile } from "@/features/professional/hooks/useProfessionalProfile";
 
 const MODALITY_LABELS: Record<string, { label: string; icon: typeof Video }> = {
   VIDEO: { label: "Visioconférence", icon: Video },
@@ -34,6 +36,8 @@ function getInitials(firstName: string, lastName: string): string {
 export function PublicProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { data: profile, isLoading, isError } = usePublicProfile(id);
+  const { data: myProfile } = useProfessionalProfile();
+  const isOwner = !!profile && !!myProfile && profile.id === myProfile.id;
 
   if (isLoading) {
     return (
@@ -133,6 +137,16 @@ export function PublicProfilePage() {
                 )}
               </div>
             </div>
+
+            {isOwner && (
+              <Link
+                to="/pro/profil"
+                className="shrink-0 flex h-[40px] items-center gap-2 rounded-[10px] border border-[#E7E5E1] bg-white px-4 text-[13px] font-semibold text-[#0F766E] transition-colors hover:bg-[#F0FAF8]"
+              >
+                <Pencil className="h-4 w-4" />
+                Modifier mon profil
+              </Link>
+            )}
           </div>
         </div>
 
