@@ -295,7 +295,7 @@ export function PublicProfilePage() {
         {/* Cabinet */}
         {profile.office && (profile.office.name || profile.office.address) && (
           <Section title="Cabinet">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {profile.office.name && (
                 <span className="text-[14.5px] font-bold text-[#1C1B1A]">{profile.office.name}</span>
               )}
@@ -305,6 +305,18 @@ export function PublicProfilePage() {
                   {profile.office.address}
                   {profile.cityName && `, ${profile.cityName}`}
                 </span>
+              )}
+              {profile.office.latitude != null && profile.office.longitude != null && (
+                <div className="mt-1 overflow-hidden rounded-[12px] border border-[#E9E7E3]">
+                  <iframe
+                    title="Localisation du cabinet"
+                    width="100%"
+                    height="240"
+                    loading="lazy"
+                    style={{ border: 0 }}
+                    src={`https://www.google.com/maps?q=${profile.office.latitude},${profile.office.longitude}&z=15&output=embed`}
+                  />
+                </div>
               )}
             </div>
           </Section>
