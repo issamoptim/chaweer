@@ -239,10 +239,12 @@ export function PublicProfilePage() {
                   <span className="text-[22px] font-extrabold text-[#0F766E]">
                     {offer.price} {offer.currency}
                   </span>
-                  <div className="flex items-center gap-1 text-[12px] text-[#9A968E]">
-                    <Clock className="h-3 w-3" />
-                    {offer.durationMinutes} min
-                  </div>
+                  {offer.durationMinutes > 0 && (
+                    <div className="flex items-center gap-1 text-[12px] text-[#9A968E]">
+                      <Clock className="h-3 w-3" />
+                      {offer.durationMinutes} min
+                    </div>
+                  )}
                 </div>
               </div>
               {offer.modalities.length > 0 && (
