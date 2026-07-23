@@ -21,7 +21,7 @@ import {
   type ProfessionalRegisterFormData,
 } from "../schemas/professional-register-schema";
 
-const ONBOARDING_START = "/pro/profil";
+const ONBOARDING_START = "/pro/tableau-de-bord";
 
 export function ProfessionalRegistrationPage() {
   const navigate = useNavigate();

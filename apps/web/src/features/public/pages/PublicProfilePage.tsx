@@ -17,11 +17,15 @@ import {
   Scale,
   Languages,
   Pencil,
+  BadgeCheck,
+  Calendar,
+  LayoutGrid,
 } from "lucide-react";
 import { usePublicProfile } from "../hooks/usePublicProfile";
 import { resolveMediaUrl } from "@/utils/media-url";
 import { ChaweerLogo } from "@/components/ChaweerLogo";
 import { useProfessionalProfile } from "@/features/professional/hooks/useProfessionalProfile";
+import { useAuth } from "@/features/auth";
 
 const MODALITY_LABELS: Record<string, { label: string; icon: typeof Video }> = {
   VIDEO: { label: "Visioconférence", icon: Video },
@@ -37,16 +41,19 @@ export function PublicProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { data: profile, isLoading, isError } = usePublicProfile(id);
   const { data: myProfile } = useProfessionalProfile();
+  const { user } = useAuth();
+  const isPro = user?.role === "PROFESSIONAL";
   const isOwner = !!profile && !!myProfile && profile.id === myProfile.id;
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F7F7F5]">
-        <PublicHeader />
-        <div className="mx-auto max-w-[840px] px-6 py-10 flex flex-col gap-6">
-          <div className="h-48 w-full animate-pulse rounded-[20px] bg-[#E9E7E3]" />
-          <div className="h-32 w-full animate-pulse rounded-[16px] bg-[#E9E7E3]" />
-          <div className="h-48 w-full animate-pulse rounded-[16px] bg-[#E9E7E3]" />
+        <PublicHeader isPro={isPro} />
+        <div className="mx-auto max-w-[840px] px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-5 sm:gap-6">
+          <div className="h-3 w-20 animate-pulse rounded bg-[#E9E7E3]" />
+          <div className="h-44 w-full animate-pulse rounded-[18px] sm:rounded-[20px] bg-[#E9E7E3]" />
+          <div className="h-28 w-full animate-pulse rounded-[16px] bg-[#E9E7E3]" />
+          <div className="h-44 w-full animate-pulse rounded-[16px] bg-[#E9E7E3]" />
         </div>
       </div>
     );
@@ -55,20 +62,20 @@ export function PublicProfilePage() {
   if (isError || !profile) {
     return (
       <div className="min-h-screen bg-[#F7F7F5]">
-        <PublicHeader />
-        <div className="mx-auto max-w-[840px] px-6 py-20 flex flex-col items-center text-center">
+        <PublicHeader isPro={isPro} />
+        <div className="mx-auto max-w-[840px] px-4 sm:px-6 py-16 sm:py-20 flex flex-col items-center text-center">
           <Scale className="h-12 w-12 text-[#B4AFA6]" />
-          <h1 className="mt-4 text-[22px] font-bold text-[#1C1B1A]">
+          <h1 className="mt-4 text-[20px] sm:text-[22px] font-bold text-[#1C1B1A]">
             Profil introuvable
           </h1>
-          <p className="mt-2 text-[14.5px] text-[#6B6862]">
+          <p className="mt-2 text-[14px] sm:text-[14.5px] text-[#6B6862] max-w-[320px]">
             Ce profil n'est pas disponible ou n'est plus publié.
           </p>
           <Link
-            to="/"
-            className="mt-6 flex h-[42px] items-center rounded-[10px] bg-[#0F766E] px-5 text-[14px] font-semibold text-white transition-colors hover:bg-[#134E4A]"
+            to={isPro ? "/pro/tableau-de-bord" : "/"}
+            className="mt-6 flex h-[44px] items-center rounded-[12px] bg-[#0F766E] px-5 text-[14px] font-semibold text-white transition-colors hover:bg-[#134E4A]"
           >
-            Retour à l'accueil
+            {isPro ? "Retour à mon espace" : "Retour à l'accueil"}
           </Link>
         </div>
       </div>
@@ -81,57 +88,57 @@ export function PublicProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#F7F7F5]">
-      <PublicHeader />
+      <PublicHeader isPro={isPro} />
 
-      <div className="mx-auto max-w-[840px] px-6 py-8 flex flex-col gap-6">
+      <div className="mx-auto max-w-[840px] px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-5 sm:gap-6">
         <Link
-          to="/"
+          to={isPro ? "/pro/tableau-de-bord" : "/"}
           className="inline-flex items-center gap-[7px] text-[13.5px] font-semibold text-[#0F766E] transition-colors hover:underline w-fit"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={2.2} />
-          Retour
+          {isPro ? "Mon espace" : "Retour"}
         </Link>
 
         {/* Hero card — identity + photo */}
-        <div className="rounded-[20px] bg-white border border-[#E9E7E3] p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
+        <div className="rounded-[18px] sm:rounded-[20px] bg-white border border-[#E9E7E3] p-5 sm:p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
             {profile.identity.photoUrl ? (
               <img
                 src={resolveMediaUrl(profile.identity.photoUrl) ?? undefined}
                 alt={fullName}
-                className="h-[96px] w-[96px] rounded-full object-cover shrink-0"
+                className="h-[88px] w-[88px] sm:h-[96px] sm:w-[96px] rounded-full object-cover shrink-0 ring-2 ring-[#E6F2F0]"
               />
             ) : (
-              <span className="flex h-[96px] w-[96px] shrink-0 items-center justify-center rounded-full bg-[#0F766E] text-[32px] font-bold text-white">
+              <span className="flex h-[88px] w-[88px] sm:h-[96px] sm:w-[96px] shrink-0 items-center justify-center rounded-full bg-[#0F766E] text-[28px] sm:text-[32px] font-bold text-white">
                 {initials}
               </span>
             )}
 
-            <div className="flex flex-col gap-2 flex-1">
-              <h1 className="text-[26px] font-extrabold tracking-[-0.02em] text-[#1C1B1A]">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <h1 className="text-[22px] sm:text-[26px] font-extrabold tracking-[-0.02em] text-[#1C1B1A] leading-tight">
                 {fullName}
               </h1>
               {profile.identity.professionalTitle && (
-                <p className="text-[15px] font-medium text-[#0F766E]">
+                <p className="text-[14px] sm:text-[15px] font-medium text-[#0F766E]">
                   {profile.identity.professionalTitle}
                 </p>
               )}
-              <div className="flex flex-wrap gap-3 mt-1">
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5 mt-1">
                 {profile.barAssociationName && (
-                  <span className="inline-flex items-center gap-1.5 text-[13px] text-[#6B6862]">
-                    <Scale className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1.5 text-[12.5px] sm:text-[13px] text-[#6B6862]">
+                    <Scale className="h-3.5 w-3.5 shrink-0" />
                     {profile.barAssociationName}
                   </span>
                 )}
                 {profile.identity.yearsOfExperience != null && (
-                  <span className="inline-flex items-center gap-1.5 text-[13px] text-[#6B6862]">
-                    <Briefcase className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1.5 text-[12.5px] sm:text-[13px] text-[#6B6862]">
+                    <Briefcase className="h-3.5 w-3.5 shrink-0" />
                     {profile.identity.yearsOfExperience} ans d'expérience
                   </span>
                 )}
                 {profile.cityName && (
-                  <span className="inline-flex items-center gap-1.5 text-[13px] text-[#6B6862]">
-                    <MapPin className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1.5 text-[12.5px] sm:text-[13px] text-[#6B6862]">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
                     {profile.cityName}
                   </span>
                 )}
@@ -141,19 +148,43 @@ export function PublicProfilePage() {
             {isOwner && (
               <Link
                 to="/pro/profil"
-                className="shrink-0 flex h-[40px] items-center gap-2 rounded-[10px] border border-[#E7E5E1] bg-white px-4 text-[13px] font-semibold text-[#0F766E] transition-colors hover:bg-[#F0FAF8]"
+                className="shrink-0 flex h-[40px] items-center gap-2 rounded-[10px] border border-[#E7E5E1] bg-white px-4 text-[13px] font-semibold text-[#0F766E] transition-colors hover:bg-[#F0FAF8] w-full sm:w-auto justify-center"
               >
                 <Pencil className="h-4 w-4" />
                 Modifier mon profil
               </Link>
             )}
           </div>
+
+          {/* Quick info badges */}
+          {(profile.identity.registrationNumber || profile.identity.yearsOfExperience != null) && (
+            <div className="mt-5 pt-5 border-t border-[#F0EEEA] grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {profile.identity.registrationNumber && (
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="h-4 w-4 text-[#0F766E] shrink-0" />
+                  <span className="text-[12.5px] text-[#9A968E]">N° d'inscription</span>
+                  <span className="text-[13px] font-semibold text-[#1C1B1A]">
+                    {profile.identity.registrationNumber}
+                  </span>
+                </div>
+              )}
+              {profile.identity.yearsOfExperience != null && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-[#0F766E] shrink-0" />
+                  <span className="text-[12.5px] text-[#9A968E]">Expérience</span>
+                  <span className="text-[13px] font-semibold text-[#1C1B1A]">
+                    {profile.identity.yearsOfExperience} ans
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Biographie */}
         {profile.biography.bio && profile.biography.bio.trim() && (
           <Section title="À propos">
-            <p className="text-[14.5px] leading-[1.7] text-[#4B4842] whitespace-pre-line">
+            <p className="text-[14px] sm:text-[14.5px] leading-[1.7] text-[#4B4842] whitespace-pre-line">
               {profile.biography.bio}
             </p>
           </Section>
@@ -172,7 +203,7 @@ export function PublicProfilePage() {
                     {profile.specializationNames.map((name) => (
                       <span
                         key={name}
-                        className="rounded-full bg-[#E6F2F0] px-3 py-1 text-[12.5px] font-medium text-[#0F766E]"
+                        className="rounded-full bg-[#E6F2F0] border border-[#CDE5E1] px-3 py-1 text-[12.5px] font-medium text-[#0F766E]"
                       >
                         {name}
                       </span>
@@ -183,7 +214,7 @@ export function PublicProfilePage() {
               {profile.practiceAreaNames.length > 0 && (
                 <div>
                   <span className="text-[12px] font-semibold uppercase tracking-wide text-[#9A968E]">
-                    Situations
+                    Situations traitées
                   </span>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {profile.practiceAreaNames.map((name) => (
@@ -203,21 +234,15 @@ export function PublicProfilePage() {
 
         {/* Langues */}
         {profile.languageNames.length > 0 && (
-          <Section title="Langues">
+          <Section title="Langues de consultation">
             <div className="flex items-center gap-2 flex-wrap">
-              <Languages className="h-4 w-4 text-[#9A968E]" />
-              {profile.languageNames.map((name) => (
-                <span
-                  key={name}
-                  className="text-[13.5px] font-medium text-[#4B4842]"
-                >
-                  {name}
+              <Languages className="h-4 w-4 text-[#9A968E] shrink-0" />
+              {profile.languageNames.map((name, i) => (
+                <span key={name} className="inline-flex items-center gap-2">
+                  {i > 0 && <span className="text-[#B4AFA6]">·</span>}
+                  <span className="text-[13.5px] font-medium text-[#4B4842]">{name}</span>
                 </span>
-              )).reduce((acc: React.ReactNode[], el, i) => {
-                if (i > 0) acc.push(<span key={`sep-${i}`} className="text-[#B4AFA6]">·</span>);
-                acc.push(el);
-                return acc;
-              }, [])}
+              ))}
             </div>
           </Section>
         )}
@@ -225,22 +250,22 @@ export function PublicProfilePage() {
         {/* Offre de consultation */}
         {offer && (
           <Section title="Consultation">
-            <div className="rounded-[16px] bg-[#F0FAF8] border border-[#B8E4DF] p-5 flex flex-col gap-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-[16px] font-bold text-[#1C1B1A]">{offer.title}</h3>
+            <div className="rounded-[16px] bg-[#F0FAF8] border border-[#B8E4DF] p-4 sm:p-5 flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div className="flex flex-col gap-1 flex-1 min-w-0">
+                  <h3 className="text-[15px] sm:text-[16px] font-bold text-[#1C1B1A]">{offer.title}</h3>
                   {offer.description && (
-                    <p className="text-[13.5px] leading-[1.6] text-[#6B6862]">
+                    <p className="text-[13px] sm:text-[13.5px] leading-[1.6] text-[#6B6862]">
                       {offer.description}
                     </p>
                   )}
                 </div>
-                <div className="shrink-0 text-right">
-                  <span className="text-[22px] font-extrabold text-[#0F766E]">
+                <div className="shrink-0 text-left sm:text-right">
+                  <span className="text-[20px] sm:text-[22px] font-extrabold text-[#0F766E]">
                     {offer.price} {offer.currency}
                   </span>
                   {offer.durationMinutes > 0 && (
-                    <div className="flex items-center gap-1 text-[12px] text-[#9A968E]">
+                    <div className="flex items-center gap-1 text-[12px] text-[#9A968E] sm:justify-end">
                       <Clock className="h-3 w-3" />
                       {offer.durationMinutes} min
                     </div>
@@ -256,7 +281,7 @@ export function PublicProfilePage() {
                     return (
                       <span
                         key={m}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E9E7E3] px-3 py-1 text-[12.5px] font-medium text-[#4B4842]"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E9E7E3] px-3 py-1.5 text-[12.5px] font-medium text-[#4B4842]"
                       >
                         <Icon className="h-3.5 w-3.5 text-[#0F766E]" />
                         {modality.label}
@@ -271,6 +296,12 @@ export function PublicProfilePage() {
 
         {/* Contact */}
         {profile.contact && (
+          profile.contact.phone ||
+          profile.contact.whatsapp ||
+          profile.contact.publicEmail ||
+          profile.contact.website ||
+          profile.contact.linkedInUrl
+        ) && (
           <Section title="Contact">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {profile.contact.phone && (
@@ -300,10 +331,12 @@ export function PublicProfilePage() {
                 <span className="text-[14.5px] font-bold text-[#1C1B1A]">{profile.office.name}</span>
               )}
               {profile.office.address && (
-                <span className="flex items-center gap-1.5 text-[13.5px] text-[#6B6862]">
-                  <MapPin className="h-4 w-4 text-[#9A968E]" />
-                  {profile.office.address}
-                  {profile.cityName && `, ${profile.cityName}`}
+                <span className="flex items-start gap-1.5 text-[13.5px] text-[#6B6862]">
+                  <MapPin className="h-4 w-4 text-[#9A968E] shrink-0 mt-0.5" />
+                  <span>
+                    {profile.office.address}
+                    {profile.cityName && `, ${profile.cityName}`}
+                  </span>
                 </span>
               )}
               {profile.office.latitude != null && profile.office.longitude != null && (
@@ -311,7 +344,7 @@ export function PublicProfilePage() {
                   <iframe
                     title="Localisation du cabinet"
                     width="100%"
-                    height="240"
+                    height="200"
                     loading="lazy"
                     style={{ border: 0 }}
                     src={`https://www.google.com/maps?q=${profile.office.latitude},${profile.office.longitude}&z=15&output=embed`}
@@ -333,7 +366,7 @@ export function PublicProfilePage() {
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#E6F2F0]">
                         <Briefcase className="h-4 w-4 text-[#0F766E]" />
                       </span>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-0.5 min-w-0">
                         <span className="text-[14px] font-bold text-[#1C1B1A]">
                           {exp.position}
                           {exp.organization && ` — ${exp.organization}`}
@@ -357,7 +390,7 @@ export function PublicProfilePage() {
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#E6F2F0]">
                         <GraduationCap className="h-4 w-4 text-[#0F766E]" />
                       </span>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-0.5 min-w-0">
                         <span className="text-[14px] font-bold text-[#1C1B1A]">
                           {edu.degree}
                           {edu.institution && ` — ${edu.institution}`}
@@ -421,25 +454,44 @@ export function PublicProfilePage() {
             </div>
           </Section>
         )}
+
+        {/* Footer */}
+        <div className="pt-2 pb-4 text-center">
+          <p className="text-[12px] text-[#B4AFA6]">
+            Fiche consultable sur{" "}
+            <Link to="/" className="font-semibold text-[#0F766E] hover:underline">
+              Chaweer
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
 }
 
-function PublicHeader() {
+function PublicHeader({ isPro }: { isPro: boolean }) {
   return (
-    <header className="flex items-center justify-between bg-white px-10 py-[15px] border-b border-[#E9E7E3]">
-      <Link to="/">
+    <header className="sticky top-0 z-10 flex items-center justify-between bg-white px-4 sm:px-10 py-[13px] sm:py-[15px] border-b border-[#E9E7E3]">
+      <Link to={isPro ? "/pro/tableau-de-bord" : "/"} className="shrink-0">
         <ChaweerLogo size="sm" showArabic={false} />
       </Link>
+      {isPro && (
+        <Link
+          to="/pro/tableau-de-bord"
+          className="flex items-center gap-1.5 text-[13px] sm:text-[14px] font-medium text-[#6B6862] transition-colors hover:text-[#0F766E]"
+        >
+          <LayoutGrid className="h-4 w-4" />
+          <span className="hidden sm:inline">Mon espace</span>
+        </Link>
+      )}
     </header>
   );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-[16px] bg-white border border-[#E9E7E3] p-6 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
-      <h2 className="text-[16px] font-bold text-[#1C1B1A] mb-4">{title}</h2>
+    <div className="rounded-[16px] bg-white border border-[#E9E7E3] p-5 sm:p-6 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
+      <h2 className="text-[15px] sm:text-[16px] font-bold text-[#1C1B1A] mb-4">{title}</h2>
       {children}
     </div>
   );
@@ -459,11 +511,11 @@ function ContactRow({
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-white">
         <Icon className="h-4 w-4 text-[#0F766E]" />
       </span>
-      <div className="flex flex-col">
+      <div className="flex flex-col min-w-0">
         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#9A968E]">
           {label}
         </span>
-        <span className="text-[13.5px] font-medium text-[#1C1B1A]">{value}</span>
+        <span className="text-[13.5px] font-medium text-[#1C1B1A] truncate">{value}</span>
       </div>
     </div>
   );

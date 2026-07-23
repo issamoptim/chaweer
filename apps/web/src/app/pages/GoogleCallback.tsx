@@ -30,11 +30,12 @@ export function GoogleCallback() {
   const recreateContext = useRef({ from: "/", professional: false });
 
   const googleLogin = useGoogleLogin({
-    onSuccess: () => {
+    onSuccess: (user) => {
       const oauthState = getOAuthState();
       const from = oauthState?.from ?? "/";
       clearOAuthState();
-      navigate(from, { replace: true });
+      const dest = user.role === "PROFESSIONAL" ? "/pro/tableau-de-bord" : from;
+      navigate(dest, { replace: true });
     },
     onError: (message, error) => {
       const stored = getOAuthState();

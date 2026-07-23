@@ -35,7 +35,10 @@ export function Connexion() {
     defaultValues: { email: "", password: "" },
   });
   const loginMutation = useLogin({
-    onSuccess: () => navigate(from, { replace: true }),
+    onSuccess: (user) => {
+      const dest = user.role === "PROFESSIONAL" ? "/pro/tableau-de-bord" : from;
+      navigate(dest, { replace: true });
+    },
     onError: (message) => setServerError(message),
   });
 

@@ -6,7 +6,7 @@ import {
   Video,
   MapPin,
   CalendarDays,
-  Settings,
+  Shield,
   ChevronLeft,
   ArrowLeft,
   Menu,
@@ -35,7 +35,7 @@ const PRIMARY_ITEMS: NavItem[] = [
 
 const SECONDARY_ITEMS: NavItem[] = [
   { label: "Disponibilités", icon: CalendarDays, soon: true },
-  { label: "Paramètres", icon: Settings, soon: true },
+  { label: "Sécurité", to: "/pro/securite", icon: Shield },
 ];
 
 interface ProfessionalSidebarProps {
