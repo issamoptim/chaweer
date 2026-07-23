@@ -1,8 +1,15 @@
 export {
   updateProfileSchema,
   updateExpertiseSchema,
+  updateContactSchema,
+  updateOfficeSchema,
 } from '@chaweer/shared';
-export type { UpdateProfileInput, UpdateExpertiseInput } from '@chaweer/shared';
+export type {
+  UpdateProfileInput,
+  UpdateExpertiseInput,
+  UpdateContactInput,
+  UpdateOfficeInput,
+} from '@chaweer/shared';
 
 import { z } from 'zod';
 

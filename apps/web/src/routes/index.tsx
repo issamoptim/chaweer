@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { Home } from "@/app/pages/Home";
 import { NotFound } from "@/app/pages/NotFound";
@@ -16,6 +16,8 @@ import {
   ProfessionalProfilePage,
   ProfessionalExpertisePage,
   ProfessionalOfferPage,
+  ProfessionalDashboardPage,
+  ProfessionalContactPage,
 } from "@/features/professional";
 
 export const router = createBrowserRouter([
@@ -91,6 +93,18 @@ export const router = createBrowserRouter([
           {
             path: "/pro/offre",
             element: <ProfessionalOfferPage />,
+          },
+          {
+            path: "/pro/tableau-de-bord",
+            element: <ProfessionalDashboardPage />,
+          },
+          {
+            path: "/pro/mon-profil",
+            element: <Navigate to="/pro/tableau-de-bord" replace />,
+          },
+          {
+            path: "/pro/contact",
+            element: <ProfessionalContactPage />,
           },
         ],
       },

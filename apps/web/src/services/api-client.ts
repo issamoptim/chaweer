@@ -102,6 +102,7 @@ async function request<T>(
           code: json.error.code as AuthErrorCode,
           message: json.error.message as string,
           details: json.error.details,
+          missingRequirements: json.error.missingRequirements as string[] | undefined,
         }
       : {
           code: "INTERNAL_ERROR",
@@ -198,6 +199,7 @@ export const apiClient = {
             code: json.error.code as AuthErrorCode,
             message: json.error.message as string,
             details: json.error.details,
+            missingRequirements: json.error.missingRequirements as string[] | undefined,
           }
         : {
             code: "INTERNAL_ERROR",

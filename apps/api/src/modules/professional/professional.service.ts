@@ -29,6 +29,8 @@ import type {
   UpdateProfileInput,
   UpdateExpertiseInput,
   UpdateOfferInput,
+  UpdateContactInput,
+  UpdateOfficeInput,
 } from './professional.schema';
 import type { Prisma, PrismaClient, ConsultationModality } from '../../generated/prisma/client';
 
@@ -534,6 +536,27 @@ export async function setOffer(
   return getMyProfile(userId);
 }
 
+export async function deleteOffer(
+  userId: string,
+): Promise<ProfessionalProfileData> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  await prisma.consultationOffer.deleteMany({
+    where: { profileId: profile.id },
+  });
+
+  await syncPublicationStatus(userId);
+
+  return getMyProfile(userId);
+}
+
 /**
  * Publishes a professional profile (business rule 1: publication is the
  * professional's own decision). Validates all mandatory requirements
@@ -576,5 +599,160 @@ export async function publishProfile(userId: string): Promise<PublishResponse> {
   return {
     status: updated.status,
     publishedAt: updated.publishedAt?.toISOString() ?? null,
+  };
+}
+
+export async function unpublishProfile(userId: string): Promise<PublishResponse> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true, status: true, unpublishedAt: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  if (profile.status === 'DRAFT' && profile.unpublishedAt) {
+    return {
+      status: profile.status,
+      publishedAt: null,
+    };
+  }
+
+  const updated = await prisma.professionalProfile.update({
+    where: { id: profile.id },
+    data: { status: 'DRAFT', unpublishedAt: new Date() },
+    select: { status: true, publishedAt: true },
+  });
+
+  return {
+    status: updated.status,
+    publishedAt: updated.publishedAt?.toISOString() ?? null,
+  };
+}
+
+export async function updateContact(
+  userId: string,
+  input: UpdateContactInput,
+): Promise<ContactData> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  const existing = await prisma.professionalContact.findUnique({
+    where: { profileId: profile.id },
+  });
+
+  if (existing) {
+    const updated = await prisma.professionalContact.update({
+      where: { profileId: profile.id },
+      data: {
+        phone: input.phone,
+        whatsapp: input.whatsapp,
+        publicEmail: input.publicEmail,
+        website: input.website,
+        linkedInUrl: input.linkedInUrl,
+      },
+    });
+    return {
+      phone: updated.phone,
+      whatsapp: updated.whatsapp,
+      publicEmail: updated.publicEmail,
+      website: updated.website,
+      linkedInUrl: updated.linkedInUrl,
+    };
+  }
+
+  const created = await prisma.professionalContact.create({
+    data: {
+      profileId: profile.id,
+      phone: input.phone ?? null,
+      whatsapp: input.whatsapp ?? null,
+      publicEmail: input.publicEmail ?? null,
+      website: input.website ?? null,
+      linkedInUrl: input.linkedInUrl ?? null,
+    },
+  });
+
+  return {
+    phone: created.phone,
+    whatsapp: created.whatsapp,
+    publicEmail: created.publicEmail,
+    website: created.website,
+    linkedInUrl: created.linkedInUrl,
+  };
+}
+
+export async function updateOffice(
+  userId: string,
+  input: UpdateOfficeInput,
+): Promise<OfficeData> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  if (input.cityId) {
+    const city = await prisma.city.findUnique({
+      where: { id: input.cityId },
+      select: { id: true },
+    });
+    if (!city) {
+      throw new ValidationError('Ville invalide.', [
+        { field: 'cityId', message: 'Ville invalide.' },
+      ]);
+    }
+  }
+
+  const existing = await prisma.office.findUnique({
+    where: { profileId: profile.id },
+  });
+
+  if (existing) {
+    const updated = await prisma.office.update({
+      where: { profileId: profile.id },
+      data: {
+        name: input.name,
+        address: input.address,
+        cityId: input.cityId,
+        latitude: input.latitude,
+        longitude: input.longitude,
+      },
+    });
+    return {
+      name: updated.name,
+      address: updated.address,
+      cityId: updated.cityId,
+      latitude: updated.latitude,
+      longitude: updated.longitude,
+    };
+  }
+
+  const created = await prisma.office.create({
+    data: {
+      profileId: profile.id,
+      name: input.name ?? null,
+      address: input.address ?? null,
+      cityId: input.cityId ?? null,
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
+    },
+  });
+
+  return {
+    name: created.name,
+    address: created.address,
+    cityId: created.cityId,
+    latitude: created.latitude,
+    longitude: created.longitude,
   };
 }

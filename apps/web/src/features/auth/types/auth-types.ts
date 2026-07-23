@@ -88,4 +88,5 @@ export interface ApiError {
   code: AuthErrorCode;
   message: string;
   details?: ApiErrorDetail[];
+  missingRequirements?: string[];
 }

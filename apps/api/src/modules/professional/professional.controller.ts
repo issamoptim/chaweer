@@ -93,6 +93,19 @@ export async function updateOfferController(
   }
 }
 
+export async function deleteOfferController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const profile = await professionalService.deleteOffer(req.user!.userId);
+    res.status(200).json({ success: true, data: profile });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function publishProfileController(
   req: Request,
   res: Response,
@@ -101,6 +114,45 @@ export async function publishProfileController(
   try {
     const result = await professionalService.publishProfile(req.user!.userId);
     res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function unpublishProfileController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const result = await professionalService.unpublishProfile(req.user!.userId);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateContactController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const contact = await professionalService.updateContact(req.user!.userId, req.body);
+    res.status(200).json({ success: true, data: contact });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateOfficeController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const office = await professionalService.updateOffice(req.user!.userId, req.body);
+    res.status(200).json({ success: true, data: office });
   } catch (err) {
     next(err);
   }

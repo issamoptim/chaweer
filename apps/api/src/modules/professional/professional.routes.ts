@@ -7,6 +7,8 @@ import {
   updateProfileSchema,
   updateExpertiseSchema,
   updateOfferSchema,
+  updateContactSchema,
+  updateOfficeSchema,
 } from './professional.schema';
 import {
   getReferentialController,
@@ -15,7 +17,11 @@ import {
   uploadPhotoController,
   updateExpertiseController,
   updateOfferController,
+  deleteOfferController,
   publishProfileController,
+  unpublishProfileController,
+  updateContactController,
+  updateOfficeController,
 } from './professional.controller';
 
 const router = Router();
@@ -56,11 +62,41 @@ router.put(
   updateOfferController,
 );
 
+router.delete(
+  '/offer',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  deleteOfferController,
+);
+
 router.post(
   '/profile/publish',
   authenticate,
   authorize('PROFESSIONAL'),
   publishProfileController,
+);
+
+router.post(
+  '/profile/unpublish',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  unpublishProfileController,
+);
+
+router.patch(
+  '/contact',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  validate(updateContactSchema),
+  updateContactController,
+);
+
+router.patch(
+  '/office',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  validate(updateOfficeSchema),
+  updateOfficeController,
 );
 
 export { router as professionalRoutes };

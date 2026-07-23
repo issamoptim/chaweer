@@ -17,7 +17,7 @@ export const updateProfileSchema = z
     // ProfessionalProfile aggregate fields
     professionalTitle: optionalTrimmed(120),
     photoUrl: optionalTrimmedNullable(2000),
-    bio: optionalTrimmedNullable(600),
+    bio: optionalTrimmedNullable(1000),
     barAssociationId: z.string().trim().min(1).nullable().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {

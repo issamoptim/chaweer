@@ -137,3 +137,19 @@ export interface UpdateOfferInput {
   price: number;
   modalities: ConsultationModality[];
 }
+
+export interface UpdateContactInput {
+  phone?: string | null;
+  whatsapp?: string | null;
+  publicEmail?: string | null;
+  website?: string | null;
+  linkedInUrl?: string | null;
+}
+
+export interface UpdateOfficeInput {
+  name?: string | null;
+  address?: string | null;
+  cityId?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
