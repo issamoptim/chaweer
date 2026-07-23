@@ -25,7 +25,7 @@ import { useProfessionalProfile } from "@/features/professional/hooks/useProfess
 
 const MODALITY_LABELS: Record<string, { label: string; icon: typeof Video }> = {
   VIDEO: { label: "Visioconférence", icon: Video },
-  PHONE: { label: "Téléphone", icon: PhoneIcon },
+  AUDIO: { label: "Téléphone", icon: PhoneIcon },
   CHAT: { label: "Messagerie", icon: MessageCircle },
 };
 
