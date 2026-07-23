@@ -24,6 +24,7 @@ import type {
   CertificationData,
   MembershipData,
   VerificationData,
+  PublicProfileData,
 } from './professional.types';
 import type {
   UpdateProfileInput,
@@ -760,5 +761,134 @@ export async function updateOffice(
     cityId: created.cityId,
     latitude: created.latitude,
     longitude: created.longitude,
+  };
+}
+
+export async function getPublicProfile(profileId: string): Promise<PublicProfileData> {
+  const profile = await prisma.professionalProfile.findFirst({
+    where: { id: profileId, status: 'PUBLISHED' },
+    include: {
+      user: { select: { firstName: true, lastName: true } },
+      specializations: {
+        include: {
+          specialization: { select: { id: true, name: true } },
+        },
+      },
+      practiceAreas: {
+        include: {
+          practiceArea: { select: { id: true, name: true } },
+        },
+      },
+      languages: {
+        include: {
+          language: { select: { id: true, name: true, code: true } },
+        },
+      },
+      offers: { orderBy: { order: 'asc' } },
+      contact: true,
+      office: { include: { city: { select: { id: true, name: true } } } },
+      education: { orderBy: { order: 'asc' } },
+      experience: { orderBy: { order: 'asc' } },
+      certifications: { orderBy: { order: 'asc' } },
+      memberships: { orderBy: { order: 'asc' } },
+      barAssociation: { select: { name: true } },
+    },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil introuvable ou non publié.');
+  }
+
+  const offers: ConsultationOfferData[] = profile.offers
+    .filter((o) => o.active)
+    .map((o) => ({
+      id: o.id,
+      title: o.title ?? '',
+      description: o.description,
+      price: o.price,
+      currency: o.currency,
+      durationMinutes: o.durationMinutes,
+      modalities: o.modalities,
+      active: o.active ?? false,
+      order: o.order ?? 0,
+    }));
+
+  return {
+    id: profile.id,
+    identity: {
+      firstName: profile.user.firstName,
+      lastName: profile.user.lastName,
+      professionalTitle: profile.professionalTitle,
+      registrationNumber: profile.registrationNumber,
+      yearsOfExperience: profile.yearsOfExperience,
+      photoUrl: profile.photoUrl,
+      barAssociationId: profile.barAssociationId,
+    },
+    biography: { bio: profile.bio },
+    contact: profile.contact
+      ? {
+          phone: profile.contact.phone,
+          whatsapp: profile.contact.whatsapp,
+          publicEmail: profile.contact.publicEmail,
+          website: profile.contact.website,
+          linkedInUrl: profile.contact.linkedInUrl,
+        }
+      : null,
+    office: profile.office
+      ? {
+          name: profile.office.name,
+          address: profile.office.address,
+          cityId: profile.office.cityId,
+          latitude: profile.office.latitude,
+          longitude: profile.office.longitude,
+        }
+      : null,
+    expertise: {
+      specializationIds: profile.specializations.map((s) => s.specializationId),
+      practiceAreaIds: profile.practiceAreas.map((p) => p.practiceAreaId),
+      languageIds: profile.languages.map((l) => l.languageId),
+    },
+    specializationNames: profile.specializations.map((s) => s.specialization.name),
+    practiceAreaNames: profile.practiceAreas.map((p) => p.practiceArea.name),
+    languageNames: profile.languages.map((l) => l.language.name),
+    offers,
+    education: profile.education.map((e) => ({
+      id: e.id,
+      degree: e.degree,
+      institution: e.institution,
+      startYear: e.startYear,
+      endYear: e.endYear,
+      description: e.description,
+      order: e.order,
+    })),
+    experience: profile.experience.map((e) => ({
+      id: e.id,
+      position: e.position,
+      organization: e.organization,
+      startYear: e.startYear,
+      endYear: e.endYear,
+      current: e.current,
+      description: e.description,
+      order: e.order,
+    })),
+    certifications: profile.certifications.map((c) => ({
+      id: c.id,
+      title: c.title,
+      issuer: c.issuer,
+      issueYear: c.issueYear,
+      expiryYear: c.expiryYear,
+      credentialId: c.credentialId,
+      order: c.order,
+    })),
+    memberships: profile.memberships.map((m) => ({
+      id: m.id,
+      organization: m.organization,
+      role: m.role,
+      startYear: m.startYear,
+      endYear: m.endYear,
+      order: m.order,
+    })),
+    barAssociationName: profile.barAssociation?.name ?? null,
+    cityName: profile.office?.city?.name ?? null,
   };
 }

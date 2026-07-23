@@ -161,3 +161,30 @@ export interface UpdateProfileResponseData {
   identity: IdentityData;
   biography: BiographyData;
 }
+
+export interface PublicProfileData {
+  id: string;
+  identity: {
+    firstName: string;
+    lastName: string;
+    professionalTitle: string | null;
+    registrationNumber: string | null;
+    yearsOfExperience: number | null;
+    photoUrl: string | null;
+    barAssociationId: string | null;
+  };
+  biography: BiographyData;
+  contact: ContactData | null;
+  office: OfficeData | null;
+  expertise: ExpertiseData;
+  specializationNames: string[];
+  practiceAreaNames: string[];
+  languageNames: string[];
+  offers: ConsultationOfferData[];
+  education: EducationData[];
+  experience: ExperienceData[];
+  certifications: CertificationData[];
+  memberships: MembershipData[];
+  barAssociationName: string | null;
+  cityName: string | null;
+}

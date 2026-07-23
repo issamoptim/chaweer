@@ -157,3 +157,16 @@ export async function updateOfficeController(
     next(err);
   }
 }
+
+export async function getPublicProfileController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const profile = await professionalService.getPublicProfile(String(req.params.id));
+    res.status(200).json({ success: true, data: profile });
+  } catch (err) {
+    next(err);
+  }
+}

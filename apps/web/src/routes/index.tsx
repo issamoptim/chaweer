@@ -19,6 +19,7 @@ import {
   ProfessionalDashboardPage,
   ProfessionalContactPage,
 } from "@/features/professional";
+import { PublicProfilePage } from "@/features/public";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/avocat/:id",
+        element: <PublicProfilePage />,
       },
       {
         path: "/auth/google/callback",
