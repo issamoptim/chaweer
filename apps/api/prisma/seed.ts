@@ -42,6 +42,8 @@ const LANGUAGES: Array<{ code: string; name: string }> = [
   { code: 'ar', name: 'العربية' },
   { code: 'en', name: 'English' },
   { code: 'es', name: 'Español' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'ber', name: 'Tamazight' },
 ];
 
 const SPECIALIZATIONS: Array<{
@@ -77,12 +79,10 @@ const SPECIALIZATIONS: Array<{
     key: 'droit-penal',
     name: 'Droit pénal',
     practiceAreas: [
-      { key: 'garde-a-vue-audition-libre', name: 'Garde à vue / audition libre' },
+      { key: 'contravention-amende', name: 'Contravention / amende' },
+      { key: 'garde-a-vue', name: 'Garde à vue' },
       { key: 'plainte-penale', name: 'Plainte pénale' },
       { key: 'defense-penale', name: 'Défense pénale' },
-      { key: 'violences-et-agressions', name: 'Violences et agressions' },
-      { key: 'vol-escroquerie-abus-de-confiance', name: 'Vol / escroquerie / abus de confiance' },
-      { key: 'infractions-routieres-delictuelles', name: 'Infractions routières délictuelles' },
     ],
   },
   {
@@ -90,24 +90,19 @@ const SPECIALIZATIONS: Array<{
     name: 'Droit des affaires / commercial',
     practiceAreas: [
       { key: 'creation-dentreprise', name: "Création d'entreprise" },
+      { key: 'fusions-et-acquisitions', name: 'Fusions et acquisitions' },
       { key: 'contrats-commerciaux', name: 'Contrats commerciaux' },
-      { key: 'recouvrement-de-creances', name: 'Recouvrement de créances' },
-      { key: 'litige-entre-associes', name: 'Litige entre associés' },
-      { key: 'procedures-collectives', name: 'Procédures collectives' },
-      { key: 'concurrence-deloyale', name: 'Concurrence déloyale' },
-      { key: 'baux-commerciaux', name: 'Baux commerciaux' },
+      { key: 'litiges-commerciaux', name: 'Litiges commerciaux' },
     ],
   },
   {
     key: 'droit-immobilier',
     name: 'Droit immobilier',
     practiceAreas: [
-      { key: 'vente-immobiliere', name: 'Vente immobilière' },
-      { key: 'bail-dhabitation', name: "Bail d'habitation" },
+      { key: 'achat-immobilier', name: 'Achat immobilier' },
+      { key: 'litige-locatif', name: 'Litige locatif' },
       { key: 'copropriete', name: 'Copropriété' },
-      { key: 'construction-et-malfacons', name: 'Construction et malfaçons' },
-      { key: 'expropriation', name: 'Expropriation' },
-      { key: 'troubles-de-voisinage', name: 'Troubles de voisinage' },
+      { key: 'permis-de-construire', name: 'Permis de construire' },
     ],
   },
   {
@@ -125,11 +120,10 @@ const SPECIALIZATIONS: Array<{
     key: 'droit-administratif',
     name: 'Droit administratif',
     practiceAreas: [
-      { key: 'recours-contre-decision-administrative', name: 'Recours contre une décision administrative' },
-      { key: 'marches-publics', name: 'Marchés publics' },
-      { key: 'urbanisme', name: 'Urbanisme' },
-      { key: 'fonction-publique', name: 'Fonction publique' },
-      { key: 'contentieux-avec-collectivite', name: 'Contentieux avec une collectivité' },
+      { key: 'recours-administratif', name: 'Recours administratif' },
+      { key: 'litige-avec-ladministration', name: 'Litige avec l\'administration' },
+      { key: 'marche-public', name: 'Marché public' },
+      { key: 'expropriation', name: 'Expropriation' },
     ],
   },
   {
@@ -150,8 +144,7 @@ const SPECIALIZATIONS: Array<{
       { key: 'titre-de-sejour', name: 'Titre de séjour' },
       { key: 'naturalisation', name: 'Naturalisation' },
       { key: 'regroupement-familial', name: 'Regroupement familial' },
-      { key: 'recours-contre-oqtf', name: 'Recours contre une OQTF' },
-      { key: 'demande-dasile', name: "Demande d'asile" },
+      { key: 'reconduite-a-la-frontiere', name: 'Reconduite à la frontière' },
     ],
   },
   {
@@ -168,40 +161,40 @@ const SPECIALIZATIONS: Array<{
     key: 'propriete-intellectuelle',
     name: 'Propriété intellectuelle',
     practiceAreas: [
-      { key: 'depot-de-marque-ou-brevet', name: 'Dépôt de marque ou brevet' },
+      { key: 'depot-de-marque', name: 'Dépôt de marque' },
       { key: 'contrefacon', name: 'Contrefaçon' },
       { key: 'droits-dauteur', name: "Droits d'auteur" },
-      { key: 'contrats-de-licence', name: 'Contrats de licence' },
+      { key: 'litige-de-brevet', name: 'Litige de brevet' },
     ],
   },
   {
     key: 'droit-des-assurances',
     name: 'Droit des assurances',
     practiceAreas: [
+      { key: 'litige-avec-un-assureur', name: 'Litige avec un assureur' },
       { key: 'refus-dindemnisation', name: "Refus d'indemnisation" },
-      { key: 'sinistre-auto-ou-habitation', name: 'Sinistre auto ou habitation' },
-      { key: 'assurance-vie-et-prevoyance', name: 'Assurance vie et prévoyance' },
-      { key: 'responsabilite-civile', name: 'Responsabilité civile' },
+      { key: 'assurance-auto', name: 'Assurance auto' },
+      { key: 'assurance-habitation', name: 'Assurance habitation' },
     ],
   },
   {
     key: 'droit-routier',
     name: 'Droit routier',
     practiceAreas: [
-      { key: 'retrait-ou-suspension-de-permis', name: 'Retrait ou suspension de permis' },
-      { key: 'contestation-damende', name: "Contestation d'amende" },
+      { key: 'contravention-routiere', name: 'Contravention routière' },
+      { key: 'permis-de-conduire', name: 'Permis de conduire' },
       { key: 'accident-de-la-route', name: 'Accident de la route' },
-      { key: 'conduite-sous-emprise-alcool-ou-stupefiants', name: "Conduite sous l'emprise d'alcool ou de stupéfiants" },
+      { key: 'retrait-de-points', name: 'Retrait de points' },
     ],
   },
   {
     key: 'droit-des-societes',
     name: 'Droit des sociétés',
     practiceAreas: [
-      { key: 'constitution-de-societe', name: 'Constitution de société' },
-      { key: 'pacte-dassocies', name: "Pacte d'associés" },
-      { key: 'cession-de-parts-ou-dactions', name: 'Cession de parts ou d\'actions' },
-      { key: 'gouvernance-et-direction', name: 'Gouvernance et direction' },
+      { key: 'creation-de-societe', name: 'Création de société' },
+      { key: 'statuts-et-gouvernance', name: 'Statuts et gouvernance' },
+      { key: 'cession-de-parts', name: 'Cession de parts' },
+      { key: 'dissolution', name: 'Dissolution' },
     ],
   },
   {
@@ -218,10 +211,10 @@ const SPECIALIZATIONS: Array<{
     key: 'droit-du-numerique-et-donnees-personnelles',
     name: 'Droit du numérique et des données personnelles',
     practiceAreas: [
-      { key: 'rgpd-et-protection-des-donnees', name: 'RGPD et protection des données' },
-      { key: 'cybercriminalite', name: 'Cybercriminalité' },
-      { key: 'litiges-e-commerce-et-plateformes', name: 'Litiges e-commerce et plateformes' },
-      { key: 'diffamation-et-injure-en-ligne', name: 'Diffamation et injure en ligne' },
+      { key: 'protection-des-donnees-personnelles', name: 'Protection des données personnelles' },
+      { key: 'cybersecurite', name: 'Cybersécurité' },
+      { key: 'e-reputation', name: 'E-réputation' },
+      { key: 'contrats-informatiques', name: 'Contrats informatiques' },
     ],
   },
   {
@@ -229,17 +222,17 @@ const SPECIALIZATIONS: Array<{
     name: "Droit de l'environnement",
     practiceAreas: [
       { key: 'pollution-et-nuisances', name: 'Pollution et nuisances' },
-      { key: 'installations-classees-icpe', name: 'Installations classées (ICPE)' },
-      { key: 'droit-rural-et-agricole', name: 'Droit rural et agricole' },
+      { key: 'non-respect-des-normes-environnementales', name: 'Non-respect des normes environnementales' },
+      { key: 'permis-environnemental', name: 'Permis environnemental' },
     ],
   },
   {
     key: 'droit-des-transports',
     name: 'Droit des transports',
     practiceAreas: [
-      { key: 'litige-de-transport-de-marchandises', name: 'Litige de transport de marchandises' },
-      { key: 'accident-de-transport', name: 'Accident de transport' },
-      { key: 'contentieux-avec-un-transporteur', name: 'Contentieux avec un transporteur' },
+      { key: 'litige-avec-un-transporteur', name: 'Litige avec un transporteur' },
+      { key: 'retard-ou-annulation', name: 'Retard ou annulation' },
+      { key: 'marchandises-endommagees', name: 'Marchandises endommagées' },
     ],
   },
 ];
@@ -274,6 +267,17 @@ async function main(): Promise<void> {
       create: { code: item.code, name: item.name, order: index },
     });
   }
+
+  // Clean up old practice areas and specializations not in the seed data
+  const validSpecKeys = SPECIALIZATIONS.map((s) => s.key);
+  const validAreaKeys = SPECIALIZATIONS.flatMap((s) => s.practiceAreas.map((a) => a.key));
+
+  await prisma.practiceArea.deleteMany({
+    where: { key: { notIn: validAreaKeys } },
+  });
+  await prisma.specialization.deleteMany({
+    where: { key: { notIn: validSpecKeys } },
+  });
 
   for (const [specIndex, spec] of SPECIALIZATIONS.entries()) {
     const specialization = await prisma.specialization.upsert({

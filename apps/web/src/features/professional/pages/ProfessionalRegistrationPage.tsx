@@ -14,6 +14,7 @@ import {
   useAuth,
 } from "@/features/auth";
 import { ProBadge } from "../components/ProBadge";
+import { ChaweerLogo } from "@/components/ChaweerLogo";
 import { useProfessionalRegister } from "../hooks/useProfessionalRegister";
 import {
   professionalRegisterSchema,
@@ -53,7 +54,7 @@ export function ProfessionalRegistrationPage() {
     <div className="flex min-h-screen items-center justify-center bg-[#F7F7F5] px-4 py-12">
       <div className="w-full max-w-[440px] rounded-[20px] border border-[#E9E7E3] bg-white p-10 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
         <div className="flex flex-col items-center gap-3 text-center">
-          <span className="text-[22px] font-bold tracking-tight text-[#0F766E]">Chaweer</span>
+          <ChaweerLogo size="md" showArabic={false} />
           <ProBadge />
           <h1 className="mt-2 text-[22px] font-bold text-[#1C1B1A]">
             Créer votre compte professionnel

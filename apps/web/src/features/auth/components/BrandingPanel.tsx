@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { ChaweerLogo } from "@/components/ChaweerLogo";
 
 export function BrandingPanel() {
   return (
@@ -13,7 +14,7 @@ export function BrandingPanel() {
       </Link>
 
       <div className="flex flex-col gap-8">
-        <span className="text-4xl font-bold tracking-tight text-primary">Chaweer</span>
+        <ChaweerLogo size="lg" />
         <h2 className="text-2xl font-bold leading-tight text-foreground">
           Votre accès au droit, simplifié.
         </h2>

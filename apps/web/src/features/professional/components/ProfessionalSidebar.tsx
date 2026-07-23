@@ -15,6 +15,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth";
+import { ChaweerLogo } from "@/components/ChaweerLogo";
 import { ProBadge } from "./ProBadge";
 
 interface NavItem {
@@ -98,12 +99,10 @@ export function ProfessionalSidebar({ collapsed, onToggle }: ProfessionalSidebar
     <>
       <div className="flex items-center justify-between gap-2 px-4 py-5">
         {collapsed ? (
-          <span className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-[#0F766E] text-[15px] font-bold text-white">
-            C
-          </span>
+          <ChaweerLogo collapsed />
         ) : (
           <div className="flex flex-col gap-1.5">
-            <span className="text-[18px] font-bold tracking-tight text-[#0F766E]">Chaweer</span>
+            <ChaweerLogo size="sm" showArabic={false} />
             <ProBadge />
           </div>
         )}
