@@ -34,7 +34,7 @@ export function OfferPreviewCard({
             <img
               src={resolveMediaUrl(photoUrl) ?? undefined}
               alt=""
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover" style={{ objectPosition: "center 25%" }}
             />
           ) : (
             (name || "?").charAt(0).toUpperCase()

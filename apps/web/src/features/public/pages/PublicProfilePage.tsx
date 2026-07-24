@@ -108,7 +108,7 @@ export function PublicProfilePage() {
               <img
                 src={resolveMediaUrl(profile.identity.photoUrl) ?? undefined}
                 alt={fullName}
-                className="h-[88px] w-[88px] sm:h-[96px] sm:w-[96px] rounded-full object-cover shrink-0 ring-2 ring-[#E6F2F0]"
+                className="h-[88px] w-[88px] sm:h-[96px] sm:w-[96px] rounded-full object-cover shrink-0 ring-2 ring-[#E6F2F0]" style={{ objectPosition: "center 25%" }}
               />
             ) : (
               <span className="flex h-[88px] w-[88px] sm:h-[96px] sm:w-[96px] shrink-0 items-center justify-center rounded-full bg-[#0F766E] text-[28px] sm:text-[32px] font-bold text-white">

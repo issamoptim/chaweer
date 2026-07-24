@@ -10,10 +10,14 @@ COPY apps/api/package.json ./apps/api/
 # Installer les dépendances du workspace
 RUN npm ci
 
-# Couche 2 : code source du package shared
+# Couche 2 : code source du package shared + build
 COPY packages/shared/src/ ./packages/shared/src/
+COPY packages/shared/tsconfig.json ./packages/shared/
+WORKDIR /app/packages/shared
+RUN npm run build
 
 # Couche 3 : fichiers Prisma de l'API
+WORKDIR /app
 COPY apps/api/prisma.config.ts ./apps/api/
 COPY apps/api/prisma/ ./apps/api/prisma/
 

@@ -5,6 +5,7 @@ import { User, LogOut, LayoutDashboard } from "lucide-react";
 import { ChaweerLogo } from "@/components/ChaweerLogo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useAuth, authService } from "@/features/auth";
+import { resolveMediaUrl } from "@/utils/media-url";
 
 export function LandingHeader() {
   const { t } = useTranslation();
@@ -116,9 +117,10 @@ export function LandingHeader() {
               >
                 {user.avatarUrl ? (
                   <img
-                    src={user.avatarUrl}
+                    src={resolveMediaUrl(user.avatarUrl) ?? undefined}
                     alt=""
                     className="h-8 w-8 rounded-full object-cover"
+                    style={{ objectPosition: "center 25%" }}
                   />
                 ) : (
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">

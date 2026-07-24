@@ -58,7 +58,7 @@ export function LawyerCard({ lawyer }: LawyerCardProps) {
           <img
             src={photoUrl!}
             alt={fullName}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "center 20%" }}
           />
         ) : (
           <span

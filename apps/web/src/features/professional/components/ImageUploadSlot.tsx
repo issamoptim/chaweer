@@ -51,7 +51,7 @@ export function ImageUploadSlot({ value, onUpload, onChange, disabled }: ImageUp
           <img
             src={resolveMediaUrl(value) ?? undefined}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover" style={{ objectPosition: "center 25%" }}
           />
         ) : (
           <Camera className="h-6 w-6 text-[#9A968E]" aria-hidden="true" />

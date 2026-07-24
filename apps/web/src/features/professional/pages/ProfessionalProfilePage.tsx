@@ -404,7 +404,7 @@ export function ProfessionalProfilePage() {
                   <img
                     src={resolveMediaUrl(profile.identity.photoUrl) ?? undefined}
                     alt={fullName}
-                    className="h-[72px] w-[72px] rounded-full object-cover"
+                    className="h-[72px] w-[72px] rounded-full object-cover" style={{ objectPosition: "center 25%" }}
                   />
                 ) : (
                   <span className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-[#0F766E] text-[24px] font-bold text-white">

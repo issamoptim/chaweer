@@ -1,4 +1,8 @@
 import 'dotenv/config';
+import fs from 'fs/promises';
+import path from 'path';
+import { randomUUID } from 'crypto';
+import https from 'https';
 import { PrismaClient, ConsultationModality } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -6,6 +10,55 @@ const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
 });
 const prisma = new PrismaClient({ adapter });
+
+const UPLOAD_DIR = path.resolve(process.cwd(), 'uploads');
+
+// Male name indices in FIRST_NAMES (0-based)
+const MALE_NAME_INDICES = new Set([
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, // first 20
+  45, 46, 47, 48, 49, // last 5 (Abdelali, Brahim, Driss, Mustapha, Adil)
+]);
+
+function downloadPhoto(url: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: { 'User-Agent': 'chaweer-seed/1.0' } }, (res) => {
+      if (res.statusCode === 301 || res.statusCode === 302) {
+        const redirectUrl = res.headers.location;
+        if (redirectUrl) {
+          downloadPhoto(redirectUrl).then(resolve).catch(reject);
+          return;
+        }
+      }
+      if (res.statusCode !== 200) {
+        reject(new Error(`HTTP ${res.statusCode} for ${url}`));
+        return;
+      }
+      const chunks: Buffer[] = [];
+      res.on('data', (chunk: Buffer) => chunks.push(chunk));
+      res.on('end', () => resolve(Buffer.concat(chunks)));
+      res.on('error', reject);
+    }).on('error', reject);
+  });
+}
+
+async function downloadAndSavePhoto(index: number): Promise<string | null> {
+  const isMale = MALE_NAME_INDICES.has(index);
+  const gender = isMale ? 'men' : 'women';
+  const photoId = index % 100;
+  const url = `https://randomuser.me/api/portraits/${gender}/${photoId}.jpg`;
+
+  try {
+    await fs.mkdir(UPLOAD_DIR, { recursive: true });
+    const buffer = await downloadPhoto(url);
+    const filename = `${randomUUID()}.jpg`;
+    await fs.writeFile(path.join(UPLOAD_DIR, filename), buffer);
+    return `/uploads/${filename}`;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn(`  ⚠ Could not download photo for index ${index}: ${(err as Error).message}`);
+    return null;
+  }
+}
 
 // ─── Name pools ───────────────────────────────────────────────
 const FIRST_NAMES = [
@@ -272,6 +325,11 @@ async function main(): Promise<void> {
     // Membership (0-1, ~50% have one)
     const hasMembership = i % 2 === 1;
 
+    // Download a real portrait photo
+    // eslint-disable-next-line no-console
+    console.log(`  [${i + 1}/50] Downloading photo for ${firstName} ${lastName}…`);
+    const photoUrl = await downloadAndSavePhoto(i);
+
     // Create everything in a transaction
     await prisma.$transaction(async (tx) => {
       // 1. Create user
@@ -297,6 +355,7 @@ async function main(): Promise<void> {
           registrationNumber,
           yearsOfExperience: yearsExp,
           bio,
+          photoUrl,
           barAssociationId: barAssociation.id,
           cityId: city.id,
         },
@@ -404,20 +463,6 @@ async function main(): Promise<void> {
             profileId: profile.id,
             title: pick(CERTIFICATION_TITLES, i),
             issuer: pick(CERTIFICATION_ISSUERS, i),
-            issueYear: 2015 + (i % 8),
-            order: 0,
-          },
-        });
-      }
-
-      // 12. Create membership (optional)
-      if (hasMembership) {
-        await tx.professionalMembership.create({
-          data: {
-            profileId: profile.id,
-            organization: pick(MEMBERSHIP_ORGS, i),
-            role: pick(MEMBERSHIP_ROLES, i),
-            startYear: 2012 + (i % 10),
             order: 0,
           },
         });
