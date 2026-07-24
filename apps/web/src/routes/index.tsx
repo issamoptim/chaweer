@@ -19,8 +19,6 @@ import {
   ProfessionalDashboardPage,
   ProfessionalContactPage,
   ProfessionalSecurityPage,
-  ProfessionalBackgroundPage,
-  ProfessionalCredentialsPage,
 } from "@/features/professional";
 import { PublicProfilePage } from "@/features/public";
 
@@ -109,14 +107,6 @@ export const router = createBrowserRouter([
           {
             path: "/pro/contact",
             element: <ProfessionalContactPage />,
-          },
-          {
-            path: "/pro/parcours",
-            element: <ProfessionalBackgroundPage />,
-          },
-          {
-            path: "/pro/certifications",
-            element: <ProfessionalCredentialsPage />,
           },
           {
             path: "/pro/securite",

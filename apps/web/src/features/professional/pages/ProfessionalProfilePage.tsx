@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Plus, Trash2, GraduationCap, Briefcase, Award, Users } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { useToast } from "@/hooks/useToast";
 import { Card } from "../components/Card";
@@ -15,8 +16,22 @@ import { useProfessionalProfile } from "../hooks/useProfessionalProfile";
 import { useReferential } from "../hooks/useReferential";
 import { useUpdateProfessionalProfile } from "../hooks/useUpdateProfessionalProfile";
 import { useUpdateExpertise } from "../hooks/useUpdateExpertise";
+import { useSetEducation } from "../hooks/useSetEducation";
+import { useSetExperience } from "../hooks/useSetExperience";
+import { useSetCertifications } from "../hooks/useSetCertifications";
+import { useSetMemberships } from "../hooks/useSetMemberships";
 import { professionalService } from "../services/professional-service";
 import { resolveMediaUrl } from "@/utils/media-url";
+import type {
+  EducationData,
+  ExperienceData,
+  CertificationData,
+  MembershipData,
+  EducationInput,
+  ExperienceInput,
+  CertificationInput,
+  MembershipInput,
+} from "../types/professional-types";
 
 interface IdentityFormState {
   firstName: string;
@@ -40,6 +55,69 @@ const EMPTY_IDENTITY: IdentityFormState = {
   bio: "",
 };
 
+interface EducationForm {
+  degree: string;
+  institution: string;
+  startYear: string;
+  endYear: string;
+  description: string;
+}
+
+interface ExperienceForm {
+  position: string;
+  organization: string;
+  startYear: string;
+  endYear: string;
+  current: boolean;
+  description: string;
+}
+
+interface CertForm {
+  title: string;
+  issuer: string;
+  issueYear: string;
+  expiryYear: string;
+  credentialId: string;
+}
+
+interface MemberForm {
+  organization: string;
+  role: string;
+  startYear: string;
+  endYear: string;
+}
+
+const EMPTY_EDU: EducationForm = { degree: "", institution: "", startYear: "", endYear: "", description: "" };
+const EMPTY_EXP: ExperienceForm = { position: "", organization: "", startYear: "", endYear: "", current: false, description: "" };
+const EMPTY_CERT: CertForm = { title: "", issuer: "", issueYear: "", expiryYear: "", credentialId: "" };
+const EMPTY_MEMBER: MemberForm = { organization: "", role: "", startYear: "", endYear: "" };
+
+function eduToForm(e: EducationData): EducationForm {
+  return { degree: e.degree, institution: e.institution, startYear: String(e.startYear), endYear: e.endYear ? String(e.endYear) : "", description: e.description ?? "" };
+}
+function expToForm(e: ExperienceData): ExperienceForm {
+  return { position: e.position, organization: e.organization, startYear: String(e.startYear), endYear: e.endYear ? String(e.endYear) : "", current: e.current, description: e.description ?? "" };
+}
+function certToForm(c: CertificationData): CertForm {
+  return { title: c.title, issuer: c.issuer, issueYear: String(c.issueYear), expiryYear: c.expiryYear ? String(c.expiryYear) : "", credentialId: c.credentialId ?? "" };
+}
+function memberToForm(m: MembershipData): MemberForm {
+  return { organization: m.organization, role: m.role ?? "", startYear: String(m.startYear), endYear: m.endYear ? String(m.endYear) : "" };
+}
+
+function isEduValid(f: EducationForm): boolean {
+  return f.degree.trim() !== "" && f.institution.trim() !== "" && f.startYear !== "" && Number(f.startYear) > 0;
+}
+function isExpValid(f: ExperienceForm): boolean {
+  return f.position.trim() !== "" && f.organization.trim() !== "" && f.startYear !== "" && Number(f.startYear) > 0;
+}
+function isCertValid(f: CertForm): boolean {
+  return f.title.trim() !== "" && f.issuer.trim() !== "" && f.issueYear !== "" && Number(f.issueYear) > 0;
+}
+function isMemberValid(f: MemberForm): boolean {
+  return f.organization.trim() !== "" && f.startYear !== "" && Number(f.startYear) > 0;
+}
+
 export function ProfessionalProfilePage() {
   const toast = useToast();
   const { accessToken } = useAuth();
@@ -47,6 +125,10 @@ export function ProfessionalProfilePage() {
   const { data: referential } = useReferential();
   const identityMutation = useUpdateProfessionalProfile();
   const expertiseMutation = useUpdateExpertise();
+  const eduMutation = useSetEducation();
+  const expMutation = useSetExperience();
+  const certMutation = useSetCertifications();
+  const memberMutation = useSetMemberships();
 
   const [isEditing, setIsEditing] = useState(false);
   const [identityForm, setIdentityForm] = useState<IdentityFormState>(EMPTY_IDENTITY);
@@ -54,6 +136,14 @@ export function ProfessionalProfilePage() {
   const [languages, setLanguages] = useState<Set<string>>(new Set());
   const [initialLanguages, setInitialLanguages] = useState<Set<string>>(new Set());
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [eduForms, setEduForms] = useState<EducationForm[]>([]);
+  const [eduInitial, setEduInitial] = useState<EducationForm[]>([]);
+  const [expForms, setExpForms] = useState<ExperienceForm[]>([]);
+  const [expInitial, setExpInitial] = useState<ExperienceForm[]>([]);
+  const [certForms, setCertForms] = useState<CertForm[]>([]);
+  const [certInitial, setCertInitial] = useState<CertForm[]>([]);
+  const [memberForms, setMemberForms] = useState<MemberForm[]>([]);
+  const [memberInitial, setMemberInitial] = useState<MemberForm[]>([]);
 
   useEffect(() => {
     if (profile) {
@@ -73,6 +163,22 @@ export function ProfessionalProfilePage() {
       const langNext = new Set(profile.expertise.languageIds);
       setLanguages(langNext);
       setInitialLanguages(langNext);
+
+      const eduNext = profile.education.map(eduToForm);
+      setEduForms(eduNext);
+      setEduInitial(eduNext);
+
+      const expNext = profile.experience.map(expToForm);
+      setExpForms(expNext);
+      setExpInitial(expNext);
+
+      const certNext = profile.certifications.map(certToForm);
+      setCertForms(certNext);
+      setCertInitial(certNext);
+
+      const memberNext = profile.memberships.map(memberToForm);
+      setMemberForms(memberNext);
+      setMemberInitial(memberNext);
     }
   }, [profile]);
 
@@ -84,8 +190,24 @@ export function ProfessionalProfilePage() {
     () => JSON.stringify([...languages].sort()) !== JSON.stringify([...initialLanguages].sort()),
     [languages, initialLanguages]
   );
-  const isDirty = isIdentityDirty || isLanguagesDirty;
-  const isSaving = identityMutation.isPending || expertiseMutation.isPending;
+  const isEduDirty = useMemo(
+    () => JSON.stringify(eduForms) !== JSON.stringify(eduInitial),
+    [eduForms, eduInitial]
+  );
+  const isExpDirty = useMemo(
+    () => JSON.stringify(expForms) !== JSON.stringify(expInitial),
+    [expForms, expInitial]
+  );
+  const isCertDirty = useMemo(
+    () => JSON.stringify(certForms) !== JSON.stringify(certInitial),
+    [certForms, certInitial]
+  );
+  const isMemberDirty = useMemo(
+    () => JSON.stringify(memberForms) !== JSON.stringify(memberInitial),
+    [memberForms, memberInitial]
+  );
+  const isDirty = isIdentityDirty || isLanguagesDirty || isEduDirty || isExpDirty || isCertDirty || isMemberDirty;
+  const isSaving = identityMutation.isPending || expertiseMutation.isPending || eduMutation.isPending || expMutation.isPending || certMutation.isPending || memberMutation.isPending;
 
   const canSaveIdentity =
     identityForm.firstName.trim().length > 0 &&
@@ -115,6 +237,10 @@ export function ProfessionalProfilePage() {
   function handleCancel() {
     setIdentityForm(identityInitial);
     setLanguages(initialLanguages);
+    setEduForms(eduInitial);
+    setExpForms(expInitial);
+    setCertForms(certInitial);
+    setMemberForms(memberInitial);
     setTouched({});
     setIsEditing(false);
   }
@@ -162,10 +288,58 @@ export function ProfessionalProfilePage() {
       );
     }
 
+    if (isEduDirty) {
+      const validEdu = eduForms.filter(isEduValid).map((f) => ({
+        degree: f.degree.trim(),
+        institution: f.institution.trim(),
+        startYear: Number(f.startYear),
+        endYear: f.endYear ? Number(f.endYear) : undefined,
+        description: f.description.trim() || undefined,
+      }));
+      promises.push(eduMutation.mutateAsync(validEdu));
+    }
+
+    if (isExpDirty) {
+      const validExp = expForms.filter(isExpValid).map((f) => ({
+        position: f.position.trim(),
+        organization: f.organization.trim(),
+        startYear: Number(f.startYear),
+        endYear: f.current ? undefined : f.endYear ? Number(f.endYear) : undefined,
+        current: f.current,
+        description: f.description.trim() || undefined,
+      }));
+      promises.push(expMutation.mutateAsync(validExp));
+    }
+
+    if (isCertDirty) {
+      const validCerts = certForms.filter(isCertValid).map((f) => ({
+        title: f.title.trim(),
+        issuer: f.issuer.trim(),
+        issueYear: Number(f.issueYear),
+        expiryYear: f.expiryYear ? Number(f.expiryYear) : undefined,
+        credentialId: f.credentialId.trim() || undefined,
+      }));
+      promises.push(certMutation.mutateAsync(validCerts));
+    }
+
+    if (isMemberDirty) {
+      const validMembers = memberForms.filter(isMemberValid).map((f) => ({
+        organization: f.organization.trim(),
+        role: f.role.trim() || undefined,
+        startYear: Number(f.startYear),
+        endYear: f.endYear ? Number(f.endYear) : undefined,
+      }));
+      promises.push(memberMutation.mutateAsync(validMembers));
+    }
+
     try {
       await Promise.all(promises);
       setIdentityInitial(identityForm);
       setInitialLanguages(new Set(languages));
+      setEduInitial(eduForms);
+      setExpInitial(expForms);
+      setCertInitial(certForms);
+      setMemberInitial(memberForms);
       toast.showSuccess("Modifications enregistrées.");
       setIsEditing(false);
     } catch {
@@ -387,6 +561,168 @@ export function ProfessionalProfilePage() {
                   <p className="text-[14.5px] italic text-[#B4AFA6]">Non renseigné</p>
                 )}
               </div>
+            </div>
+          )}
+        </Card>
+
+        {/* Carte 3 — Parcours : Formation */}
+        <Card title={<span className="flex items-center gap-2"><GraduationCap className="h-[18px] w-[18px] text-[#0F766E]" /> Formation</span>}>
+          {isEditing ? (
+            <div className="flex flex-col gap-3">
+              {eduForms.map((form, index) => (
+                <div key={index} className="rounded-[12px] border border-[#EFEDE9] p-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <ProInput label="Diplôme" name={`edu-degree-${index}`} value={form.degree} onChange={(v) => { const n = [...eduForms]; n[index] = { ...form, degree: v }; setEduForms(n); }} placeholder="Master en droit" required disabled={isSaving} />
+                    <ProInput label="Établissement" name={`edu-institution-${index}`} value={form.institution} onChange={(v) => { const n = [...eduForms]; n[index] = { ...form, institution: v }; setEduForms(n); }} placeholder="Université Mohammed V" required disabled={isSaving} />
+                    <ProInput label="Année de début" name={`edu-start-${index}`} type="number" value={form.startYear} onChange={(v) => { const n = [...eduForms]; n[index] = { ...form, startYear: v }; setEduForms(n); }} placeholder="2015" required disabled={isSaving} />
+                    <ProInput label="Année de fin" name={`edu-end-${index}`} type="number" value={form.endYear} onChange={(v) => { const n = [...eduForms]; n[index] = { ...form, endYear: v }; setEduForms(n); }} placeholder="2017" disabled={isSaving} />
+                    <div className="sm:col-span-2">
+                      <ProInput label="Description (optionnel)" name={`edu-desc-${index}`} value={form.description} onChange={(v) => { const n = [...eduForms]; n[index] = { ...form, description: v }; setEduForms(n); }} placeholder="Spécialisation, mention…" disabled={isSaving} />
+                    </div>
+                  </div>
+                  {eduForms.length > 1 && (
+                    <button type="button" onClick={() => setEduForms(eduForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
+                      <Trash2 className="h-3.5 w-3.5" /> Supprimer
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" onClick={() => setEduForms([...eduForms, { ...EMPTY_EDU }])} className="flex items-center gap-2 rounded-[10px] border border-dashed border-[#CDE5E1] px-4 py-3 text-[14px] font-medium text-[#0F766E] transition-colors hover:bg-[#E6F2F0]">
+                <Plus className="h-4 w-4" /> Ajouter une formation
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {(profile?.education ?? []).length > 0 ? profile!.education.map((e) => (
+                <div key={e.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
+                  <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{e.degree}</span>
+                  <span className="text-[13.5px] text-[#6B6862]">{e.institution}</span>
+                  <span className="text-[12.5px] text-[#9A968E]">{e.startYear}{e.endYear ? ` — ${e.endYear}` : " — en cours"}</span>
+                  {e.description && <p className="mt-0.5 text-[13px] text-[#4B4842]">{e.description}</p>}
+                </div>
+              )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune formation renseignée.</p>}
+            </div>
+          )}
+        </Card>
+
+        {/* Carte 4 — Parcours : Expérience */}
+        <Card title={<span className="flex items-center gap-2"><Briefcase className="h-[18px] w-[18px] text-[#0F766E]" /> Expérience professionnelle</span>}>
+          {isEditing ? (
+            <div className="flex flex-col gap-3">
+              {expForms.map((form, index) => (
+                <div key={index} className="rounded-[12px] border border-[#EFEDE9] p-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <ProInput label="Poste" name={`exp-position-${index}`} value={form.position} onChange={(v) => { const n = [...expForms]; n[index] = { ...form, position: v }; setExpForms(n); }} placeholder="Avocat associé" required disabled={isSaving} />
+                    <ProInput label="Organisation" name={`exp-org-${index}`} value={form.organization} onChange={(v) => { const n = [...expForms]; n[index] = { ...form, organization: v }; setExpForms(n); }} placeholder="Cabinet XYZ" required disabled={isSaving} />
+                    <ProInput label="Année de début" name={`exp-start-${index}`} type="number" value={form.startYear} onChange={(v) => { const n = [...expForms]; n[index] = { ...form, startYear: v }; setExpForms(n); }} placeholder="2018" required disabled={isSaving} />
+                    <ProInput label="Année de fin" name={`exp-end-${index}`} type="number" value={form.endYear} onChange={(v) => { const n = [...expForms]; n[index] = { ...form, endYear: v }; setExpForms(n); }} placeholder="2023" disabled={isSaving || form.current} />
+                    <div className="sm:col-span-2">
+                      <label className="flex items-center gap-2 text-[14px] font-medium text-[#1C1B1A]">
+                        <input type="checkbox" checked={form.current} onChange={(e) => { const n = [...expForms]; n[index] = { ...form, current: e.target.checked, endYear: e.target.checked ? "" : form.endYear }; setExpForms(n); }} className="h-4 w-4 rounded border-[#E7E5E1] text-[#0F766E] focus:ring-[#0F766E]" />
+                        Poste actuel
+                      </label>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <ProInput label="Description (optionnel)" name={`exp-desc-${index}`} value={form.description} onChange={(v) => { const n = [...expForms]; n[index] = { ...form, description: v }; setExpForms(n); }} placeholder="Missions, responsabilités…" disabled={isSaving} />
+                    </div>
+                  </div>
+                  {expForms.length > 1 && (
+                    <button type="button" onClick={() => setExpForms(expForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
+                      <Trash2 className="h-3.5 w-3.5" /> Supprimer
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" onClick={() => setExpForms([...expForms, { ...EMPTY_EXP }])} className="flex items-center gap-2 rounded-[10px] border border-dashed border-[#CDE5E1] px-4 py-3 text-[14px] font-medium text-[#0F766E] transition-colors hover:bg-[#E6F2F0]">
+                <Plus className="h-4 w-4" /> Ajouter une expérience
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {(profile?.experience ?? []).length > 0 ? profile!.experience.map((e) => (
+                <div key={e.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
+                  <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{e.position}</span>
+                  <span className="text-[13.5px] text-[#6B6862]">{e.organization}</span>
+                  <span className="text-[12.5px] text-[#9A968E]">{e.startYear}{e.endYear ? ` — ${e.endYear}` : e.current ? " — en cours" : ""}</span>
+                  {e.description && <p className="mt-0.5 text-[13px] text-[#4B4842]">{e.description}</p>}
+                </div>
+              )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune expérience renseignée.</p>}
+            </div>
+          )}
+        </Card>
+
+        {/* Carte 5 — Certifications */}
+        <Card title={<span className="flex items-center gap-2"><Award className="h-[18px] w-[18px] text-[#0F766E]" /> Certifications</span>}>
+          {isEditing ? (
+            <div className="flex flex-col gap-3">
+              {certForms.map((form, index) => (
+                <div key={index} className="rounded-[12px] border border-[#EFEDE9] p-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <ProInput label="Titre" name={`cert-title-${index}`} value={form.title} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, title: v }; setCertForms(n); }} placeholder="Certification en droit fiscal" required disabled={isSaving} />
+                    <ProInput label="Émetteur" name={`cert-issuer-${index}`} value={form.issuer} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, issuer: v }; setCertForms(n); }} placeholder="Ordre des avocats" required disabled={isSaving} />
+                    <ProInput label="Année d'obtention" name={`cert-issue-${index}`} type="number" value={form.issueYear} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, issueYear: v }; setCertForms(n); }} placeholder="2020" required disabled={isSaving} />
+                    <ProInput label="Année d'expiration" name={`cert-expiry-${index}`} type="number" value={form.expiryYear} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, expiryYear: v }; setCertForms(n); }} placeholder="2025" disabled={isSaving} />
+                    <div className="sm:col-span-2">
+                      <ProInput label="Référence (optionnel)" name={`cert-cred-${index}`} value={form.credentialId} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, credentialId: v }; setCertForms(n); }} placeholder="N° de référence" disabled={isSaving} />
+                    </div>
+                  </div>
+                  {certForms.length > 1 && (
+                    <button type="button" onClick={() => setCertForms(certForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
+                      <Trash2 className="h-3.5 w-3.5" /> Supprimer
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" onClick={() => setCertForms([...certForms, { ...EMPTY_CERT }])} className="flex items-center gap-2 rounded-[10px] border border-dashed border-[#CDE5E1] px-4 py-3 text-[14px] font-medium text-[#0F766E] transition-colors hover:bg-[#E6F2F0]">
+                <Plus className="h-4 w-4" /> Ajouter une certification
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {(profile?.certifications ?? []).length > 0 ? profile!.certifications.map((c) => (
+                <div key={c.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
+                  <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{c.title}</span>
+                  <span className="text-[13.5px] text-[#6B6862]">{c.issuer}</span>
+                  <span className="text-[12.5px] text-[#9A968E]">{c.issueYear}{c.expiryYear ? ` — ${c.expiryYear}` : ""}</span>
+                  {c.credentialId && <span className="text-[12.5px] text-[#9A968E]">Réf : {c.credentialId}</span>}
+                </div>
+              )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune certification renseignée.</p>}
+            </div>
+          )}
+        </Card>
+
+        {/* Carte 6 — Affiliations */}
+        <Card title={<span className="flex items-center gap-2"><Users className="h-[18px] w-[18px] text-[#0F766E]" /> Affiliations</span>}>
+          {isEditing ? (
+            <div className="flex flex-col gap-3">
+              {memberForms.map((form, index) => (
+                <div key={index} className="rounded-[12px] border border-[#EFEDE9] p-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <ProInput label="Organisation" name={`member-org-${index}`} value={form.organization} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, organization: v }; setMemberForms(n); }} placeholder="Association des avocats" required disabled={isSaving} />
+                    <ProInput label="Rôle (optionnel)" name={`member-role-${index}`} value={form.role} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, role: v }; setMemberForms(n); }} placeholder="Membre du conseil" disabled={isSaving} />
+                    <ProInput label="Année de début" name={`member-start-${index}`} type="number" value={form.startYear} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, startYear: v }; setMemberForms(n); }} placeholder="2019" required disabled={isSaving} />
+                    <ProInput label="Année de fin" name={`member-end-${index}`} type="number" value={form.endYear} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, endYear: v }; setMemberForms(n); }} placeholder="2023" disabled={isSaving} />
+                  </div>
+                  {memberForms.length > 1 && (
+                    <button type="button" onClick={() => setMemberForms(memberForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
+                      <Trash2 className="h-3.5 w-3.5" /> Supprimer
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" onClick={() => setMemberForms([...memberForms, { ...EMPTY_MEMBER }])} className="flex items-center gap-2 rounded-[10px] border border-dashed border-[#CDE5E1] px-4 py-3 text-[14px] font-medium text-[#0F766E] transition-colors hover:bg-[#E6F2F0]">
+                <Plus className="h-4 w-4" /> Ajouter une affiliation
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {(profile?.memberships ?? []).length > 0 ? profile!.memberships.map((m) => (
+                <div key={m.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
+                  <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{m.organization}</span>
+                  {m.role && <span className="text-[13.5px] text-[#6B6862]">{m.role}</span>}
+                  <span className="text-[12.5px] text-[#9A968E]">{m.startYear}{m.endYear ? ` — ${m.endYear}` : " — en cours"}</span>
+                </div>
+              )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune affiliation renseignée.</p>}
             </div>
           )}
         </Card>
