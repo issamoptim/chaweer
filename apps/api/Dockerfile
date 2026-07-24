@@ -2,27 +2,33 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Couche 1 : dépendances
-COPY package*.json ./
-RUN npm ci
+# Couche 1 : dépendances API
+COPY apps/api/package*.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY package.json ./package-root.json
+RUN npm ci --workspace=apps/api 2>/dev/null || npm ci
 
-# Couche 2 : fichiers Prisma
-COPY prisma.config.ts ./
-COPY prisma/ ./prisma/
+# Couche 2 : code du package shared
+COPY packages/shared/src/ ./packages/shared/src/
+COPY packages/shared/package.json ./packages/shared/package.json
 
-# Couche 3 : génération du Prisma Client
+# Couche 3 : fichiers Prisma
+COPY apps/api/prisma.config.ts ./
+COPY apps/api/prisma/ ./prisma/
+
+# Couche 4 : génération du Prisma Client
 ARG DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 ENV DATABASE_URL=${DATABASE_URL}
 RUN npx prisma generate
 
-# Couche 4 : code source + config TypeScript
-COPY tsconfig.json ./
-COPY src/ ./src/
+# Couche 5 : code source + config TypeScript
+COPY apps/api/tsconfig.json ./
+COPY apps/api/src/ ./src/
 
-# Couche 5 : build TypeScript
+# Couche 6 : build TypeScript
 RUN npm run build
 
-# Couche 6 : migrations au démarrage
+# Couche 7 : migrations au démarrage
 ENV PORT=3000
 EXPOSE 3000
 
