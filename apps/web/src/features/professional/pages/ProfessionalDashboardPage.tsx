@@ -252,7 +252,7 @@ export function ProfessionalDashboardPage() {
               </button>
             )}
 
-            {isUnpublished && readiness.isReady && (
+            {!isPublished && readiness.isReady && (
               <button
                 type="button"
                 onClick={handlePublish}

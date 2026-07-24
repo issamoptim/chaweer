@@ -14,7 +14,7 @@ export function LawyerGrid({ lawyers, isLoading }: LawyerGridProps) {
     return (
       <section
         id="avocats"
-        className="mx-auto max-w-[1400px] px-12 pb-20 pt-8 sm:px-20 lg:px-28"
+        className="mx-auto max-w-[1500px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
       >
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -39,7 +39,7 @@ export function LawyerGrid({ lawyers, isLoading }: LawyerGridProps) {
     return (
       <section
         id="avocats"
-        className="mx-auto max-w-[1400px] px-12 pb-20 pt-8 sm:px-20 lg:px-28"
+        className="mx-auto max-w-[1500px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
       >
         <div className="px-6 py-15 text-center">
           <div className="mb-3 text-[36px]">🔍</div>
@@ -57,7 +57,7 @@ export function LawyerGrid({ lawyers, isLoading }: LawyerGridProps) {
   return (
     <section
       id="avocats"
-      className="mx-auto max-w-[1400px] px-12 pb-20 pt-8 sm:px-20 lg:px-28"
+      className="mx-auto max-w-[1500px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
     >
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {lawyers.map((lawyer) => (

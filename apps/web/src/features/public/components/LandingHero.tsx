@@ -22,12 +22,12 @@ export function LandingHero({
 
   return (
     <section
-      className="px-12 pb-6 pt-7 sm:px-20 lg:px-28"
+      className="px-8 pb-6 pt-7 sm:px-12 lg:px-16"
       style={{
         background: "linear-gradient(150deg, #082E2A 0%, #0F4A44 100%)",
       }}
     >
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-[1500px]">
         <div className="max-w-[640px]">
           <h1
             className="m-0 mb-2 text-[36px] font-extrabold leading-[1.15] text-white"

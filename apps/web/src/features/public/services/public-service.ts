@@ -3,8 +3,8 @@ import type { PublicProfileData } from "../types/public-types";
 import type { PublicReferential, PublicListResponse } from "../types/lawyer";
 
 export const publicService = {
-  getProfessionalProfile(id: string): Promise<PublicProfileData> {
-    return apiClient.get<PublicProfileData>(`/public/professional/${id}`);
+  getProfessionalProfile(id: string, token?: string): Promise<PublicProfileData> {
+    return apiClient.get<PublicProfileData>(`/public/professional/${id}`, { token });
   },
 
   getReferential(): Promise<PublicReferential> {

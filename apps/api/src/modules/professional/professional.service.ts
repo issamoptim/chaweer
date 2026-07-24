@@ -891,9 +891,17 @@ export async function setCertifications(
   }));
 }
 
-export async function getPublicProfile(profileId: string): Promise<PublicProfileData> {
+export async function getPublicProfile(
+  profileId: string,
+  viewerUserId?: string,
+): Promise<PublicProfileData> {
+  const whereClause: { id: string; status?: string } = { id: profileId };
+  if (!viewerUserId) {
+    whereClause.status = 'PUBLISHED';
+  }
+
   const profile = await prisma.professionalProfile.findFirst({
-    where: { id: profileId, status: 'PUBLISHED' },
+    where: whereClause,
     include: {
       user: { select: { firstName: true, lastName: true } },
       specializations: {
@@ -922,6 +930,10 @@ export async function getPublicProfile(profileId: string): Promise<PublicProfile
   });
 
   if (!profile) {
+    throw new NotFoundError('Profil introuvable ou non publié.');
+  }
+
+  if (profile.status !== 'PUBLISHED' && profile.userId !== viewerUserId) {
     throw new NotFoundError('Profil introuvable ou non publié.');
   }
 

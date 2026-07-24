@@ -164,7 +164,8 @@ export async function getPublicProfileController(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const profile = await professionalService.getPublicProfile(String(req.params.id));
+    const viewerUserId = req.user?.userId;
+    const profile = await professionalService.getPublicProfile(String(req.params.id), viewerUserId);
     res.status(200).json({ success: true, data: profile });
   } catch (err) {
     next(err);

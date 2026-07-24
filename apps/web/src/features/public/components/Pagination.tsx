@@ -26,7 +26,7 @@ export function Pagination({
 
   return (
     <nav
-      className="mx-auto flex max-w-[1400px] items-center justify-center gap-2 px-12 pb-12 sm:px-20 lg:px-28"
+      className="mx-auto flex max-w-[1500px] items-center justify-center gap-2 px-8 pb-12 sm:px-12 lg:px-16"
       aria-label={t("landing.pagination.label")}
     >
       <button

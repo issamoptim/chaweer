@@ -6,10 +6,10 @@ export function LandingFooter() {
 
   return (
     <footer
-      className="px-12 pb-7 pt-10 sm:px-20 lg:px-28"
+      className="px-8 pb-7 pt-10 sm:px-12 lg:px-16"
       style={{ background: "#0C3D38" }}
     >
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-5">
+      <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-5">
         <div className="[&_svg_path]:!stroke-white [&_span]:!text-white">
           <ChaweerLogo size="sm" showArabic={false} />
         </div>

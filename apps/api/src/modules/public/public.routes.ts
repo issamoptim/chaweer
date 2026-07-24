@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { getPublicProfileController } from '../professional/professional.controller';
 import { listPublicProfessionals } from './public.service';
 import { getPublicReferential } from './public-referential.service';
+import { optionalAuth } from '../../core/middleware/optional-auth';
 
 async function listPublicProfessionalsController(
   req: Request,
@@ -44,6 +45,6 @@ const router = Router();
 
 router.get('/professionals', listPublicProfessionalsController);
 router.get('/referential', getPublicReferentialController);
-router.get('/professional/:id', getPublicProfileController);
+router.get('/professional/:id', optionalAuth, getPublicProfileController);
 
 export { router as publicRoutes };
