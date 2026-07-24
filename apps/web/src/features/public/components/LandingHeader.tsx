@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function LandingHeader() {
@@ -12,12 +13,18 @@ export function LandingHeader() {
         borderBottom: "1px solid rgba(0,0,0,.07)",
       }}
     >
-      <div
-        className="flex-shrink-0 text-[20px] font-extrabold text-primary"
-        style={{ letterSpacing: "-0.02em" }}
+      <Link
+        to="/"
+        className="flex flex-shrink-0 items-center gap-2 no-underline"
+        aria-label="Chaweer - Accueil"
       >
-        Chaweer
-      </div>
+        <span
+          className="text-[20px] font-extrabold text-primary"
+          style={{ letterSpacing: "-0.02em" }}
+        >
+          Chaweer
+        </span>
+      </Link>
 
       <nav className="hidden items-center gap-6 text-sm font-medium text-[#4B4A46] sm:flex">
         <a

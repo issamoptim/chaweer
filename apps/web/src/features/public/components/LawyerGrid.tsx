@@ -1,19 +1,45 @@
 import { useTranslation } from "react-i18next";
-import type { Lawyer } from "@/features/public/types/lawyer";
+import type { PublicListProfessional } from "@/features/public/types/lawyer";
 import { LawyerCard } from "./LawyerCard";
 
 interface LawyerGridProps {
-  lawyers: Lawyer[];
+  lawyers: PublicListProfessional[];
+  isLoading?: boolean;
 }
 
-export function LawyerGrid({ lawyers }: LawyerGridProps) {
+export function LawyerGrid({ lawyers, isLoading }: LawyerGridProps) {
   const { t } = useTranslation();
+
+  if (isLoading) {
+    return (
+      <section
+        id="avocats"
+        className="mx-auto max-w-[1200px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
+      >
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse overflow-hidden rounded-2xl border border-[#E9E7E3] bg-white"
+            >
+              <div className="h-[230px] bg-[#E9E7E3]" />
+              <div className="space-y-2 p-4">
+                <div className="h-4 w-2/3 rounded bg-[#E9E7E3]" />
+                <div className="h-3 w-1/2 rounded bg-[#E9E7E3]" />
+                <div className="h-3 w-3/4 rounded bg-[#E9E7E3]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   if (lawyers.length === 0) {
     return (
       <section
         id="avocats"
-        className="mx-auto max-w-[1060px] px-5 pb-20 pt-5 sm:px-12"
+        className="mx-auto max-w-[1200px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
       >
         <div className="px-6 py-15 text-center">
           <div className="mb-3 text-[36px]">🔍</div>
@@ -31,7 +57,7 @@ export function LawyerGrid({ lawyers }: LawyerGridProps) {
   return (
     <section
       id="avocats"
-      className="mx-auto max-w-[1060px] px-5 pb-20 pt-5 sm:px-12"
+      className="mx-auto max-w-[1200px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {lawyers.map((lawyer) => (

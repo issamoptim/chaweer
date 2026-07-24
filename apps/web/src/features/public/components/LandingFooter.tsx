@@ -8,7 +8,7 @@ export function LandingFooter() {
       className="px-5 pb-7 pt-10 sm:px-12"
       style={{ background: "#0C3D38" }}
     >
-      <div className="mx-auto flex max-w-[1060px] flex-wrap items-center justify-between gap-5">
+      <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-5">
         <div className="text-[20px] font-extrabold text-white">Chaweer</div>
         <div
           className="flex gap-6 text-[13.5px]"

@@ -11,9 +11,9 @@
       "signup": "Créer un compte"
     },
     "hero": {
-      "title": "Trouvez votre avocat au Maroc,",
+      "title": "Consultez votre avocat en ligne,",
       "titleLine2": "en toute confiance.",
-      "subtitle": "Avocats vérifiés · Barreau du Maroc · Prix transparents en DH",
+      "subtitle": "شاور من دارك، وبكل أريحية !",
       "search": {
         "cityPlaceholder": "Toutes les villes",
         "queryPlaceholder": "Rechercher un nom ou une spécialité…",
@@ -22,21 +22,7 @@
       }
     },
     "filters": {
-      "all": "Tous",
-      "domains": {
-        "travail": "Travail",
-        "famille": "Famille",
-        "immobilier": "Immobilier",
-        "affaires": "Affaires",
-        "penal": "Pénal",
-        "fiscal": "Fiscal",
-        "administratif": "Administratif",
-        "consommation": "Consommation",
-        "etrangers": "Immigration",
-        "societes": "Sociétés",
-        "bancaire": "Bancaire",
-        "numerique": "Numérique"
-      }
+      "all": "Tous"
     },
     "card": {
       "verified": "Vérifié",
@@ -77,6 +63,11 @@
       "audio": "Audio",
       "office": "Cabinet",
       "chat": "Chat"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "prev": "Page précédente",
+      "next": "Page suivante"
     }
   }
 }

@@ -398,7 +398,6 @@ export function PublicProfilePage() {
             <div className="lg:sticky lg:top-[80px] flex flex-col gap-4">
               {offer ? (
                 <div className="rounded-[16px] bg-white border border-[#E9E7E3] p-5 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
-                  <h3 className="text-[15px] font-bold text-[#1C1B1A] mb-3">Consultation</h3>
                   <div className="rounded-[12px] bg-[#F0FAF8] border border-[#B8E4DF] p-4 flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
                       <span className="text-[14px] font-bold text-[#1C1B1A]">{offer.title}</span>
@@ -444,7 +443,7 @@ export function PublicProfilePage() {
                     type="button"
                     className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[12px] bg-[#0F766E] px-5 text-[14px] font-semibold text-white transition-colors hover:bg-[#134E4A]"
                   >
-                    Réserver
+                    Consulter maintenant
                   </button>
                 </div>
               ) : (

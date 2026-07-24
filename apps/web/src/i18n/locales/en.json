@@ -11,9 +11,9 @@
       "signup": "Create account"
     },
     "hero": {
-      "title": "Find your lawyer in Morocco,",
+      "title": "Consult your lawyer online,",
       "titleLine2": "with confidence.",
-      "subtitle": "Verified lawyers · Moroccan Bar · Transparent prices in DH",
+      "subtitle": "شاور من دارك، وبكل أريحية !",
       "search": {
         "cityPlaceholder": "All cities",
         "queryPlaceholder": "Search by name or specialty…",
@@ -22,21 +22,7 @@
       }
     },
     "filters": {
-      "all": "All",
-      "domains": {
-        "travail": "Labor",
-        "famille": "Family",
-        "immobilier": "Real Estate",
-        "affaires": "Business",
-        "penal": "Criminal",
-        "fiscal": "Tax",
-        "administratif": "Administrative",
-        "consommation": "Consumer",
-        "etrangers": "Immigration",
-        "societes": "Corporate",
-        "bancaire": "Banking",
-        "numerique": "Digital"
-      }
+      "all": "All"
     },
     "card": {
       "verified": "Verified",
@@ -77,6 +63,11 @@
       "audio": "Audio",
       "office": "Office",
       "chat": "Chat"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "prev": "Previous page",
+      "next": "Next page"
     }
   }
 }

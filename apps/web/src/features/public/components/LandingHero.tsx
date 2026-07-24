@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { CITIES } from "@/features/public/data/domains";
+import type { PublicReferentialItem } from "@/features/public/types/lawyer";
 
 interface LandingHeroProps {
   city: string;
   query: string;
   filteredCount: number;
+  cities: PublicReferentialItem[];
   onCityChange: (city: string) => void;
   onQueryChange: (query: string) => void;
 }
@@ -13,6 +14,7 @@ export function LandingHero({
   city,
   query,
   filteredCount,
+  cities,
   onCityChange,
   onQueryChange,
 }: LandingHeroProps) {
@@ -25,7 +27,7 @@ export function LandingHero({
         background: "linear-gradient(150deg, #082E2A 0%, #0F4A44 100%)",
       }}
     >
-      <div className="mx-auto max-w-[1060px]">
+      <div className="mx-auto max-w-[1280px]">
         <div className="max-w-[640px]">
           <h1
             className="m-0 mb-2 text-[36px] font-extrabold leading-[1.15] text-white"
@@ -55,9 +57,9 @@ export function LandingHero({
               <option value="">
                 {t("landing.hero.search.cityPlaceholder")}
               </option>
-              {CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              {cities.map((c) => (
+                <option key={c.id} value={c.name}>
+                  {c.name}
                 </option>
               ))}
             </select>

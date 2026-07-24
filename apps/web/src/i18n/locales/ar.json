@@ -11,9 +11,9 @@
       "signup": "إنشاء حساب"
     },
     "hero": {
-      "title": "اعثر على محاميك في المغرب،",
+      "title": "استشر محاميك عن بُعد،",
       "titleLine2": "بكل ثقة.",
-      "subtitle": "محامون موثقون · نقابة المحامين بالمغرب · أسعار شفافة بالدرهم",
+      "subtitle": "شاور من دارك، وبكل أريحية !",
       "search": {
         "cityPlaceholder": "كل المدن",
         "queryPlaceholder": "ابحث بالاسم أو التخصص…",
@@ -22,21 +22,7 @@
       }
     },
     "filters": {
-      "all": "الكل",
-      "domains": {
-        "travail": "الشغل",
-        "famille": "الأسرة",
-        "immobilier": "العقارات",
-        "affaires": "الأعمال",
-        "penal": "الجنائي",
-        "fiscal": "الضرائب",
-        "administratif": "الإداري",
-        "consommation": "الاستهلاك",
-        "etrangers": "الهجرة",
-        "societes": "الشركات",
-        "bancaire": "البنكي",
-        "numerique": "الرقمي"
-      }
+      "all": "الكل"
     },
     "card": {
       "verified": "موثق",
@@ -77,6 +63,11 @@
       "audio": "صوت",
       "office": "مكتب",
       "chat": "دردشة"
+    },
+    "pagination": {
+      "label": "الترقيم",
+      "prev": "الصفحة السابقة",
+      "next": "الصفحة التالية"
     }
   }
 }
