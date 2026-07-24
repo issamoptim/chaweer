@@ -3,12 +3,12 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Couche 1 : dépendances
-COPY apps/api/package*.json ./
+COPY package*.json ./
 RUN npm ci
 
 # Couche 2 : fichiers Prisma
-COPY apps/api/prisma.config.ts ./
-COPY apps/api/prisma/ ./prisma/
+COPY prisma.config.ts ./
+COPY prisma/ ./prisma/
 
 # Couche 3 : génération du Prisma Client
 ARG DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
@@ -16,8 +16,8 @@ ENV DATABASE_URL=${DATABASE_URL}
 RUN npx prisma generate
 
 # Couche 4 : code source + config TypeScript
-COPY apps/api/tsconfig.json ./
-COPY apps/api/src/ ./src/
+COPY tsconfig.json ./
+COPY src/ ./src/
 
 # Couche 5 : build TypeScript
 RUN npm run build
