@@ -24,8 +24,8 @@ WORKDIR /app/apps/api
 RUN npx prisma generate
 
 # Couche 5 : code source + config TypeScript
-COPY tsconfig.json ./
-COPY src/ ./src/
+COPY apps/api/tsconfig.json ./
+COPY apps/api/src/ ./src/
 
 # Couche 6 : build TypeScript
 RUN npm run build
