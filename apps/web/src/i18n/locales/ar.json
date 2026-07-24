@@ -1,0 +1,82 @@
+{
+  "landing": {
+    "header": {
+      "nav": {
+        "findLawyer": "ابحث عن محامٍ",
+        "howItWorks": "كيف يعمل",
+        "forLawyers": "للمحامين",
+        "help": "مساعدة"
+      },
+      "login": "تسجيل الدخول",
+      "signup": "إنشاء حساب"
+    },
+    "hero": {
+      "title": "اعثر على محاميك في المغرب،",
+      "titleLine2": "بكل ثقة.",
+      "subtitle": "محامون موثقون · نقابة المحامين بالمغرب · أسعار شفافة بالدرهم",
+      "search": {
+        "cityPlaceholder": "كل المدن",
+        "queryPlaceholder": "ابحث بالاسم أو التخصص…",
+        "resultsCount_one": "{{count}} محامٍ",
+        "resultsCount_other": "{{count}} محامٍ"
+      }
+    },
+    "filters": {
+      "all": "الكل",
+      "domains": {
+        "travail": "الشغل",
+        "famille": "الأسرة",
+        "immobilier": "العقارات",
+        "affaires": "الأعمال",
+        "penal": "الجنائي",
+        "fiscal": "الضرائب",
+        "administratif": "الإداري",
+        "consommation": "الاستهلاك",
+        "etrangers": "الهجرة",
+        "societes": "الشركات",
+        "bancaire": "البنكي",
+        "numerique": "الرقمي"
+      }
+    },
+    "card": {
+      "verified": "موثق",
+      "perConsultation": "/استشارة",
+      "consult": "استشارة",
+      "specsMore": "+{{count}}"
+    },
+    "empty": {
+      "title": "لا نتائج",
+      "subtitle": "جرّب فلاتر أخرى أو مدينة مختلفة."
+    },
+    "howItWorks": {
+      "title": "كيف يعمل",
+      "steps": {
+        "step1": {
+          "title": "اختر مجالاً",
+          "desc": "صفِّ حسب المجال القانوني والمدينة. اعثر على المحامي الذي تحتاجه."
+        },
+        "step2": {
+          "title": "قارن الملفات",
+          "desc": "الأسعار والتخصصات والتوفر معروضة بوضوح. بلا مفاجآت."
+        },
+        "step3": {
+          "title": "استشر عبر الإنترنت",
+          "desc": "فيديو أو صوت أو دردشة — احجز موعداً في ثوانٍ."
+        }
+      }
+    },
+    "footer": {
+      "howItWorks": "كيف يعمل",
+      "forLawyers": "للمحامين",
+      "help": "مساعدة",
+      "legal": "إشعار قانوني",
+      "copyright": "© 2026 شاور"
+    },
+    "modes": {
+      "video": "فيديو",
+      "audio": "صوت",
+      "office": "مكتب",
+      "chat": "دردشة"
+    }
+  }
+}

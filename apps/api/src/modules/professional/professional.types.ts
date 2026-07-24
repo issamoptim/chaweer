@@ -94,20 +94,9 @@ export interface CertificationData {
   id: string;
   title: string;
   issuer: string;
-  issueYear: number;
-  expiryYear: number | null;
-  credentialId: string | null;
   order: number;
 }
 
-export interface MembershipData {
-  id: string;
-  organization: string;
-  role: string | null;
-  startYear: number;
-  endYear: number | null;
-  order: number;
-}
 
 export interface VerificationData {
   status: string;
@@ -125,7 +114,6 @@ export interface ProfileCompletionSections {
   education: boolean;
   experience: boolean;
   certifications: boolean;
-  memberships: boolean;
 }
 
 export interface ProfileCompletion {
@@ -149,7 +137,6 @@ export interface ProfessionalProfileData {
   education: EducationData[];
   experience: ExperienceData[];
   certifications: CertificationData[];
-  memberships: MembershipData[];
   verification: VerificationData | null;
   completion: ProfileCompletion;
 }
@@ -184,7 +171,6 @@ export interface PublicProfileData {
   education: EducationData[];
   experience: ExperienceData[];
   certifications: CertificationData[];
-  memberships: MembershipData[];
   barAssociationName: string | null;
   cityName: string | null;
 }

@@ -57,23 +57,10 @@ export const setExperienceSchema = z.array(experienceItemSchema);
 export const certificationItemSchema = z.object({
   title: z.string().trim().min(1, 'Le titre est obligatoire').max(200),
   issuer: z.string().trim().min(1, "L'émetteur est obligatoire").max(200),
-  issueYear: z.number().int().min(1950).max(new Date().getFullYear()),
-  expiryYear: z.number().int().min(1950).max(new Date().getFullYear() + 10).optional(),
-  credentialId: z.string().trim().max(100).optional(),
 });
 
 export const setCertificationsSchema = z.array(certificationItemSchema);
 
-export const membershipItemSchema = z.object({
-  organization: z.string().trim().min(1, "L'organisation est obligatoire").max(200),
-  role: z.string().trim().max(200).optional(),
-  startYear: z.number().int().min(1950).max(new Date().getFullYear()),
-  endYear: z.number().int().min(1950).max(new Date().getFullYear() + 10).optional(),
-});
-
-export const setMembershipsSchema = z.array(membershipItemSchema);
-
 export type EducationInput = z.infer<typeof educationItemSchema>;
 export type ExperienceInput = z.infer<typeof experienceItemSchema>;
 export type CertificationInput = z.infer<typeof certificationItemSchema>;
-export type MembershipInput = z.infer<typeof membershipItemSchema>;

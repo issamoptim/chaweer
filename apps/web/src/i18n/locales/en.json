@@ -1,0 +1,82 @@
+{
+  "landing": {
+    "header": {
+      "nav": {
+        "findLawyer": "Find a lawyer",
+        "howItWorks": "How it works",
+        "forLawyers": "For lawyers",
+        "help": "Help"
+      },
+      "login": "Log in",
+      "signup": "Create account"
+    },
+    "hero": {
+      "title": "Find your lawyer in Morocco,",
+      "titleLine2": "with confidence.",
+      "subtitle": "Verified lawyers · Moroccan Bar · Transparent prices in DH",
+      "search": {
+        "cityPlaceholder": "All cities",
+        "queryPlaceholder": "Search by name or specialty…",
+        "resultsCount_one": "{{count}} lawyer",
+        "resultsCount_other": "{{count}} lawyers"
+      }
+    },
+    "filters": {
+      "all": "All",
+      "domains": {
+        "travail": "Labor",
+        "famille": "Family",
+        "immobilier": "Real Estate",
+        "affaires": "Business",
+        "penal": "Criminal",
+        "fiscal": "Tax",
+        "administratif": "Administrative",
+        "consommation": "Consumer",
+        "etrangers": "Immigration",
+        "societes": "Corporate",
+        "bancaire": "Banking",
+        "numerique": "Digital"
+      }
+    },
+    "card": {
+      "verified": "Verified",
+      "perConsultation": "/consultation",
+      "consult": "Consult",
+      "specsMore": "+{{count}}"
+    },
+    "empty": {
+      "title": "No results",
+      "subtitle": "Try other filters or a different city."
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "steps": {
+        "step1": {
+          "title": "Choose a field",
+          "desc": "Filter by legal field and city. Find the lawyer you need."
+        },
+        "step2": {
+          "title": "Compare profiles",
+          "desc": "Prices, specialties and availability clearly displayed. No surprises."
+        },
+        "step3": {
+          "title": "Consult online",
+          "desc": "Video, audio or chat — book an appointment in seconds."
+        }
+      }
+    },
+    "footer": {
+      "howItWorks": "How it works",
+      "forLawyers": "For lawyers",
+      "help": "Help",
+      "legal": "Legal notice",
+      "copyright": "© 2026 Chaweer"
+    },
+    "modes": {
+      "video": "Video",
+      "audio": "Audio",
+      "office": "Office",
+      "chat": "Chat"
+    }
+  }
+}

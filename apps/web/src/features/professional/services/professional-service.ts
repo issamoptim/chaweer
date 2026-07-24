@@ -15,11 +15,9 @@ import type {
   EducationData,
   ExperienceData,
   CertificationData,
-  MembershipData,
   EducationInput,
   ExperienceInput,
   CertificationInput,
-  MembershipInput,
 } from "../types/professional-types";
 
 export const professionalService = {
@@ -96,9 +94,5 @@ export const professionalService = {
 
   setCertifications(items: CertificationInput[], token: string): Promise<CertificationData[]> {
     return apiClient.put<CertificationData[]>("/professional/certifications", items, { token });
-  },
-
-  setMemberships(items: MembershipInput[], token: string): Promise<MembershipData[]> {
-    return apiClient.put<MembershipData[]>("/professional/memberships", items, { token });
   },
 };

@@ -38,6 +38,18 @@
   --color-sidebar-accent-foreground: oklch(0.205 0 0);
   --color-sidebar-border: oklch(0.922 0 0);
   --color-sidebar-ring: oklch(0.708 0 0);
+  --color-primary-hover: #134E4A;
+  --color-secondary: #134E4A;
+  --color-surface-alt: #F2F1EF;
+  --color-text-muted: #6B6862;
+  --color-text-faint: #9A968E;
+  --color-border-soft: #F1F0ED;
+  --color-primary-tint: #E6F2F0;
+  --color-warning: #F59E0B;
+  --color-hero-dark: #082E2A;
+  --color-hero-mid: #0F4A44;
+  --color-footer: #0C3D38;
+
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
@@ -54,5 +66,27 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .shadow-card-landing {
+    box-shadow: 0 1px 4px rgba(15, 118, 110, 0.04);
+  }
+  .shadow-card-landing-hover {
+    box-shadow: 0 8px 24px rgba(15, 118, 110, 0.1);
+  }
+  .shadow-input-landing {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+  .focus-ring {
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4);
   }
 }

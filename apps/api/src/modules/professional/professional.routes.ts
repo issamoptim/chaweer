@@ -12,7 +12,6 @@ import {
   setEducationSchema,
   setExperienceSchema,
   setCertificationsSchema,
-  setMembershipsSchema,
 } from './professional.schema';
 import {
   getReferentialController,
@@ -29,7 +28,6 @@ import {
   setEducationController,
   setExperienceController,
   setCertificationsController,
-  setMembershipsController,
 } from './professional.controller';
 
 const router = Router();
@@ -129,14 +127,6 @@ router.put(
   authorize('PROFESSIONAL'),
   validate(setCertificationsSchema),
   setCertificationsController,
-);
-
-router.put(
-  '/memberships',
-  authenticate,
-  authorize('PROFESSIONAL'),
-  validate(setMembershipsSchema),
-  setMembershipsController,
 );
 
 export { router as professionalRoutes };

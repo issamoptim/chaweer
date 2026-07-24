@@ -22,7 +22,6 @@ import type {
   EducationData,
   ExperienceData,
   CertificationData,
-  MembershipData,
   VerificationData,
   PublicProfileData,
 } from './professional.types';
@@ -35,7 +34,6 @@ import type {
   EducationInput,
   ExperienceInput,
   CertificationInput,
-  MembershipInput,
 } from './professional.schema';
 import type { Prisma, PrismaClient, ConsultationModality } from '../../generated/prisma/client';
 
@@ -54,7 +52,6 @@ const profileInclude = {
   education: { orderBy: { order: 'asc' } },
   experience: { orderBy: { order: 'asc' } },
   certifications: { orderBy: { order: 'asc' } },
-  memberships: { orderBy: { order: 'asc' } },
   verification: true,
 } as const;
 
@@ -103,10 +100,9 @@ function computeCompletion(profile: ProfileWithRelations): ProfileCompletion {
     education: profile.education.length > 0,
     experience: profile.experience.length > 0,
     certifications: profile.certifications.length > 0,
-    memberships: profile.memberships.length > 0,
   };
 
-  const totalSections = 10;
+  const totalSections = 9;
   const completedSections = Object.values(sections).filter(Boolean).length;
   const percentage = Math.round((completedSections / totalSections) * 100);
 
@@ -262,19 +258,7 @@ function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
     id: c.id,
     title: c.title,
     issuer: c.issuer,
-    issueYear: c.issueYear,
-    expiryYear: c.expiryYear,
-    credentialId: c.credentialId,
     order: c.order,
-  }));
-
-  const memberships: MembershipData[] = profile.memberships.map((m) => ({
-    id: m.id,
-    organization: m.organization,
-    role: m.role,
-    startYear: m.startYear,
-    endYear: m.endYear,
-    order: m.order,
   }));
 
   const verification: VerificationData | null = profile.verification
@@ -299,7 +283,6 @@ function toProfileData(profile: ProfileWithRelations): ProfessionalProfileData {
     education,
     experience,
     certifications,
-    memberships,
     verification,
     completion: computeCompletion(profile),
   };
@@ -887,9 +870,6 @@ export async function setCertifications(
           profileId: profile.id,
           title: item.title,
           issuer: item.issuer,
-          issueYear: item.issueYear,
-          expiryYear: item.expiryYear ?? null,
-          credentialId: item.credentialId ?? null,
           order: index,
         })),
       });
@@ -907,56 +887,7 @@ export async function setCertifications(
     id: c.id,
     title: c.title,
     issuer: c.issuer,
-    issueYear: c.issueYear,
-    expiryYear: c.expiryYear,
-    credentialId: c.credentialId,
     order: c.order,
-  }));
-}
-
-export async function setMemberships(
-  userId: string,
-  items: MembershipInput[],
-): Promise<MembershipData[]> {
-  const profile = await prisma.professionalProfile.findUnique({
-    where: { userId },
-    select: { id: true },
-  });
-
-  if (!profile) {
-    throw new NotFoundError('Profil professionnel introuvable.');
-  }
-
-  await prisma.$transaction(async (tx) => {
-    await tx.professionalMembership.deleteMany({ where: { profileId: profile.id } });
-    if (items.length > 0) {
-      await tx.professionalMembership.createMany({
-        data: items.map((item, index) => ({
-          profileId: profile.id,
-          organization: item.organization,
-          role: item.role ?? null,
-          startYear: item.startYear,
-          endYear: item.endYear ?? null,
-          order: index,
-        })),
-      });
-    }
-  });
-
-  await syncPublicationStatus(userId);
-
-  const updated = await prisma.professionalMembership.findMany({
-    where: { profileId: profile.id },
-    orderBy: { order: 'asc' },
-  });
-
-  return updated.map((m) => ({
-    id: m.id,
-    organization: m.organization,
-    role: m.role,
-    startYear: m.startYear,
-    endYear: m.endYear,
-    order: m.order,
   }));
 }
 
@@ -986,7 +917,6 @@ export async function getPublicProfile(profileId: string): Promise<PublicProfile
       education: { orderBy: { order: 'asc' } },
       experience: { orderBy: { order: 'asc' } },
       certifications: { orderBy: { order: 'asc' } },
-      memberships: { orderBy: { order: 'asc' } },
       barAssociation: { select: { name: true } },
     },
   });
@@ -1071,18 +1001,7 @@ export async function getPublicProfile(profileId: string): Promise<PublicProfile
       id: c.id,
       title: c.title,
       issuer: c.issuer,
-      issueYear: c.issueYear,
-      expiryYear: c.expiryYear,
-      credentialId: c.credentialId,
       order: c.order,
-    })),
-    memberships: profile.memberships.map((m) => ({
-      id: m.id,
-      organization: m.organization,
-      role: m.role,
-      startYear: m.startYear,
-      endYear: m.endYear,
-      order: m.order,
     })),
     barAssociationName: profile.barAssociation?.name ?? null,
     cityName: profile.office?.city?.name ?? null,

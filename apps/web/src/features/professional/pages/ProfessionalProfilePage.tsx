@@ -72,14 +72,11 @@ interface ExperienceForm {
 interface CertForm {
   title: string;
   issuer: string;
-  issueYear: string;
-  expiryYear: string;
-  credentialId: string;
 }
 
 const EMPTY_EDU: EducationForm = { degree: "", institution: "", startYear: "", endYear: "", description: "" };
 const EMPTY_EXP: ExperienceForm = { position: "", organization: "", startYear: "", endYear: "", current: false, description: "" };
-const EMPTY_CERT: CertForm = { title: "", issuer: "", issueYear: "", expiryYear: "", credentialId: "" };
+const EMPTY_CERT: CertForm = { title: "", issuer: "" };
 
 function eduToForm(e: EducationData): EducationForm {
   return { degree: e.degree, institution: e.institution, startYear: String(e.startYear), endYear: e.endYear ? String(e.endYear) : "", description: e.description ?? "" };
@@ -88,7 +85,7 @@ function expToForm(e: ExperienceData): ExperienceForm {
   return { position: e.position, organization: e.organization, startYear: String(e.startYear), endYear: e.endYear ? String(e.endYear) : "", current: e.current, description: e.description ?? "" };
 }
 function certToForm(c: CertificationData): CertForm {
-  return { title: c.title, issuer: c.issuer, issueYear: String(c.issueYear), expiryYear: c.expiryYear ? String(c.expiryYear) : "", credentialId: c.credentialId ?? "" };
+  return { title: c.title, issuer: c.issuer };
 }
 
 function isEduValid(f: EducationForm): boolean {
@@ -98,7 +95,7 @@ function isExpValid(f: ExperienceForm): boolean {
   return f.position.trim() !== "" && f.organization.trim() !== "" && f.startYear !== "" && Number(f.startYear) > 0;
 }
 function isCertValid(f: CertForm): boolean {
-  return f.title.trim() !== "" && f.issuer.trim() !== "" && f.issueYear !== "" && Number(f.issueYear) > 0;
+  return f.title.trim() !== "" && f.issuer.trim() !== "";
 }
 
 export function ProfessionalProfilePage() {
@@ -286,9 +283,6 @@ export function ProfessionalProfilePage() {
       const validCerts = certForms.filter(isCertValid).map((f) => ({
         title: f.title.trim(),
         issuer: f.issuer.trim(),
-        issueYear: Number(f.issueYear),
-        expiryYear: f.expiryYear ? Number(f.expiryYear) : undefined,
-        credentialId: f.credentialId.trim() || undefined,
       }));
       promises.push(certMutation.mutateAsync(validCerts));
     }
@@ -611,8 +605,8 @@ export function ProfessionalProfilePage() {
           )}
         </Card>
 
-        {/* Carte 5 — Certifications */}
-        <Card title={<span className="flex items-center gap-2"><Award className="h-[18px] w-[18px] text-[#0F766E]" /> Certifications</span>}>
+        {/* Carte 5 — Certification */}
+        <Card title={<span className="flex items-center gap-2"><Award className="h-[18px] w-[18px] text-[#0F766E]" /> Certification</span>}>
           {isEditing ? (
             <div className="flex flex-col gap-3">
               {certForms.map((form, index) => (
@@ -620,7 +614,6 @@ export function ProfessionalProfilePage() {
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <ProInput label="Titre" name={`cert-title-${index}`} value={form.title} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, title: v }; setCertForms(n); }} placeholder="Certification en droit fiscal" required disabled={isSaving} />
                     <ProInput label="Émetteur" name={`cert-issuer-${index}`} value={form.issuer} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, issuer: v }; setCertForms(n); }} placeholder="Ordre des avocats" required disabled={isSaving} />
-                    <ProInput label="Année d'obtention" name={`cert-issue-${index}`} type="number" value={form.issueYear} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, issueYear: v }; setCertForms(n); }} placeholder="2020" required disabled={isSaving} />
                   </div>
                   {certForms.length > 0 && (
                     <button type="button" onClick={() => setCertForms(certForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
@@ -639,7 +632,6 @@ export function ProfessionalProfilePage() {
                 <div key={c.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
                   <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{c.title}</span>
                   <span className="text-[13.5px] text-[#6B6862]">{c.issuer}</span>
-                  <span className="text-[12.5px] text-[#9A968E]">{c.issueYear}</span>
                 </div>
               )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune certification renseignée.</p>}
             </div>

@@ -1,0 +1,82 @@
+{
+  "landing": {
+    "header": {
+      "nav": {
+        "findLawyer": "Trouver un avocat",
+        "howItWorks": "Comment ça marche",
+        "forLawyers": "Pour les avocats",
+        "help": "Aide"
+      },
+      "login": "Connexion",
+      "signup": "Créer un compte"
+    },
+    "hero": {
+      "title": "Trouvez votre avocat au Maroc,",
+      "titleLine2": "en toute confiance.",
+      "subtitle": "Avocats vérifiés · Barreau du Maroc · Prix transparents en DH",
+      "search": {
+        "cityPlaceholder": "Toutes les villes",
+        "queryPlaceholder": "Rechercher un nom ou une spécialité…",
+        "resultsCount_one": "{{count}} avocat",
+        "resultsCount_other": "{{count}} avocats"
+      }
+    },
+    "filters": {
+      "all": "Tous",
+      "domains": {
+        "travail": "Travail",
+        "famille": "Famille",
+        "immobilier": "Immobilier",
+        "affaires": "Affaires",
+        "penal": "Pénal",
+        "fiscal": "Fiscal",
+        "administratif": "Administratif",
+        "consommation": "Consommation",
+        "etrangers": "Immigration",
+        "societes": "Sociétés",
+        "bancaire": "Bancaire",
+        "numerique": "Numérique"
+      }
+    },
+    "card": {
+      "verified": "Vérifié",
+      "perConsultation": "/consultation",
+      "consult": "Consulter",
+      "specsMore": "+{{count}}"
+    },
+    "empty": {
+      "title": "Aucun résultat",
+      "subtitle": "Essayez d'autres filtres ou une autre ville."
+    },
+    "howItWorks": {
+      "title": "Comment ça fonctionne",
+      "steps": {
+        "step1": {
+          "title": "Choisissez un domaine",
+          "desc": "Filtrez par domaine juridique et par ville. Trouvez l'avocat qu'il vous faut."
+        },
+        "step2": {
+          "title": "Comparez les profils",
+          "desc": "Prix, spécialités et disponibilités affichés clairement. Aucune surprise."
+        },
+        "step3": {
+          "title": "Consultez en ligne",
+          "desc": "Vidéo, audio ou chat — prenez rendez-vous en quelques secondes."
+        }
+      }
+    },
+    "footer": {
+      "howItWorks": "Comment ça marche",
+      "forLawyers": "Pour les avocats",
+      "help": "Aide",
+      "legal": "Mentions légales",
+      "copyright": "© 2026 Chaweer"
+    },
+    "modes": {
+      "video": "Vidéo",
+      "audio": "Audio",
+      "office": "Cabinet",
+      "chat": "Chat"
+    }
+  }
+}

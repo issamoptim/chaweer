@@ -213,7 +213,6 @@ model ProfessionalProfile {
   education         Education[]
   experience        ProfessionalExperience[]
   certifications    Certification[]
-  memberships       ProfessionalMembership[]
   verification      Verification?
 
   @@index([status])
@@ -370,30 +369,7 @@ model Certification {
   profileId    String
   title        String   @db.VarChar(200)
   issuer       String   @db.VarChar(200)
-  issueYear    Int
-  expiryYear   Int?
-  credentialId String?  @db.VarChar(100)
   verified     Boolean  @default(false)
-  order        Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  profile ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  @@index([profileId])
-}
-
-// ============================================================
-// ProfessionalMembership — NEW [Next] — 1:N with ProfessionalProfile
-// ============================================================
-
-model ProfessionalMembership {
-  id           String   @id @default(cuid())
-  profileId    String
-  organization String   @db.VarChar(200)
-  role         String?  @db.VarChar(200)
-  startYear    Int
-  endYear      Int?
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

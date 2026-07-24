@@ -116,20 +116,9 @@ export interface CertificationData {
   id: string;
   title: string;
   issuer: string;
-  issueYear: number;
-  expiryYear: number | null;
-  credentialId: string | null;
   order: number;
 }
 
-export interface MembershipData {
-  id: string;
-  organization: string;
-  role: string | null;
-  startYear: number;
-  endYear: number | null;
-  order: number;
-}
 
 export interface ProfessionalProfileData {
   id: string;
@@ -145,7 +134,6 @@ export interface ProfessionalProfileData {
   education: EducationData[];
   experience: ExperienceData[];
   certifications: CertificationData[];
-  memberships: MembershipData[];
   verification: { status: string; verifiedAt: string | null; rejectionReason: string | null } | null;
   completion: ProfileCompletion;
 }
@@ -218,14 +206,5 @@ export interface ExperienceInput {
 export interface CertificationInput {
   title: string;
   issuer: string;
-  issueYear: number;
-  expiryYear?: number | null;
-  credentialId?: string | null;
 }
 
-export interface MembershipInput {
-  organization: string;
-  role?: string | null;
-  startYear: number;
-  endYear?: number | null;
-}
