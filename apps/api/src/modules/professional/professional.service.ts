@@ -895,7 +895,7 @@ export async function getPublicProfile(
   profileId: string,
   viewerUserId?: string,
 ): Promise<PublicProfileData> {
-  const whereClause: { id: string; status?: string } = { id: profileId };
+  const whereClause: { id: string; status?: 'PUBLISHED' } = { id: profileId };
   if (!viewerUserId) {
     whereClause.status = 'PUBLISHED';
   }
