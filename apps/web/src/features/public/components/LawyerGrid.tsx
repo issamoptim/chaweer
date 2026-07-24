@@ -13,7 +13,7 @@ export function LawyerGrid({ lawyers }: LawyerGridProps) {
     return (
       <section
         id="avocats"
-        className="mx-auto max-w-[1060px] px-12 pb-20 pt-5"
+        className="mx-auto max-w-[1060px] px-5 pb-20 pt-5 sm:px-12"
       >
         <div className="px-6 py-15 text-center">
           <div className="mb-3 text-[36px]">🔍</div>
@@ -31,14 +31,9 @@ export function LawyerGrid({ lawyers }: LawyerGridProps) {
   return (
     <section
       id="avocats"
-      className="mx-auto max-w-[1060px] px-12 pb-20 pt-5"
+      className="mx-auto max-w-[1060px] px-5 pb-20 pt-5 sm:px-12"
     >
-      <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        }}
-      >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {lawyers.map((lawyer) => (
           <LawyerCard key={lawyer.id} lawyer={lawyer} />
         ))}

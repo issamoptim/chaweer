@@ -34,7 +34,7 @@ export function HowItWorks() {
   return (
     <section
       id="comment-ca-marche"
-      className="border-t border-[#EFEDE9] bg-white px-12 py-16"
+      className="border-t border-[#EFEDE9] bg-white px-5 py-16 sm:px-12"
     >
       <div className="mx-auto max-w-[860px]">
         <h2
@@ -43,10 +43,7 @@ export function HowItWorks() {
         >
           {t("landing.howItWorks.title")}
         </h2>
-        <div
-          className="grid gap-8"
-          style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
-        >
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {steps.map((step, i) => (
             <div key={i} className="text-center">
               <div

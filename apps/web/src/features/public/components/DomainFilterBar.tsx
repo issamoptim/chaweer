@@ -25,7 +25,7 @@ export function DomainFilterBar({
     >
       <div className="hide-scrollbar overflow-x-auto">
         <div
-          className="flex min-w-max items-center gap-1.5 px-12 py-2.5"
+          className="flex min-w-max items-center gap-1.5 px-5 py-2.5 sm:px-12"
         >
           <button
             onClick={onSelectAll}

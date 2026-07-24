@@ -48,7 +48,7 @@ export function PublicProfilePage() {
     return (
       <div className="min-h-screen bg-[#F7F7F5]">
         <PublicHeader isPro={isPro} />
-        <div className="mx-auto max-w-[840px] px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-5 sm:gap-6">
+        <div className="mx-auto max-w-[1100px] px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-5 sm:gap-6">
           <div className="h-3 w-20 animate-pulse rounded bg-[#E9E7E3]" />
           <div className="h-44 w-full animate-pulse rounded-[18px] sm:rounded-[20px] bg-[#E9E7E3]" />
           <div className="h-28 w-full animate-pulse rounded-[16px] bg-[#E9E7E3]" />
@@ -62,7 +62,7 @@ export function PublicProfilePage() {
     return (
       <div className="min-h-screen bg-[#F7F7F5]">
         <PublicHeader isPro={isPro} />
-        <div className="mx-auto max-w-[840px] px-4 sm:px-6 py-16 sm:py-20 flex flex-col items-center text-center">
+        <div className="mx-auto max-w-[1100px] px-4 sm:px-6 py-16 sm:py-20 flex flex-col items-center text-center">
           <Scale className="h-12 w-12 text-[#B4AFA6]" />
           <h1 className="mt-4 text-[20px] sm:text-[22px] font-bold text-[#1C1B1A]">
             Profil introuvable
@@ -89,14 +89,17 @@ export function PublicProfilePage() {
     <div className="min-h-screen bg-[#F7F7F5]">
       <PublicHeader isPro={isPro} />
 
-      <div className="mx-auto max-w-[840px] px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-5 sm:gap-6">
-        <Link
-          to={isPro ? "/pro/tableau-de-bord" : "/"}
-          className="inline-flex items-center gap-[7px] text-[13.5px] font-semibold text-[#0F766E] transition-colors hover:underline w-fit"
-        >
-          <ArrowLeft className="h-4 w-4" strokeWidth={2.2} />
-          {isPro ? "Mon espace" : "Retour"}
-        </Link>
+      <div className="mx-auto max-w-[1100px] px-4 sm:px-6 py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-5 sm:gap-6">
+          {/* Main content */}
+          <div className="flex-1 flex flex-col gap-5 sm:gap-6 min-w-0 max-w-[840px] mx-auto lg:mx-0 w-full">
+            <Link
+              to={isPro ? "/pro/tableau-de-bord" : "/"}
+              className="inline-flex items-center gap-[7px] text-[13.5px] font-semibold text-[#0F766E] transition-colors hover:underline w-fit"
+            >
+              <ArrowLeft className="h-4 w-4" strokeWidth={2.2} />
+              {isPro ? "Mon espace" : "Retour"}
+            </Link>
 
         {/* Hero card — identity + photo */}
         <div className="rounded-[18px] sm:rounded-[20px] bg-white border border-[#E9E7E3] p-5 sm:p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
@@ -246,53 +249,6 @@ export function PublicProfilePage() {
           </Section>
         )}
 
-        {/* Offre de consultation */}
-        {offer && (
-          <Section title="Consultation">
-            <div className="rounded-[16px] bg-[#F0FAF8] border border-[#B8E4DF] p-4 sm:p-5 flex flex-col gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                <div className="flex flex-col gap-1 flex-1 min-w-0">
-                  <h3 className="text-[15px] sm:text-[16px] font-bold text-[#1C1B1A]">{offer.title}</h3>
-                  {offer.description && (
-                    <p className="text-[13px] sm:text-[13.5px] leading-[1.6] text-[#6B6862]">
-                      {offer.description}
-                    </p>
-                  )}
-                </div>
-                <div className="shrink-0 text-left sm:text-right">
-                  <span className="text-[20px] sm:text-[22px] font-extrabold text-[#0F766E]">
-                    {offer.price} {offer.currency}
-                  </span>
-                  {offer.durationMinutes > 0 && (
-                    <div className="flex items-center gap-1 text-[12px] text-[#9A968E] sm:justify-end">
-                      <Clock className="h-3 w-3" />
-                      {offer.durationMinutes} min
-                    </div>
-                  )}
-                </div>
-              </div>
-              {offer.modalities.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {offer.modalities.map((m) => {
-                    const modality = MODALITY_LABELS[m];
-                    if (!modality) return null;
-                    const Icon = modality.icon;
-                    return (
-                      <span
-                        key={m}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E9E7E3] px-3 py-1.5 text-[12.5px] font-medium text-[#4B4842]"
-                      >
-                        <Icon className="h-3.5 w-3.5 text-[#0F766E]" />
-                        {modality.label}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </Section>
-        )}
-
         {/* Contact */}
         {profile.contact && (
           profile.contact.phone ||
@@ -434,6 +390,72 @@ export function PublicProfilePage() {
               Chaweer
             </Link>
           </p>
+        </div>
+          </div>
+
+          {/* Sidebar — sticky on desktop, bottom on mobile */}
+          <aside className="w-full lg:w-[320px] shrink-0">
+            <div className="lg:sticky lg:top-[80px] flex flex-col gap-4">
+              {offer ? (
+                <div className="rounded-[16px] bg-white border border-[#E9E7E3] p-5 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
+                  <h3 className="text-[15px] font-bold text-[#1C1B1A] mb-3">Consultation</h3>
+                  <div className="rounded-[12px] bg-[#F0FAF8] border border-[#B8E4DF] p-4 flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[14px] font-bold text-[#1C1B1A]">{offer.title}</span>
+                      {offer.description && (
+                        <p className="text-[12.5px] leading-[1.5] text-[#6B6862]">
+                          {offer.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-end justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[22px] font-extrabold text-[#0F766E] leading-none">
+                          {offer.price} {offer.currency}
+                        </span>
+                        {offer.durationMinutes > 0 && (
+                          <span className="mt-1 flex items-center gap-1 text-[12px] text-[#9A968E]">
+                            <Clock className="h-3 w-3" />
+                            {offer.durationMinutes} min
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {offer.modalities.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {offer.modalities.map((m) => {
+                          const modality = MODALITY_LABELS[m];
+                          if (!modality) return null;
+                          const Icon = modality.icon;
+                          return (
+                            <span
+                              key={m}
+                              className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E9E7E3] px-3 py-1.5 text-[12.5px] font-medium text-[#4B4842]"
+                            >
+                              <Icon className="h-3.5 w-3.5 text-[#0F766E]" />
+                              {modality.label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[12px] bg-[#0F766E] px-5 text-[14px] font-semibold text-white transition-colors hover:bg-[#134E4A]"
+                  >
+                    Réserver
+                  </button>
+                </div>
+              ) : (
+                <div className="rounded-[16px] bg-white border border-[#E9E7E3] p-5 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">
+                  <p className="text-[13.5px] text-[#9A968E] text-center">
+                    Aucune consultation disponible
+                  </p>
+                </div>
+              )}
+            </div>
+          </aside>
         </div>
       </div>
     </div>

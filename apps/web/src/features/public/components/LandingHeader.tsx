@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function LandingHeader() {
   const { t } = useTranslation();
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-[58px] items-center justify-between px-12 backdrop-blur-[12px]"
+      className="sticky top-0 z-30 flex h-[58px] items-center justify-between px-5 backdrop-blur-[12px] sm:px-12"
       style={{
         background: "rgba(255,255,255,.96)",
         borderBottom: "1px solid rgba(0,0,0,.07)",
@@ -46,6 +47,7 @@ export function LandingHeader() {
       </nav>
 
       <div className="flex flex-shrink-0 items-center gap-2.5">
+        <LanguageSwitcher />
         <a
           href="#"
           className="rounded-[9px] px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-surface-alt"

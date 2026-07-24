@@ -29,7 +29,7 @@ void i18n.use(LanguageDetector).use(initReactI18next).init({
     escapeValue: false,
   },
   detection: {
-    order: ["localStorage", "navigator", "htmlTag"],
+    order: ["localStorage", "htmlTag"],
     lookupLocalStorage: "chaweer_lang",
     caches: ["localStorage"],
   },

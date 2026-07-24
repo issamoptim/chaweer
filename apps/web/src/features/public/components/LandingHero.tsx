@@ -20,7 +20,7 @@ export function LandingHero({
 
   return (
     <section
-      className="px-12 pb-6 pt-7"
+      className="px-5 pb-6 pt-7 sm:px-12"
       style={{
         background: "linear-gradient(150deg, #082E2A 0%, #0F4A44 100%)",
       }}
