@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2, GraduationCap, Briefcase, Award, Users } from "lucide-react";
+import { Plus, Trash2, GraduationCap, Briefcase, Award } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { useToast } from "@/hooks/useToast";
 import { Card } from "../components/Card";
@@ -19,18 +19,15 @@ import { useUpdateExpertise } from "../hooks/useUpdateExpertise";
 import { useSetEducation } from "../hooks/useSetEducation";
 import { useSetExperience } from "../hooks/useSetExperience";
 import { useSetCertifications } from "../hooks/useSetCertifications";
-import { useSetMemberships } from "../hooks/useSetMemberships";
 import { professionalService } from "../services/professional-service";
 import { resolveMediaUrl } from "@/utils/media-url";
 import type {
   EducationData,
   ExperienceData,
   CertificationData,
-  MembershipData,
   EducationInput,
   ExperienceInput,
   CertificationInput,
-  MembershipInput,
 } from "../types/professional-types";
 
 interface IdentityFormState {
@@ -80,17 +77,9 @@ interface CertForm {
   credentialId: string;
 }
 
-interface MemberForm {
-  organization: string;
-  role: string;
-  startYear: string;
-  endYear: string;
-}
-
 const EMPTY_EDU: EducationForm = { degree: "", institution: "", startYear: "", endYear: "", description: "" };
 const EMPTY_EXP: ExperienceForm = { position: "", organization: "", startYear: "", endYear: "", current: false, description: "" };
 const EMPTY_CERT: CertForm = { title: "", issuer: "", issueYear: "", expiryYear: "", credentialId: "" };
-const EMPTY_MEMBER: MemberForm = { organization: "", role: "", startYear: "", endYear: "" };
 
 function eduToForm(e: EducationData): EducationForm {
   return { degree: e.degree, institution: e.institution, startYear: String(e.startYear), endYear: e.endYear ? String(e.endYear) : "", description: e.description ?? "" };
@@ -101,9 +90,6 @@ function expToForm(e: ExperienceData): ExperienceForm {
 function certToForm(c: CertificationData): CertForm {
   return { title: c.title, issuer: c.issuer, issueYear: String(c.issueYear), expiryYear: c.expiryYear ? String(c.expiryYear) : "", credentialId: c.credentialId ?? "" };
 }
-function memberToForm(m: MembershipData): MemberForm {
-  return { organization: m.organization, role: m.role ?? "", startYear: String(m.startYear), endYear: m.endYear ? String(m.endYear) : "" };
-}
 
 function isEduValid(f: EducationForm): boolean {
   return f.degree.trim() !== "" && f.institution.trim() !== "" && f.startYear !== "" && Number(f.startYear) > 0;
@@ -113,9 +99,6 @@ function isExpValid(f: ExperienceForm): boolean {
 }
 function isCertValid(f: CertForm): boolean {
   return f.title.trim() !== "" && f.issuer.trim() !== "" && f.issueYear !== "" && Number(f.issueYear) > 0;
-}
-function isMemberValid(f: MemberForm): boolean {
-  return f.organization.trim() !== "" && f.startYear !== "" && Number(f.startYear) > 0;
 }
 
 export function ProfessionalProfilePage() {
@@ -128,7 +111,6 @@ export function ProfessionalProfilePage() {
   const eduMutation = useSetEducation();
   const expMutation = useSetExperience();
   const certMutation = useSetCertifications();
-  const memberMutation = useSetMemberships();
 
   const [isEditing, setIsEditing] = useState(false);
   const [identityForm, setIdentityForm] = useState<IdentityFormState>(EMPTY_IDENTITY);
@@ -142,8 +124,6 @@ export function ProfessionalProfilePage() {
   const [expInitial, setExpInitial] = useState<ExperienceForm[]>([]);
   const [certForms, setCertForms] = useState<CertForm[]>([]);
   const [certInitial, setCertInitial] = useState<CertForm[]>([]);
-  const [memberForms, setMemberForms] = useState<MemberForm[]>([]);
-  const [memberInitial, setMemberInitial] = useState<MemberForm[]>([]);
 
   useEffect(() => {
     if (profile) {
@@ -175,10 +155,6 @@ export function ProfessionalProfilePage() {
       const certNext = profile.certifications.map(certToForm);
       setCertForms(certNext);
       setCertInitial(certNext);
-
-      const memberNext = profile.memberships.map(memberToForm);
-      setMemberForms(memberNext);
-      setMemberInitial(memberNext);
     }
   }, [profile]);
 
@@ -202,12 +178,8 @@ export function ProfessionalProfilePage() {
     () => JSON.stringify(certForms) !== JSON.stringify(certInitial),
     [certForms, certInitial]
   );
-  const isMemberDirty = useMemo(
-    () => JSON.stringify(memberForms) !== JSON.stringify(memberInitial),
-    [memberForms, memberInitial]
-  );
-  const isDirty = isIdentityDirty || isLanguagesDirty || isEduDirty || isExpDirty || isCertDirty || isMemberDirty;
-  const isSaving = identityMutation.isPending || expertiseMutation.isPending || eduMutation.isPending || expMutation.isPending || certMutation.isPending || memberMutation.isPending;
+  const isDirty = isIdentityDirty || isLanguagesDirty || isEduDirty || isExpDirty || isCertDirty;
+  const isSaving = identityMutation.isPending || expertiseMutation.isPending || eduMutation.isPending || expMutation.isPending || certMutation.isPending;
 
   const canSaveIdentity =
     identityForm.firstName.trim().length > 0 &&
@@ -240,7 +212,6 @@ export function ProfessionalProfilePage() {
     setEduForms(eduInitial);
     setExpForms(expInitial);
     setCertForms(certInitial);
-    setMemberForms(memberInitial);
     setTouched({});
     setIsEditing(false);
   }
@@ -322,16 +293,6 @@ export function ProfessionalProfilePage() {
       promises.push(certMutation.mutateAsync(validCerts));
     }
 
-    if (isMemberDirty) {
-      const validMembers = memberForms.filter(isMemberValid).map((f) => ({
-        organization: f.organization.trim(),
-        role: f.role.trim() || undefined,
-        startYear: Number(f.startYear),
-        endYear: f.endYear ? Number(f.endYear) : undefined,
-      }));
-      promises.push(memberMutation.mutateAsync(validMembers));
-    }
-
     try {
       await Promise.all(promises);
       setIdentityInitial(identityForm);
@@ -339,7 +300,6 @@ export function ProfessionalProfilePage() {
       setEduInitial(eduForms);
       setExpInitial(expForms);
       setCertInitial(certForms);
-      setMemberInitial(memberForms);
       toast.showSuccess("Modifications enregistrées.");
       setIsEditing(false);
     } catch {
@@ -580,7 +540,7 @@ export function ProfessionalProfilePage() {
                       <ProInput label="Description (optionnel)" name={`edu-desc-${index}`} value={form.description} onChange={(v) => { const n = [...eduForms]; n[index] = { ...form, description: v }; setEduForms(n); }} placeholder="Spécialisation, mention…" disabled={isSaving} />
                     </div>
                   </div>
-                  {eduForms.length > 1 && (
+                  {eduForms.length > 0 && (
                     <button type="button" onClick={() => setEduForms(eduForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
                       <Trash2 className="h-3.5 w-3.5" /> Supprimer
                     </button>
@@ -626,7 +586,7 @@ export function ProfessionalProfilePage() {
                       <ProInput label="Description (optionnel)" name={`exp-desc-${index}`} value={form.description} onChange={(v) => { const n = [...expForms]; n[index] = { ...form, description: v }; setExpForms(n); }} placeholder="Missions, responsabilités…" disabled={isSaving} />
                     </div>
                   </div>
-                  {expForms.length > 1 && (
+                  {expForms.length > 0 && (
                     <button type="button" onClick={() => setExpForms(expForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
                       <Trash2 className="h-3.5 w-3.5" /> Supprimer
                     </button>
@@ -661,12 +621,8 @@ export function ProfessionalProfilePage() {
                     <ProInput label="Titre" name={`cert-title-${index}`} value={form.title} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, title: v }; setCertForms(n); }} placeholder="Certification en droit fiscal" required disabled={isSaving} />
                     <ProInput label="Émetteur" name={`cert-issuer-${index}`} value={form.issuer} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, issuer: v }; setCertForms(n); }} placeholder="Ordre des avocats" required disabled={isSaving} />
                     <ProInput label="Année d'obtention" name={`cert-issue-${index}`} type="number" value={form.issueYear} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, issueYear: v }; setCertForms(n); }} placeholder="2020" required disabled={isSaving} />
-                    <ProInput label="Année d'expiration" name={`cert-expiry-${index}`} type="number" value={form.expiryYear} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, expiryYear: v }; setCertForms(n); }} placeholder="2025" disabled={isSaving} />
-                    <div className="sm:col-span-2">
-                      <ProInput label="Référence (optionnel)" name={`cert-cred-${index}`} value={form.credentialId} onChange={(v) => { const n = [...certForms]; n[index] = { ...form, credentialId: v }; setCertForms(n); }} placeholder="N° de référence" disabled={isSaving} />
-                    </div>
                   </div>
-                  {certForms.length > 1 && (
+                  {certForms.length > 0 && (
                     <button type="button" onClick={() => setCertForms(certForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
                       <Trash2 className="h-3.5 w-3.5" /> Supprimer
                     </button>
@@ -683,49 +639,13 @@ export function ProfessionalProfilePage() {
                 <div key={c.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
                   <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{c.title}</span>
                   <span className="text-[13.5px] text-[#6B6862]">{c.issuer}</span>
-                  <span className="text-[12.5px] text-[#9A968E]">{c.issueYear}{c.expiryYear ? ` — ${c.expiryYear}` : ""}</span>
-                  {c.credentialId && <span className="text-[12.5px] text-[#9A968E]">Réf : {c.credentialId}</span>}
+                  <span className="text-[12.5px] text-[#9A968E]">{c.issueYear}</span>
                 </div>
               )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune certification renseignée.</p>}
             </div>
           )}
         </Card>
 
-        {/* Carte 6 — Affiliations */}
-        <Card title={<span className="flex items-center gap-2"><Users className="h-[18px] w-[18px] text-[#0F766E]" /> Affiliations</span>}>
-          {isEditing ? (
-            <div className="flex flex-col gap-3">
-              {memberForms.map((form, index) => (
-                <div key={index} className="rounded-[12px] border border-[#EFEDE9] p-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <ProInput label="Organisation" name={`member-org-${index}`} value={form.organization} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, organization: v }; setMemberForms(n); }} placeholder="Association des avocats" required disabled={isSaving} />
-                    <ProInput label="Rôle (optionnel)" name={`member-role-${index}`} value={form.role} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, role: v }; setMemberForms(n); }} placeholder="Membre du conseil" disabled={isSaving} />
-                    <ProInput label="Année de début" name={`member-start-${index}`} type="number" value={form.startYear} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, startYear: v }; setMemberForms(n); }} placeholder="2019" required disabled={isSaving} />
-                    <ProInput label="Année de fin" name={`member-end-${index}`} type="number" value={form.endYear} onChange={(v) => { const n = [...memberForms]; n[index] = { ...form, endYear: v }; setMemberForms(n); }} placeholder="2023" disabled={isSaving} />
-                  </div>
-                  {memberForms.length > 1 && (
-                    <button type="button" onClick={() => setMemberForms(memberForms.filter((_, i) => i !== index))} className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#B4231F] hover:underline">
-                      <Trash2 className="h-3.5 w-3.5" /> Supprimer
-                    </button>
-                  )}
-                </div>
-              ))}
-              <button type="button" onClick={() => setMemberForms([...memberForms, { ...EMPTY_MEMBER }])} className="flex items-center gap-2 rounded-[10px] border border-dashed border-[#CDE5E1] px-4 py-3 text-[14px] font-medium text-[#0F766E] transition-colors hover:bg-[#E6F2F0]">
-                <Plus className="h-4 w-4" /> Ajouter une affiliation
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {(profile?.memberships ?? []).length > 0 ? profile!.memberships.map((m) => (
-                <div key={m.id} className="flex flex-col gap-1 border-l-2 border-[#CDE5E1] pl-4">
-                  <span className="text-[14.5px] font-semibold text-[#1C1B1A]">{m.organization}</span>
-                  {m.role && <span className="text-[13.5px] text-[#6B6862]">{m.role}</span>}
-                  <span className="text-[12.5px] text-[#9A968E]">{m.startYear}{m.endYear ? ` — ${m.endYear}` : " — en cours"}</span>
-                </div>
-              )) : <p className="text-[14px] italic text-[#B4AFA6]">Aucune affiliation renseignée.</p>}
-            </div>
-          )}
-        </Card>
       </div>
 
       <EditActionBar
