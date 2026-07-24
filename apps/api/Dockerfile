@@ -2,7 +2,7 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Couche 1 : dépendances (cachée si package.json inchangé)
+# Couche 1 : dépendances
 COPY apps/api/package*.json ./
 RUN npm ci
 
@@ -10,18 +10,20 @@ RUN npm ci
 COPY apps/api/prisma.config.ts ./
 COPY apps/api/prisma/ ./prisma/
 
-# Couche 3 : génération du Prisma Client au build time
-# Prisma ne se connecte pas à la base lors de `generate`.
-# L'URL placeholder est suffisante pour satisfaire prisma.config.ts.
-# Le client généré est stocké dans node_modules et persist via le volume api_node_modules.
+# Couche 3 : génération du Prisma Client
 ARG DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 ENV DATABASE_URL=${DATABASE_URL}
 RUN npx prisma generate
 
-# Couche 4 : configuration TypeScript
+# Couche 4 : code source + config TypeScript
 COPY apps/api/tsconfig.json ./
+COPY apps/api/src/ ./src/
 
+# Couche 5 : build TypeScript
+RUN npm run build
+
+# Couche 6 : migrations au démarrage
+ENV PORT=3000
 EXPOSE 3000
 
-# Le répertoire src/ est monté en volume au runtime (hot reload via tsx watch).
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
