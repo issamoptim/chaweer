@@ -10,11 +10,8 @@ COPY apps/api/package.json ./apps/api/
 # Installer les dépendances du workspace
 RUN npm ci
 
-# Couche 2 : code source du package shared + build
+# Couche 2 : code source du package shared
 COPY packages/shared/src/ ./packages/shared/src/
-COPY packages/shared/tsconfig.json ./packages/shared/
-WORKDIR /app/packages/shared
-RUN npm run build
 
 # Couche 3 : fichiers Prisma de l'API
 WORKDIR /app
@@ -38,4 +35,4 @@ RUN npm run build
 ENV PORT=3000
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx tsx src/server.ts"]
