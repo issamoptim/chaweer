@@ -46,18 +46,7 @@ async function downloadAndSavePhoto(index: number): Promise<string | null> {
   const gender = isMale ? 'men' : 'women';
   const photoId = index % 100;
   const url = `https://randomuser.me/api/portraits/${gender}/${photoId}.jpg`;
-
-  try {
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
-    const buffer = await downloadPhoto(url);
-    const filename = `${randomUUID()}.jpg`;
-    await fs.writeFile(path.join(UPLOAD_DIR, filename), buffer);
-    return `/uploads/${filename}`;
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn(`  ⚠ Could not download photo for index ${index}: ${(err as Error).message}`);
-    return null;
-  }
+  return url;
 }
 
 // ─── Name pools ───────────────────────────────────────────────
