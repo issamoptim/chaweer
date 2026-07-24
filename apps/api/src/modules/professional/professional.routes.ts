@@ -9,6 +9,10 @@ import {
   updateOfferSchema,
   updateContactSchema,
   updateOfficeSchema,
+  setEducationSchema,
+  setExperienceSchema,
+  setCertificationsSchema,
+  setMembershipsSchema,
 } from './professional.schema';
 import {
   getReferentialController,
@@ -22,6 +26,10 @@ import {
   unpublishProfileController,
   updateContactController,
   updateOfficeController,
+  setEducationController,
+  setExperienceController,
+  setCertificationsController,
+  setMembershipsController,
 } from './professional.controller';
 
 const router = Router();
@@ -97,6 +105,38 @@ router.patch(
   authorize('PROFESSIONAL'),
   validate(updateOfficeSchema),
   updateOfficeController,
+);
+
+router.put(
+  '/education',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  validate(setEducationSchema),
+  setEducationController,
+);
+
+router.put(
+  '/experience',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  validate(setExperienceSchema),
+  setExperienceController,
+);
+
+router.put(
+  '/certifications',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  validate(setCertificationsSchema),
+  setCertificationsController,
+);
+
+router.put(
+  '/memberships',
+  authenticate,
+  authorize('PROFESSIONAL'),
+  validate(setMembershipsSchema),
+  setMembershipsController,
 );
 
 export { router as professionalRoutes };

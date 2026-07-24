@@ -12,6 +12,7 @@ export function useUpdateOffer() {
     mutationFn: (input: UpdateOfferInput) => professionalService.updateOffer(input, accessToken!),
     onSuccess: (data: ProfessionalProfileData) => {
       queryClient.setQueryData(professionalKeys.me, data);
+      void queryClient.invalidateQueries({ queryKey: ["public-profile"] });
     },
   });
 }

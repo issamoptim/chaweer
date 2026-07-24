@@ -12,6 +12,7 @@ export function usePublishProfile() {
     mutationFn: () => professionalService.publish(accessToken!),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: professionalKeys.me });
+      void queryClient.invalidateQueries({ queryKey: ["public-profile"] });
     },
     onError: (error: ApiError) => {
       void error;

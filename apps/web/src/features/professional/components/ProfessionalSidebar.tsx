@@ -11,6 +11,8 @@ import {
   ArrowLeft,
   Menu,
   X,
+  GraduationCap,
+  Award,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
@@ -31,6 +33,8 @@ const PRIMARY_ITEMS: NavItem[] = [
   { label: "Expertise", to: "/pro/expertise", icon: Scale },
   { label: "Consultation", to: "/pro/offre", icon: Video },
   { label: "Contact & cabinet", to: "/pro/contact", icon: MapPin },
+  { label: "Parcours", to: "/pro/parcours", icon: GraduationCap },
+  { label: "Certifications", to: "/pro/certifications", icon: Award },
 ];
 
 const SECONDARY_ITEMS: NavItem[] = [

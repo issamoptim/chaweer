@@ -91,6 +91,46 @@ export interface ProfileCompletion {
   sections: ProfileCompletionSections;
 }
 
+export interface EducationData {
+  id: string;
+  degree: string;
+  institution: string;
+  startYear: number;
+  endYear: number | null;
+  description: string | null;
+  order: number;
+}
+
+export interface ExperienceData {
+  id: string;
+  position: string;
+  organization: string;
+  startYear: number;
+  endYear: number | null;
+  current: boolean;
+  description: string | null;
+  order: number;
+}
+
+export interface CertificationData {
+  id: string;
+  title: string;
+  issuer: string;
+  issueYear: number;
+  expiryYear: number | null;
+  credentialId: string | null;
+  order: number;
+}
+
+export interface MembershipData {
+  id: string;
+  organization: string;
+  role: string | null;
+  startYear: number;
+  endYear: number | null;
+  order: number;
+}
+
 export interface ProfessionalProfileData {
   id: string;
   status: string;
@@ -102,10 +142,10 @@ export interface ProfessionalProfileData {
   office: OfficeData | null;
   expertise: ExpertiseData;
   offers: ConsultationOfferData[];
-  education: unknown[];
-  experience: unknown[];
-  certifications: unknown[];
-  memberships: unknown[];
+  education: EducationData[];
+  experience: ExperienceData[];
+  certifications: CertificationData[];
+  memberships: MembershipData[];
   verification: { status: string; verifiedAt: string | null; rejectionReason: string | null } | null;
   completion: ProfileCompletion;
 }
@@ -156,4 +196,36 @@ export interface UpdateOfficeInput {
   cityId?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+}
+
+export interface EducationInput {
+  degree: string;
+  institution: string;
+  startYear: number;
+  endYear?: number | null;
+  description?: string | null;
+}
+
+export interface ExperienceInput {
+  position: string;
+  organization: string;
+  startYear: number;
+  endYear?: number | null;
+  current?: boolean;
+  description?: string | null;
+}
+
+export interface CertificationInput {
+  title: string;
+  issuer: string;
+  issueYear: number;
+  expiryYear?: number | null;
+  credentialId?: string | null;
+}
+
+export interface MembershipInput {
+  organization: string;
+  role?: string | null;
+  startYear: number;
+  endYear?: number | null;
 }

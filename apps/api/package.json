@@ -13,6 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed-professionals": "tsx prisma/seed-professionals.ts",
     "prisma:studio": "prisma studio",
     "prisma:format": "prisma format"
   },

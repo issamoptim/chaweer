@@ -86,19 +86,19 @@ export function OfferPreviewCard({
           {modalities.includes("VIDEO") && (
             <span className="flex items-center gap-1 text-[12px]">
               <Video className="h-4 w-4" aria-hidden="true" />
-              Vidéo
+              Visioconférence
             </span>
           )}
           {modalities.includes("AUDIO") && (
             <span className="flex items-center gap-1 text-[12px]">
               <Phone className="h-4 w-4" aria-hidden="true" />
-              Audio
+              Téléphone
             </span>
           )}
           {modalities.includes("CHAT") && (
             <span className="flex items-center gap-1 text-[12px]">
               <MessageCircle className="h-4 w-4" aria-hidden="true" />
-              Chat
+              Messagerie
             </span>
           )}
         </div>

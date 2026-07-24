@@ -12,6 +12,14 @@ import type {
   UpdateOfficeInput,
   ContactData,
   OfficeData,
+  EducationData,
+  ExperienceData,
+  CertificationData,
+  MembershipData,
+  EducationInput,
+  ExperienceInput,
+  CertificationInput,
+  MembershipInput,
 } from "../types/professional-types";
 
 export const professionalService = {
@@ -76,5 +84,21 @@ export const professionalService = {
 
   updateOffice(input: UpdateOfficeInput, token: string): Promise<OfficeData> {
     return apiClient.patch<OfficeData>("/professional/office", input, { token });
+  },
+
+  setEducation(items: EducationInput[], token: string): Promise<EducationData[]> {
+    return apiClient.put<EducationData[]>("/professional/education", items, { token });
+  },
+
+  setExperience(items: ExperienceInput[], token: string): Promise<ExperienceData[]> {
+    return apiClient.put<ExperienceData[]>("/professional/experience", items, { token });
+  },
+
+  setCertifications(items: CertificationInput[], token: string): Promise<CertificationData[]> {
+    return apiClient.put<CertificationData[]>("/professional/certifications", items, { token });
+  },
+
+  setMemberships(items: MembershipInput[], token: string): Promise<MembershipData[]> {
+    return apiClient.put<MembershipData[]>("/professional/memberships", items, { token });
   },
 };

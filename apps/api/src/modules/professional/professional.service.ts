@@ -32,6 +32,10 @@ import type {
   UpdateOfferInput,
   UpdateContactInput,
   UpdateOfficeInput,
+  EducationInput,
+  ExperienceInput,
+  CertificationInput,
+  MembershipInput,
 } from './professional.schema';
 import type { Prisma, PrismaClient, ConsultationModality } from '../../generated/prisma/client';
 
@@ -762,6 +766,198 @@ export async function updateOffice(
     latitude: created.latitude,
     longitude: created.longitude,
   };
+}
+
+export async function setEducation(
+  userId: string,
+  items: EducationInput[],
+): Promise<EducationData[]> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.education.deleteMany({ where: { profileId: profile.id } });
+    if (items.length > 0) {
+      await tx.education.createMany({
+        data: items.map((item, index) => ({
+          profileId: profile.id,
+          degree: item.degree,
+          institution: item.institution,
+          startYear: item.startYear,
+          endYear: item.endYear ?? null,
+          description: item.description ?? null,
+          order: index,
+        })),
+      });
+    }
+  });
+
+  await syncPublicationStatus(userId);
+
+  const updated = await prisma.education.findMany({
+    where: { profileId: profile.id },
+    orderBy: { order: 'asc' },
+  });
+
+  return updated.map((e) => ({
+    id: e.id,
+    degree: e.degree,
+    institution: e.institution,
+    startYear: e.startYear,
+    endYear: e.endYear,
+    description: e.description,
+    order: e.order,
+  }));
+}
+
+export async function setExperience(
+  userId: string,
+  items: ExperienceInput[],
+): Promise<ExperienceData[]> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.professionalExperience.deleteMany({ where: { profileId: profile.id } });
+    if (items.length > 0) {
+      await tx.professionalExperience.createMany({
+        data: items.map((item, index) => ({
+          profileId: profile.id,
+          position: item.position,
+          organization: item.organization,
+          startYear: item.startYear,
+          endYear: item.endYear ?? null,
+          current: item.current ?? false,
+          description: item.description ?? null,
+          order: index,
+        })),
+      });
+    }
+  });
+
+  await syncPublicationStatus(userId);
+
+  const updated = await prisma.professionalExperience.findMany({
+    where: { profileId: profile.id },
+    orderBy: { order: 'asc' },
+  });
+
+  return updated.map((e) => ({
+    id: e.id,
+    position: e.position,
+    organization: e.organization,
+    startYear: e.startYear,
+    endYear: e.endYear,
+    current: e.current,
+    description: e.description,
+    order: e.order,
+  }));
+}
+
+export async function setCertifications(
+  userId: string,
+  items: CertificationInput[],
+): Promise<CertificationData[]> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.certification.deleteMany({ where: { profileId: profile.id } });
+    if (items.length > 0) {
+      await tx.certification.createMany({
+        data: items.map((item, index) => ({
+          profileId: profile.id,
+          title: item.title,
+          issuer: item.issuer,
+          issueYear: item.issueYear,
+          expiryYear: item.expiryYear ?? null,
+          credentialId: item.credentialId ?? null,
+          order: index,
+        })),
+      });
+    }
+  });
+
+  await syncPublicationStatus(userId);
+
+  const updated = await prisma.certification.findMany({
+    where: { profileId: profile.id },
+    orderBy: { order: 'asc' },
+  });
+
+  return updated.map((c) => ({
+    id: c.id,
+    title: c.title,
+    issuer: c.issuer,
+    issueYear: c.issueYear,
+    expiryYear: c.expiryYear,
+    credentialId: c.credentialId,
+    order: c.order,
+  }));
+}
+
+export async function setMemberships(
+  userId: string,
+  items: MembershipInput[],
+): Promise<MembershipData[]> {
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new NotFoundError('Profil professionnel introuvable.');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.professionalMembership.deleteMany({ where: { profileId: profile.id } });
+    if (items.length > 0) {
+      await tx.professionalMembership.createMany({
+        data: items.map((item, index) => ({
+          profileId: profile.id,
+          organization: item.organization,
+          role: item.role ?? null,
+          startYear: item.startYear,
+          endYear: item.endYear ?? null,
+          order: index,
+        })),
+      });
+    }
+  });
+
+  await syncPublicationStatus(userId);
+
+  const updated = await prisma.professionalMembership.findMany({
+    where: { profileId: profile.id },
+    orderBy: { order: 'asc' },
+  });
+
+  return updated.map((m) => ({
+    id: m.id,
+    organization: m.organization,
+    role: m.role,
+    startYear: m.startYear,
+    endYear: m.endYear,
+    order: m.order,
+  }));
 }
 
 export async function getPublicProfile(profileId: string): Promise<PublicProfileData> {

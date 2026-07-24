@@ -170,3 +170,55 @@ export async function getPublicProfileController(
     next(err);
   }
 }
+
+export async function setEducationController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const education = await professionalService.setEducation(req.user!.userId, req.body);
+    res.status(200).json({ success: true, data: education });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function setExperienceController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const experience = await professionalService.setExperience(req.user!.userId, req.body);
+    res.status(200).json({ success: true, data: experience });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function setCertificationsController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const certifications = await professionalService.setCertifications(req.user!.userId, req.body);
+    res.status(200).json({ success: true, data: certifications });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function setMembershipsController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const memberships = await professionalService.setMemberships(req.user!.userId, req.body);
+    res.status(200).json({ success: true, data: memberships });
+  } catch (err) {
+    next(err);
+  }
+}

@@ -13,6 +13,7 @@ export function useUpdateOffice() {
       professionalService.updateOffice(input, accessToken!),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: professionalKeys.me });
+      void queryClient.invalidateQueries({ queryKey: ["public-profile"] });
     },
   });
 }

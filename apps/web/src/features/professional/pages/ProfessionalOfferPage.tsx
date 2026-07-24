@@ -112,9 +112,9 @@ export function ProfessionalOfferPage() {
   }
 
   const modalityLabels: Record<ConsultationModality, string> = {
-    VIDEO: "Vidéo",
-    AUDIO: "Audio",
-    CHAT: "Chat",
+    VIDEO: "Visioconférence",
+    AUDIO: "Téléphone",
+    CHAT: "Messagerie",
   };
 
   const activeModalities = offer ? [...offer.modalities] : [];
