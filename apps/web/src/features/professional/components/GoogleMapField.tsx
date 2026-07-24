@@ -83,7 +83,7 @@ export function GoogleMapField({
       const lng = place.geometry.location.lng();
       const formattedAddress = place.formatted_address ?? "";
 
-      const cityComponent = place.address_components?.find((c) =>
+      const cityComponent = place.address_components?.find((c: google.maps.GeocoderAddressComponent) =>
         c.types.includes("locality") || c.types.includes("administrative_area_level_2")
       );
       const city = cityComponent?.long_name;

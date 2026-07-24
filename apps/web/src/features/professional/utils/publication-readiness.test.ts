@@ -15,6 +15,8 @@ function makeProfile(
       firstName: "Amina",
       lastName: "El Fassi",
       professionalTitle: "Avocate",
+      registrationNumber: null,
+      yearsOfExperience: null,
       photoUrl: null,
       barAssociationId: "bar-1",
     },
@@ -44,7 +46,6 @@ function makeProfile(
     education: [],
     experience: [],
     certifications: [],
-    memberships: [],
     verification: null,
     completion: {
       percentage: 30,

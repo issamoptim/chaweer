@@ -58,7 +58,7 @@ export function LanguageSwitcher() {
   const ref = useRef<HTMLDivElement>(null);
 
   const currentLang =
-    LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
+    LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0]!;
 
   const changeLanguage = useCallback(
     (lang: SupportedLanguage) => {

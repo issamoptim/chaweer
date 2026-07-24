@@ -25,9 +25,6 @@ import type {
   EducationData,
   ExperienceData,
   CertificationData,
-  EducationInput,
-  ExperienceInput,
-  CertificationInput,
 } from "../types/professional-types";
 
 interface IdentityFormState {
