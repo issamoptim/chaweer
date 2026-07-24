@@ -13,7 +13,6 @@ import {
   GraduationCap,
   Briefcase,
   Award,
-  Users,
   Scale,
   Languages,
   Pencil,
@@ -408,49 +407,21 @@ export function PublicProfilePage() {
           </Section>
         )}
 
-        {/* Certifications + Memberships */}
-        {(profile.certifications.length > 0 || profile.memberships.length > 0) && (
-          <Section title="Certifications & affiliations">
-            <div className="flex flex-col gap-4">
-              {profile.certifications.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  {profile.certifications.map((cert) => (
-                    <div key={cert.id} className="flex gap-3">
-                      <Award className="h-4 w-4 shrink-0 text-[#0F766E] mt-0.5" />
-                      <div className="flex flex-col">
-                        <span className="text-[13.5px] font-medium text-[#1C1B1A]">
-                          {cert.title}
-                          {cert.issuer && ` — ${cert.issuer}`}
-                        </span>
-                        {cert.issueYear && (
-                          <span className="text-[12px] text-[#9A968E]">{cert.issueYear}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+        {/* Certification */}
+        {profile.certifications.length > 0 && (
+          <Section title="Certification">
+            <div className="flex flex-col gap-2">
+              {profile.certifications.map((cert) => (
+                <div key={cert.id} className="flex gap-3">
+                  <Award className="h-4 w-4 shrink-0 text-[#0F766E] mt-0.5" />
+                  <div className="flex flex-col">
+                    <span className="text-[13.5px] font-medium text-[#1C1B1A]">
+                      {cert.title}
+                      {cert.issuer && ` — ${cert.issuer}`}
+                    </span>
+                  </div>
                 </div>
-              )}
-              {profile.memberships.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  {profile.memberships.map((m) => (
-                    <div key={m.id} className="flex gap-3">
-                      <Users className="h-4 w-4 shrink-0 text-[#0F766E] mt-0.5" />
-                      <div className="flex flex-col">
-                        <span className="text-[13.5px] font-medium text-[#1C1B1A]">
-                          {m.organization}
-                          {m.role && ` — ${m.role}`}
-                        </span>
-                        {m.startYear && (
-                          <span className="text-[12px] text-[#9A968E]">
-                            {m.startYear}
-                            {m.endYear ? ` – ${m.endYear}` : ""}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              ))}
             </div>
           </Section>
         )}

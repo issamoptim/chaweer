@@ -71,20 +71,9 @@ export interface PublicCertificationData {
   id: string;
   title: string | null;
   issuer: string | null;
-  issueYear: number | null;
-  expiryYear: number | null;
-  credentialId: string | null;
   order: number;
 }
 
-export interface PublicMembershipData {
-  id: string;
-  organization: string | null;
-  role: string | null;
-  startYear: number | null;
-  endYear: number | null;
-  order: number;
-}
 
 export interface PublicProfileData {
   id: string;
@@ -100,7 +89,6 @@ export interface PublicProfileData {
   education: PublicEducationData[];
   experience: PublicExperienceData[];
   certifications: PublicCertificationData[];
-  memberships: PublicMembershipData[];
   barAssociationName: string | null;
   cityName: string | null;
 }
