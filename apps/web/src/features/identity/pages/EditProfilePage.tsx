@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Check } from "lucide-react";
 import { TextField, PrimaryButton, SecondaryButton, ErrorMessage } from "@/features/auth";
-import { AppHeader } from "@/components/AppHeader";
+import { LandingHeader } from "@/features/public/components/LandingHeader";
 import { useProfile } from "../hooks/useProfile";
 import { useUpdateProfile } from "../hooks/useUpdateProfile";
 import { useToast } from "@/hooks/useToast";
@@ -133,7 +133,7 @@ export function EditProfilePage() {
   if (showConfirmation) {
     return (
       <div className="min-h-screen bg-white">
-        <AppHeader />
+        <LandingHeader />
         <div className="mx-auto max-w-[520px] px-6 py-16 flex flex-col items-center text-center">
           <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-[#0F766E]">
             <Check className="h-8 w-8 text-white" strokeWidth={3} />
@@ -160,7 +160,7 @@ export function EditProfilePage() {
   if (isError) {
     return (
       <div className="min-h-screen bg-white">
-        <AppHeader />
+        <LandingHeader />
         <div className="mx-auto max-w-[760px] px-6 pt-8 pb-16 flex flex-col gap-[22px]">
           <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
             Modifier mon profil
@@ -180,7 +180,7 @@ export function EditProfilePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <AppHeader />
+      <LandingHeader />
       <div className="mx-auto max-w-[760px] px-6 pt-8 pb-16 flex flex-col gap-[22px]">
         <div>
           <button

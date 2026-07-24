@@ -18,7 +18,7 @@ export function MainLayout() {
           <Outlet />
         </ToastProvider>
       ) : (
-        <main className="mx-auto max-w-7xl px-4 py-8">
+        <main className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10">
           <ToastProvider>
             <Outlet />
           </ToastProvider>

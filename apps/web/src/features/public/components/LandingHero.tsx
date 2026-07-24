@@ -18,24 +18,24 @@ export function LandingHero({
   onCityChange,
   onQueryChange,
 }: LandingHeroProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
 
   return (
     <section
-      className="px-8 pb-6 pt-7 sm:px-12 lg:px-16"
+      className="px-8 pb-9 pt-11 sm:px-12 lg:px-12"
       style={{
         background: "linear-gradient(150deg, #082E2A 0%, #0F4A44 100%)",
       }}
     >
       <div className="mx-auto max-w-[1500px]">
-        <div className="max-w-[640px]">
+        <div className="max-w-[820px]">
           <h1
-            className="m-0 mb-2 text-[36px] font-extrabold leading-[1.15] text-white"
-            style={{ letterSpacing: "-0.025em", textWrap: "balance" }}
+            className={`m-0 mb-2 font-extrabold leading-[1.12] text-white ${isArabic ? "text-[60px]" : "text-[44px]"}`}
+            style={{ letterSpacing: isArabic ? "0" : "-0.03em", textWrap: "balance" }}
+            dir="auto"
           >
-            {t("landing.hero.title")}
-            <br />
-            {t("landing.hero.titleLine2")}
+            {t("landing.hero.title")} {t("landing.hero.titleLine2")}
           </h1>
           <p
             className="m-0 mb-5 text-[15px] leading-[1.5]"
@@ -44,6 +44,8 @@ export function LandingHero({
             {t("landing.hero.subtitle")}
           </p>
         </div>
+
+        <div className="mb-5" />
 
         <div className="flex flex-wrap items-center gap-2.5">
           {/* City select */}

@@ -1,9 +1,9 @@
-import { AppHeader } from "@/components/AppHeader";
+import { LandingHeader } from "@/features/public/components/LandingHeader";
 
 export function EditProfileSkeleton() {
   return (
     <div className="min-h-screen bg-white" aria-label="Chargement du formulaire">
-      <AppHeader />
+      <LandingHeader />
       <div className="mx-auto max-w-[760px] px-6 py-8 flex flex-col gap-[22px] animate-pulse">
         <div>
           <div className="h-[13.5px] w-16 rounded bg-[#E7E5E1] mb-3" />

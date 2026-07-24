@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Shield, Briefcase } from "lucide-react";
 import { useProfile } from "../hooks/useProfile";
 import { ErrorMessage, LoadingSpinner } from "@/features/auth";
-import { AppHeader } from "@/components/AppHeader";
+import { LandingHeader } from "@/features/public/components/LandingHeader";
 import { ProfileSummaryCard } from "../components/ProfileSummaryCard";
 import { PersonalInfoCard } from "../components/PersonalInfoCard";
 import { PreferencesCard } from "../components/PreferencesCard";
@@ -19,7 +19,7 @@ export function ProfilePage() {
   if (isError || !profile) {
     return (
       <div className="min-h-screen bg-white">
-        <AppHeader />
+        <LandingHeader />
         <div className="mx-auto max-w-[760px] px-6 py-10 flex flex-col gap-[22px]">
           <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
             Mon profil
@@ -40,7 +40,7 @@ export function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <AppHeader />
+      <LandingHeader />
       <div className="mx-auto max-w-[760px] px-6 py-10 flex flex-col gap-[22px]">
         <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-foreground">
           Mon profil

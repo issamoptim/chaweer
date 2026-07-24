@@ -1,9 +1,9 @@
-import { AppHeader } from "@/components/AppHeader";
+import { LandingHeader } from "@/features/public/components/LandingHeader";
 
 export function SecuritySkeleton() {
   return (
     <div className="min-h-screen bg-white" aria-label="Chargement de la sécurité">
-      <AppHeader />
+      <LandingHeader />
       <div className="mx-auto max-w-[760px] px-6 py-10 flex flex-col gap-[22px] animate-pulse">
         <div className="h-[28px] w-40 rounded-[8px] bg-[#E7E5E1]" />
         <div className="h-[20px] w-72 rounded bg-[#E7E5E1]" />

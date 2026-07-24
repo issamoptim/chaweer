@@ -36,13 +36,24 @@ export function LandingHeader() {
     navigate("/", { replace: true });
   };
 
+  const handleNavScroll = (hash: string) => {
+    if (window.location.pathname === "/") {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate(`/#${hash}`);
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  };
+
   const initials = user
     ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
     : "";
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-[58px] items-center justify-between px-8 backdrop-blur-[12px] sm:px-12 lg:px-16"
+      className="sticky top-0 z-30 flex h-[58px] items-center justify-between px-6 backdrop-blur-[12px] sm:px-8 lg:px-10"
       style={{
         background: "rgba(255,255,255,.96)",
         borderBottom: "1px solid rgba(0,0,0,.07)",
@@ -57,24 +68,26 @@ export function LandingHeader() {
       </Link>
 
       <nav className="hidden items-center gap-6 text-sm font-medium text-[#4B4A46] sm:flex">
-        <a
-          href="#avocats"
+        <button
+          onClick={() => handleNavScroll("avocats")}
           className="transition-colors hover:text-primary"
         >
           {t("landing.header.nav.findLawyer")}
-        </a>
-        <a
-          href="#comment-ca-marche"
+        </button>
+        <button
+          onClick={() => handleNavScroll("comment-ca-marche")}
           className="transition-colors hover:text-primary"
         >
           {t("landing.header.nav.howItWorks")}
-        </a>
-        <Link
-          to="/pro/inscription"
-          className="transition-colors hover:text-primary"
-        >
-          {t("landing.header.nav.forLawyers")}
-        </Link>
+        </button>
+        {!isAuthenticated && (
+          <Link
+            to="/pro/inscription"
+            className="transition-colors hover:text-primary"
+          >
+            {t("landing.header.nav.forLawyers")}
+          </Link>
+        )}
         <a
           href="#"
           className="transition-colors hover:text-primary"

@@ -1,9 +1,9 @@
-import { AppHeader } from "@/components/AppHeader";
+import { LandingHeader } from "@/features/public/components/LandingHeader";
 
 export function ProfileSkeleton() {
   return (
     <div className="min-h-screen bg-white" aria-label="Chargement du profil">
-      <AppHeader />
+      <LandingHeader />
       <div className="mx-auto max-w-[760px] px-6 py-10 flex flex-col gap-[22px] animate-pulse">
         <div className="h-[28px] w-40 rounded-[8px] bg-[#E7E5E1]" />
         <div className="flex items-center gap-4 rounded-[16px] border border-[#E9E7E3] bg-card p-7 shadow-[0_1px_2px_rgba(19,78,74,0.04),0_8px_24px_rgba(19,78,74,0.06)]">

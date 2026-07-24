@@ -16,7 +16,7 @@ export function LawyerGrid({ lawyers, isLoading }: LawyerGridProps) {
         id="avocats"
         className="mx-auto max-w-[1500px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
       >
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-[18px] min-[600px]:grid-cols-2 min-[900px]:grid-cols-3 min-[1280px]:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -59,7 +59,7 @@ export function LawyerGrid({ lawyers, isLoading }: LawyerGridProps) {
       id="avocats"
       className="mx-auto max-w-[1500px] px-8 pb-20 pt-8 sm:px-12 lg:px-16"
     >
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-[18px] min-[600px]:grid-cols-2 min-[900px]:grid-cols-3 min-[1280px]:grid-cols-4">
         {lawyers.map((lawyer) => (
           <LawyerCard key={lawyer.id} lawyer={lawyer} />
         ))}
