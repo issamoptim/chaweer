@@ -64,13 +64,13 @@ export function Connexion() {
             <PrimaryButton loading={loginMutation.isPending}>Se connecter</PrimaryButton>
           </form>
           <div className="flex flex-col items-center gap-2">
-            <TextLink to="/connexion">Mot de passe oublié</TextLink>
+            <TextLink to="/mot-de-passe-oublie">Mot de passe oublié</TextLink>
             <TextLink to="/inscription">Créer un compte</TextLink>
           </div>
           <ProfessionalEntry
             text="Vous êtes avocat ?"
-            linkText="Accéder à l'espace avocat"
-            to="/"
+            linkText="Je suis avocat"
+            to="/pro/connexion"
           />
         </div>
       </AuthCard>

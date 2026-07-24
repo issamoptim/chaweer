@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { ChaweerLogo } from "@/components/ChaweerLogo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function LandingHeader() {
@@ -7,7 +8,7 @@ export function LandingHeader() {
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-[58px] items-center justify-between px-5 backdrop-blur-[12px] sm:px-12"
+      className="sticky top-0 z-30 flex h-[58px] items-center justify-between px-12 backdrop-blur-[12px] sm:px-20 lg:px-28"
       style={{
         background: "rgba(255,255,255,.96)",
         borderBottom: "1px solid rgba(0,0,0,.07)",
@@ -15,15 +16,10 @@ export function LandingHeader() {
     >
       <Link
         to="/"
-        className="flex flex-shrink-0 items-center gap-2 no-underline"
+        className="flex flex-shrink-0 items-center no-underline"
         aria-label="Chaweer - Accueil"
       >
-        <span
-          className="text-[20px] font-extrabold text-primary"
-          style={{ letterSpacing: "-0.02em" }}
-        >
-          Chaweer
-        </span>
+        <ChaweerLogo size="sm" showArabic={false} />
       </Link>
 
       <nav className="hidden items-center gap-6 text-sm font-medium text-[#4B4A46] sm:flex">
@@ -39,12 +35,12 @@ export function LandingHeader() {
         >
           {t("landing.header.nav.howItWorks")}
         </a>
-        <a
-          href="#"
+        <Link
+          to="/pro/inscription"
           className="transition-colors hover:text-primary"
         >
           {t("landing.header.nav.forLawyers")}
-        </a>
+        </Link>
         <a
           href="#"
           className="transition-colors hover:text-primary"
@@ -55,18 +51,18 @@ export function LandingHeader() {
 
       <div className="flex flex-shrink-0 items-center gap-2.5">
         <LanguageSwitcher />
-        <a
-          href="#"
+        <Link
+          to="/connexion"
           className="rounded-[9px] px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-surface-alt"
         >
           {t("landing.header.login")}
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          to="/inscription"
           className="rounded-[9px] bg-primary px-5 py-[9px] text-sm font-bold text-white transition-colors hover:bg-primary-hover"
         >
           {t("landing.header.signup")}
-        </a>
+        </Link>
       </div>
     </header>
   );

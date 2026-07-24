@@ -127,7 +127,7 @@ export function ProfessionalRegistrationPage() {
         </form>
 
         <div className="mt-5 flex justify-center">
-          <TextLink to="/connexion">Vous avez déjà un compte ? Se connecter</TextLink>
+          <TextLink to="/pro/connexion">Vous avez déjà un compte ? Se connecter</TextLink>
         </div>
 
         <div className="mt-6 border-t border-[#EFEDE9] pt-4 text-center">

@@ -71,7 +71,7 @@ export function LawyerCard({ lawyer }: LawyerCardProps) {
 
         {/* Gradient bottom with name + city */}
         <div
-          className="absolute bottom-0 left-0 right-0 pt-3.5 pb-2.5 px-3.5"
+          className="absolute bottom-0 left-0 right-0 pt-4 pb-3 px-4"
           style={{
             background:
               "linear-gradient(to top, rgba(8,46,42,.8), transparent)",

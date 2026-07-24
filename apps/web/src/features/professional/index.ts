@@ -1,6 +1,7 @@
 export { ProfessionalGuard } from "./guards/ProfessionalGuard";
 export { ProfessionalLayout } from "./components/ProfessionalLayout";
 export { ProfessionalRegistrationPage } from "./pages/ProfessionalRegistrationPage";
+export { ProfessionalLoginPage } from "./pages/ProfessionalLoginPage";
 export { ProfessionalProfilePage } from "./pages/ProfessionalProfilePage";
 export { ProfessionalExpertisePage } from "./pages/ProfessionalExpertisePage";
 export { ProfessionalOfferPage } from "./pages/ProfessionalOfferPage";

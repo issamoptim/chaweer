@@ -5,6 +5,7 @@ import { NotFound } from "@/app/pages/NotFound";
 import { Connexion } from "@/app/pages/Connexion";
 import { Inscription } from "@/app/pages/Inscription";
 import { EmailRegistration } from "@/app/pages/EmailRegistration";
+import { ForgotPasswordPage } from "@/app/pages/ForgotPasswordPage";
 import { GoogleCallback } from "@/app/pages/GoogleCallback";
 import { ProfilePage, EditProfilePage } from "@/features/identity";
 import { SecurityPage } from "@/features/security";
@@ -13,6 +14,7 @@ import {
   ProfessionalGuard,
   ProfessionalLayout,
   ProfessionalRegistrationPage,
+  ProfessionalLoginPage,
   ProfessionalProfilePage,
   ProfessionalExpertisePage,
   ProfessionalOfferPage,
@@ -37,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/google/callback",
         element: <GoogleCallback />,
+      },
+      {
+        path: "/mot-de-passe-oublie",
+        element: <ForgotPasswordPage />,
       },
       {
         element: <AuthGuard />,
@@ -81,6 +87,10 @@ export const router = createBrowserRouter([
   {
     path: "/pro/inscription",
     element: <ProfessionalRegistrationPage />,
+  },
+  {
+    path: "/pro/connexion",
+    element: <ProfessionalLoginPage />,
   },
   {
     element: <ProfessionalGuard />,

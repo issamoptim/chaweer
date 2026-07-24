@@ -1,0 +1,7 @@
+<svg width="140" height="36" viewBox="0 0 140 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="18" cy="18" r="16" fill="#0F766E"/>
+  <path d="M11 12C11 10.3431 12.3431 9 14 9H22C23.6569 9 25 10.3431 25 12V24C25 25.6569 23.6569 27 22 27H14C12.3431 27 11 25.6569 11 24V12Z" fill="white" fill-opacity="0.15"/>
+  <path d="M14.5 14.5C14.5 13.6716 15.1716 13 16 13H20C20.8284 13 21.5 13.6716 21.5 14.5V21.5C21.5 22.3284 20.8284 23 20 23H16C15.1716 23 14.5 22.3284 14.5 21.5V14.5Z" stroke="white" stroke-width="1.5"/>
+  <path d="M17 16.5L19 18L17 19.5V16.5Z" fill="white"/>
+  <text x="40" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#0F766E" letter-spacing="-0.5">Chaweer</text>
+</svg>

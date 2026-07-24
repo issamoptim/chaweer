@@ -23,7 +23,7 @@ export function DomainFilterBar({
   return (
     <section className="sticky top-[58px] z-20 border-b border-[#EFEDE9] bg-white">
       <div className="hide-scrollbar overflow-x-auto">
-        <div className="flex min-w-max items-center gap-1.5 px-5 py-2.5 sm:px-8 lg:px-12">
+        <div className="flex min-w-max items-center gap-1.5 px-12 py-2.5 sm:px-20 lg:px-28">
           <button
             onClick={onClearAll}
             role="switch"
