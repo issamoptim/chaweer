@@ -17,15 +17,15 @@ COPY packages/shared/src/ ./packages/shared/src/
 COPY apps/api/prisma.config.ts ./apps/api/
 COPY apps/api/prisma/ ./apps/api/prisma/
 
-# Couche 4 : génération du Prisma Client
+# Couche 4 : code source + config TypeScript (copier avant generate)
+COPY apps/api/tsconfig.json ./apps/api/
+COPY apps/api/src/ ./apps/api/src/
+
+# Couche 5 : génération du Prisma Client (après copie du src)
 ARG DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 ENV DATABASE_URL=${DATABASE_URL}
 WORKDIR /app/apps/api
 RUN npx prisma generate
-
-# Couche 5 : code source + config TypeScript
-COPY apps/api/tsconfig.json ./
-COPY apps/api/src/ ./src/
 
 # Couche 6 : build TypeScript
 RUN npm run build
